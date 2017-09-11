@@ -1,0 +1,2134 @@
+<ScriptObject> AddInventoryEventFilter (00000165CF42A000) callback=013D4640
+
+<ScriptObject> CallFunction (00000165CF5CFDE8) callback=013D47B0
+
+<ScriptObject> CallFunctionNoWait (00000165CF5CFD90) callback=013D4950
+
+<ScriptObject> CancelTimer (00000165CF5CFD38) callback=013D4C50
+
+<ScriptObject> CancelTimerGameTime (00000165CF5CFCE0) callback=013D4CE0
+
+<ScriptObject> CastAs (00000165CF5CFC88) callback=013D4D70
+
+<ScriptObject> GetPropertyValue (00000165CF5CFC30) callback=013D4F00
+
+<ScriptObject> IsBoundGameObjectAvailable (00000165CF5CFBD8) callback=013D4FB0
+
+<ScriptObject> RegisterForAnimationEvent (00000165CF5CFB80) callback=013D5000
+
+<ScriptObject> RegisterForCustomEvent (00000165CF5CFB28) callback=013D5190
+
+<ScriptObject> RegisterForDetectionLOSGain (00000165CF5CFAD0) callback=013D5420
+
+<ScriptObject> RegisterForDetectionLOSLost (00000165CF5CFA78) callback=013D55C0
+
+<ScriptObject> RegisterForDirectLOSGain (00000165CF5CFA20) callback=013D5760
+
+<ScriptObject> RegisterForDirectLOSLost (00000165CF5CF9C8) callback=013D5940
+
+<ScriptObject> RegisterForDistanceLessThanEvent (00000165CF5CF970) callback=013D5B20
+
+<ScriptObject> RegisterForDistanceGreaterThanEvent (00000165CF5CF918) callback=013D5D50
+
+<ScriptObject> RegisterForHitEvent (00000165CF5CF8C0) callback=013D5F80
+
+<ScriptObject> RegisterForLooksMenuEvent (00000165CF5CF868) callback=013D6290
+
+<ScriptObject> RegisterForMagicEffectApplyEvent (00000165CF5CF7B8) callback=013D63C0
+
+<ScriptObject> RegisterForMenuOpenCloseEvent (00000165CF5CF708) callback=013D6600
+
+<ScriptObject> RegisterForPlayerSleep (00000165CF5CF6B0) callback=013D67A0
+
+<ScriptObject> RegisterForPlayerTeleport (00000165CF5CF658) callback=013D68D0
+
+<ScriptObject> RegisterForPlayerWait (00000165CF5CF5A8) callback=013D6A00
+
+<ScriptObject> RegisterForRadiationDamageEvent (00000165CF5CF550) callback=013D6B30
+
+<ScriptObject> RegisterForRemoteEvent (00000165CF5CF4A0) callback=013D6CD0
+
+<ScriptObject> RegisterForTrackedStatsEvent (00000165CF5CF3F0) callback=013D6F20
+
+<ScriptObject> RegisterForTutorialEvent (00000165CF5CF398) callback=013D7130
+
+<ScriptObject> RemoveAllInventoryEventFilters (00000165CF5CF2E8) callback=013D72C0
+
+<ScriptObject> RemoveInventoryEventFilter (00000165CF5CF290) callback=013D7350
+
+<ScriptObject> SendCustomEvent (00000165CF5CF1E0) callback=013D73E0
+
+<ScriptObject> SetPropertyValue (00000165CF5CF188) callback=013D7510
+
+<ScriptObject> SetPropertyValueNoWait (00000165CF5CF0D8) callback=013D75E0
+
+<ScriptObject> StartTimer (00000165CF5CF080) callback=013D7820
+
+<ScriptObject> StartTimerGameTime (00000165CF5CF028) callback=013D7970
+
+<ScriptObject> UnregisterForAllEvents (00000165CF5CEFD0) callback=013D7AC0
+
+<ScriptObject> UnregisterForAllCustomEvents (00000165CF5CEF78) callback=013D7B50
+
+<ScriptObject> UnregisterForAllHitEvents (00000165CF5CEF20) callback=013D7BE0
+
+<ScriptObject> UnregisterForAllMagicEffectApplyEvents (00000165CF5CEEC8) callback=013D7CA0
+
+<ScriptObject> UnregisterForAllMenuOpenCloseEvents (00000165CF5CEE70) callback=013D7D60
+
+<ScriptObject> UnregisterForAllRadiationDamageEvents (00000165CF5CEE18) callback=013D7DF0
+
+<ScriptObject> UnregisterForAllRemoteEvents (00000165CF5CEDC0) callback=013D7E80
+
+<ScriptObject> UnregisterForAllTrackedStatsEvents (00000165CF5CED68) callback=013D7F10
+
+<ScriptObject> UnregisterForAnimationEvent (00000165CF5CED10) callback=013D7FA0
+
+<ScriptObject> UnregisterForCustomEvent (00000165CF5CECB8) callback=013D80E0
+
+<ScriptObject> UnregisterForDistanceEvents (00000165CF5CEC60) callback=013D8260
+
+<ScriptObject> UnregisterForHitEvent (00000165CF5CEC08) callback=013D83C0
+
+<ScriptObject> UnregisterForLooksMenuEvent (00000165CF5CEBB0) callback=013D85E0
+
+<ScriptObject> UnregisterForLOS (00000165CF5CEB58) callback=013D8670
+
+<ScriptObject> UnregisterForMagicEffectApplyEvent (00000165CF5CEB00) callback=013D87F0
+
+<ScriptObject> UnregisterForMenuOpenCloseEvent (00000165CF5CEAA8) callback=013D8960
+
+<ScriptObject> UnregisterForPlayerSleep (00000165CF5CEA50) callback=013D8AC0
+
+<ScriptObject> UnregisterForPlayerTeleport (00000165CF5CE6E0) callback=013D8B50
+
+<ScriptObject> UnregisterForPlayerWait (00000165CF5CE630) callback=013D8BE0
+
+<ScriptObject> UnregisterForRadiationDamageEvent (00000165CF5CE5D8) callback=013D8C70
+
+<ScriptObject> UnregisterForRemoteEvent (00000165CF5CE580) callback=013D8DA0
+
+<ScriptObject> UnregisterForTrackedStatsEvent (00000165CF5CE528) callback=013D8ED0
+
+<ScriptObject> UnregisterForTutorialEvent (00000165CF5CE4D0) callback=013D8F60
+
+<game> AddAchievement (00000165CF5CE478) callback=013BE170
+
+<game> AddPerkPoints (00000165CF5CE3C8) callback=013BE230
+
+<game> AdvanceSkill (00000165CF5CE370) callback=013BE060
+
+<game> ClearTempEffects (00000165CF5CE318) callback=013C36F0
+
+<game> ClearPrison (00000165CF5CE2C0) callback=013C3710
+
+<game> EnablePipboyHDRMask (00000165CF5CE268) callback=013C3730
+
+<game> error (00000165CF5CE210) callback=013BE270
+
+<game> FadeOutGame (00000165CF5CE1B8) callback=013BE320
+
+<game> FastTravel (00000165CF5CE108) callback=013BE360
+
+<game> FindClosestReferenceOfType (00000165CF5CE0B0) callback=013BE410
+
+<game> FindClosestReferenceOfAnyTypeInList (00000165CF5CE000) callback=013BE570
+
+<game> FindRandomReferenceOfType (00000165CF5D1F48) callback=013BE7D0
+
+<game> FindRandomReferenceOfAnyTypeInList (00000165CF5D1E98) callback=013BE930
+
+<game> FindClosestActor (00000165CF5D1DE8) callback=013BEB90
+
+<game> FindRandomActor (00000165CF5D1D90) callback=013BEC20
+
+<game> ForceDisableSSRGodraysDirLight (00000165CF5D1D38) callback=013C3740
+
+<game> ForceThirdPerson (00000165CF5D1CE0) callback=013C3770
+
+<game> ForceFirstPerson (00000165CF5D1C88) callback=013C3790
+
+<game> ShowFirstPersonGeometry (00000165CF5D1C30) callback=013BED40
+
+<game> ShowAllMapMarkers (00000165CF5D1BD8) callback=013BEE00
+
+<game> GetDifficulty (00000165CF5D1B80) callback=013C37B0
+
+<game> GetForm (00000165CF5D1B28) callback=013C37D0
+
+<game> GetFormFromFile (00000165CF5D1AD0) callback=013BF020
+
+<game> GetGameSettingFloat (00000165CF5D1A78) callback=013BF090
+
+<game> GetGameSettingInt (00000165CF5D1A20) callback=013BF0F0
+
+<game> GetGameSettingString (00000165CF5D19C8) callback=013BF150
+
+<game> GetPlayer (00000165CF5D1970) callback=013BF1D0
+
+<game> GetPlayerFollowers (00000165CF5D1918) callback=013BF1E0
+
+<game> GetPlayerGrabbedRef (00000165CF5D18C0) callback=013BF460
+
+<game> GetPlayerRadioFrequency (00000165CF5D1868) callback=013C37E0
+
+<game> GetPlayersLastRiddenHorse (00000165CF5D1810) callback=013BF4D0
+
+<game> GetRealHoursPassed (00000165CF5D17B8) callback=013BF540
+
+<game> GetXPForLevel (00000165CF5D1760) callback=013BF5C0
+
+<game> IncrementSkill (00000165CF5D1708) callback=013BF5F0
+
+<game> IncrementStat (00000165CF5D16B0) callback=013BF6D0
+
+<game> InitializeMarkerDistances (00000165CF5D1658) callback=013C37F0
+
+<game> IsActivateControlsEnabled (00000165CF5D1600) callback=013BF880
+
+<game> IsCamSwitchControlsEnabled (00000165CF5D15A8) callback=013BF8C0
+
+<game> IsFastTravelControlsEnabled (00000165CF5D1550) callback=013BF8E0
+
+<game> IsFastTravelEnabled (00000165CF5D14F8) callback=013BF900
+
+<game> IsFavoritesControlsEnabled (00000165CF5D14A0) callback=013BF980
+
+<game> IsFightingControlsEnabled (00000165CF5D1448) callback=013BF9A0
+
+<game> IsJournalControlsEnabled (00000165CF5D13F0) callback=013BF9C0
+
+<game> IsJumpingControlsEnabled (00000165CF5D1398) callback=013BF9E0
+
+<game> IsLookingControlsEnabled (00000165CF5D1340) callback=013BFA00
+
+<game> IsMenuControlsEnabled (00000165CF5D12E8) callback=013BFA20
+
+<game> IsMovementControlsEnabled (00000165CF5D1290) callback=013BFA40
+
+<game> IsPlayerInRadioRange (00000165CF5D1238) callback=013C3800
+
+<game> IsPlayerListening (00000165CF5D11E0) callback=013C3810
+
+<game> IsPlayerRadioOn (00000165CF5D1188) callback=013C3820
+
+<game> IsPluginInstalled (00000165CF5D1130) callback=013BFA90
+
+<game> IsSneakingControlsEnabled (00000165CF5D10D8) callback=013BFAD0
+
+<game> IsVATSControlsEnabled (00000165CF5D1080) callback=013BF8A0
+
+<game> IsVATSPlaybackActive (00000165CF5D1028) callback=013C3830
+
+<game> PassTime (00000165CF5D0FD0) callback=013BFAF0
+
+<game> PlayBink (00000165CF5D0F78) callback=013BFB10
+
+<game> PrecacheCharGen (00000165CF5D0F20) callback=013C3850
+
+<game> PrecacheCharGenClear (00000165CF5D0EC8) callback=013C3860
+
+<game> QueryStat (00000165CF5D0E70) callback=013BFC00
+
+<game> QuitToMainMenu (00000165CF5D0E18) callback=013BFCD0
+
+<game> RequestAutosave (00000165CF5D0DC0) callback=013BFD40
+
+<game> RequestModel (00000165CF5D0D68) callback=013BFD60
+
+<game> RequestSave (00000165CF5D0D10) callback=013BFE00
+
+<game> RewardPlayerXP (00000165CF5D0CB8) callback=013BFE20
+
+<game> ServeTime (00000165CF5D0C60) callback=013C3870
+
+<game> SetCameraTarget (00000165CF5D0C08) callback=013C3890
+
+<game> SetCharGenHUDMode (00000165CF5D0BB0) callback=013C38B0
+
+<game> SetInChargen (00000165CF5D0B58) callback=013C38C0
+
+<game> ShowPerkVaultBoyOnHUD (00000165CF5D0B00) callback=013C3900
+
+<game> SetInsideMemoryHUDMode (00000165CF5D0AA8) callback=013C3920
+
+<game> SetPlayerAIDriven (00000165CF5D0A50) callback=013C3930
+
+<game> SetPlayerOnElevator (00000165CF5D09F8) callback=013C3950
+
+<game> SetPlayerRadioFrequency (00000165CF5D09A0) callback=013C3970
+
+<game> SetPlayerReportCrime (00000165CF5D0948) callback=013C3980
+
+<game> SetSittingRotation (00000165CF5D08F0) callback=013BFF70
+
+<game> shakeCamera (00000165CF5D0898) callback=013BFE50
+
+<game> shakeController (00000165CF5D0840) callback=013BFF00
+
+<game> ShowFatigueWarningOnHUD (00000165CF5D07E8) callback=013C39A0
+
+<game> ShowTitleSequenceMenu (00000165CF5D0790) callback=013C39B0
+
+<game> HideTitleSequenceMenu (00000165CF5D0738) callback=013C39C0
+
+<game> StartTitleSequence (00000165CF5D06E0) callback=013C39D0
+
+<game> ShowPipboyBootSequence (00000165CF5D0688) callback=013C39E0
+
+<game> ShowPipboyPlugin (00000165CF5D0630) callback=013C39F0
+
+<game> ShowRaceMenu (00000165CF5D0580) callback=013C3A00
+
+<game> ShowSPECIALMenu (00000165CF5D04D0) callback=013C3A30
+
+<game> ShowTrainingMenu (00000165CF5D0478) callback=013C3A40
+
+<game> TriggerScreenBlood (00000165CF5D0420) callback=013C3A50
+
+<game> PlayEventCamera (00000165CF5D03C8) callback=013BFF90
+
+<game> StartDialogueCameraOrCenterOnTarget (00000165CF5D0318) callback=013C3A70
+
+<game> StopDialogueCamera (00000165CF5D02C0) callback=013C3A90
+
+<game> TurnPlayerRadioOn (00000165CF5D0268) callback=013C3AB0
+
+<game> UsingGamepad (00000165CF5D0210) callback=013C3AD0
+
+<game> warning (00000165CF5D01B8) callback=013C00B0
+
+<game> GetAggressionAV (00000165CF5D0160) callback=013C00E0
+
+<game> GetConfidenceAV (00000165CF5D0108) callback=013C0100
+
+<game> GetSuspiciousAV (00000165CF5D00B0) callback=013C0120
+
+<game> GetHealthAV (00000165CF5D0058) callback=013C0140
+
+<game> GetStrengthAV (00000165CF5D0000) callback=013C0160
+
+<game> GetPerceptionAV (00000165CF5D9FA0) callback=013C0180
+
+<game> GetEnduranceAV (00000165CF5D9F48) callback=013C01A0
+
+<game> GetCharismaAV (00000165CF5D9EF0) callback=013C01C0
+
+<game> GetIntelligenceAV (00000165CF5D9E98) callback=013C01E0
+
+<game> GetAgilityAV (00000165CF5D9E40) callback=013C0200
+
+<game> GetLuckAV (00000165CF5D9DE8) callback=013C0220
+
+<utility> CallGlobalFunction (00000165CF5D9D90) callback=0144F8B0
+
+<utility> CallGlobalFunctionNoWait (00000165CF5D9CE0) callback=0144FA00
+
+<utility> GameTimeToString (00000165CF5D9C88) callback=0144FC90
+
+<utility> GetCurrentGameTime (00000165CF5D9C30) callback=01452050
+
+<utility> GetCurrentRealTime (00000165CF5D9BD8) callback=0144FE00
+
+<utility> GetCurrentStackID (00000165CF5D9B80) callback=0144FE30
+
+<utility> IsInMenuMode (00000165CF5D9B28) callback=01452070
+
+<utility> RandomInt (00000165CF5D9AD0) callback=01452090
+
+<utility> RandomFloat (00000165CF5D9A78) callback=014520B0
+
+<utility> SetINIBool (00000165CF5D9A20) callback=0144FEE0
+
+<utility> SetINIFloat (00000165CF5D99C8) callback=01450020
+
+<utility> SetINIInt (00000165CF5D9970) callback=01450160
+
+<utility> SetINIString (00000165CF5D9918) callback=014502A0
+
+<utility> Wait (00000165CF5D98C0) callback=014503E0
+
+<utility> WaitGameTime (00000165CF5D9868) callback=01450410
+
+<utility> WaitMenuMode (00000165CF5D9810) callback=01450440
+
+<utility> CaptureFrameRate (00000165CF5D97B8) callback=01450470
+
+<utility> StartFrameRateCapture (00000165CF5D9760) callback=014504F0
+
+<utility> EndFrameRateCapture (00000165CF5D9708) callback=01450570
+
+<utility> GetAverageFrameRate (00000165CF5D96B0) callback=014505F0
+
+<utility> GetMinFrameRate (00000165CF5D9658) callback=01450670
+
+<utility> GetMaxFrameRate (00000165CF5D9600) callback=014506F0
+
+<utility> EnterTestData (00000165CF5D95A8) callback=01450770
+
+<utility> PostStartUpTimes (00000165CF5D94F8) callback=014507F0
+
+<utility> GetCurrentMemory (00000165CF5D94A0) callback=01450870
+
+<utility> GetBudgetCount (00000165CF5D9448) callback=01450900
+
+<utility> GetCurrentBudget (00000165CF5D93F0) callback=01450980
+
+<utility> GetBudgetLimit (00000165CF5D9398) callback=01450A10
+
+<utility> OverBudget (00000165CF5D9340) callback=01450AA0
+
+<utility> GetBudgetName (00000165CF5D92E8) callback=01450B20
+
+<debug> CenterOnCell (00000165CF5D9290) callback=013B70B0
+
+<debug> CenterOnCellAndWait (00000165CF5D91E0) callback=013B7170
+
+<debug> PlayerMoveToAndWait (00000165CF5D9188) callback=013B7220
+
+<debug> CloseUserLog (00000165CF5D9130) callback=013B72D0
+
+<debug> DumpAliasData (00000165CF5D90D8) callback=013B72F0
+
+<debug> DumpEventRegistrations (00000165CF5D9080) callback=013B74F0
+
+<debug> EnableAI (00000165CF5D9028) callback=013B75D0
+
+<debug> EnableCollisions (00000165CF5D8FD0) callback=013B75F0
+
+<debug> EnableDetection (00000165CF5D8F78) callback=013B7610
+
+<debug> EnableMenus (00000165CF5D8F20) callback=013B77B0
+
+<debug> GetConfigName (00000165CF5D8EC8) callback=013B77D0
+
+<debug> GetPlatformName (00000165CF5D8E70) callback=013B7800
+
+<debug> GetVersionNumber (00000165CF5D8CB8) callback=013B7830
+
+<debug> MessageBox (00000165CF5D8AA8) callback=013B7860
+
+<debug> Notification (00000165CF5D89F8) callback=013B78A0
+
+<debug> OpenUserLog (00000165CF5D89A0) callback=013B78E0
+
+<debug> QuitGame (00000165CF5D8948) callback=013B7900
+
+<debug> SetGodMode (00000165CF5D8898) callback=013B7920
+
+<debug> ShowRefPosition (00000165CF5D8840) callback=013B9A60
+
+<debug> StartScriptProfiling (00000165CF5D87E8) callback=013B7930
+
+<debug> StartStackProfiling (00000165CF5D8790) callback=013B7B00
+
+<debug> StartStackRootProfiling (00000165CF5D8738) callback=013B7BA0
+
+<debug> StopScriptProfiling (00000165CF5D86E0) callback=013B7E60
+
+<debug> StopStackProfiling (00000165CF5D8688) callback=013B7F20
+
+<debug> StopStackRootProfiling (00000165CF5D8630) callback=013B7FC0
+
+<debug> Trace (00000165CF5D85D8) callback=013B80B0
+
+<debug> TraceFunction (00000165CF5D8580) callback=013B81A0
+
+<debug> TraceStack (00000165CF5D8528) callback=013B82A0
+
+<debug> TraceUser (00000165CF5D84D0) callback=013B83E0
+
+<math> abs (00000165CF5D8478) callback=013D3D40
+
+<math> acos (00000165CF5D83C8) callback=013D2D60
+
+<math> asin (00000165CF5D8370) callback=013D2E10
+
+<math> atan (00000165CF5D8318) callback=013D2EC0
+
+<math> Ceiling (00000165CF5D82C0) callback=013D2EE0
+
+<math> cos (00000165CF5D8268) callback=013D2F20
+
+<math> DegreesToRadians (00000165CF5D8210) callback=013D2FD0
+
+<math> floor (00000165CF5D81B8) callback=013D2FF0
+
+<math> pow (00000165CF5D8160) callback=013D3030
+
+<math> RadiansToDegrees (00000165CF5D80B0) callback=013D30A0
+
+<math> sIn (00000165CF5DBFA0) callback=013D30C0
+
+<math> sqrt (00000165CF5DBF48) callback=013D3D60
+
+<math> tan (00000165CF5DBE98) callback=013D3170
+
+<Form> GetFormID (00000165CF5DBE40) callback=013EC840
+
+<Form> GetGoldValue (00000165CF5DBDE8) callback=013EBEA0
+
+<Form> HasKeyword (00000165CF5DBD90) callback=013EBF00
+
+<Form> HasKeywordInFormList (00000165CF5DBD38) callback=013EC050
+
+<Form> PlayerKnows (00000165CF5DBCE0) callback=013EC850
+
+<Form> StartObjectProfiling (00000165CF5DBC30) callback=013EC1D0
+
+<Form> StopObjectProfiling (00000165CF5DBBD8) callback=013EC2A0
+
+<MiscObject> GetObjectComponentCount (00000165CF5DBB80) callback=013F8B30
+
+<InstanceNamingRules> MergeWith (00000165CF5DBB28) callback=012C5800
+
+<Keyword> SendStoryEvent (00000165CF5DBA78) callback=013A6280
+
+<Keyword> SendStoryEventAndWait (00000165CF5DB9C8) callback=013A6370
+
+<Location> AddLinkedLocation (00000165CF5DB6B0) callback=013A8570
+
+<Location> GetAllLinkedLocations (00000165CF5DB600) callback=013A8640
+
+<Location> GetKeywordData (00000165CF5DB550) callback=013A9710
+
+<Location> GetRefTypeAliveCount (00000165CF5DB4F8) callback=013A87C0
+
+<Location> GetRefTypeDeadCount (00000165CF5DB3F0) callback=013A8880
+
+<Location> HasCommonParent (00000165CF5DB398) callback=013A8940
+
+<Location> HasEverBeenCleared (00000165CF5DB340) callback=013A9730
+
+<Location> HasRefType (00000165CF5DB2E8) callback=013A9740
+
+<Location> IsChild (00000165CF5DB290) callback=013A8B80
+
+<Location> IsCleared (00000165CF5DB1E0) callback=013A9760
+
+<Location> IsLinkedLocation (00000165CF5DB188) callback=013A8C40
+
+<Location> IsLoaded (00000165CF5DB0D8) callback=013A9770
+
+<Location> RemoveLinkedLocation (00000165CF5DB080) callback=013A8D10
+
+<Location> Reset (00000165CF5DB028) callback=013A9790
+
+<Location> SetCleared (00000165CF5DAFD0) callback=013A97A0
+
+<Location> SetKeywordData (00000165CF5DAF78) callback=013A8DE0
+
+<message> show (00000165CF5DAF20) callback=013AD000
+
+<message> ShowAsHelpMessage (00000165CF5DAEC8) callback=013AD540
+
+<message> UnshowAsHelpMessage (00000165CF5DAE70) callback=013AD5A0
+
+<message> ClearHelpMessages (00000165CF5DAE18) callback=013AD930
+
+<message> ResetHelpMessage (00000165CF5DADC0) callback=013AD950
+
+<MusicType> Add (00000165CF5DAD68) callback=013AF160
+
+<MusicType> Remove (00000165CF5DACB8) callback=013AF180
+
+<VisualEffect> play (00000165CF5DAC60) callback=013B2920
+
+<VisualEffect> Stop (00000165CF5DABB0) callback=013B2AF0
+
+<Scene> ForceStart (00000165CF5DAB58) callback=013B38E0
+
+<Scene> GetOwningQuest (00000165CF5DAB00) callback=013B3F50
+
+<Scene> IsActionComplete (00000165CF5DAAA8) callback=013B3F60
+
+<Scene> IsPlaying (00000165CF5DAA50) callback=013B3F80
+
+<Scene> Pause (00000165CF5DA9F8) callback=013B3F90
+
+<Scene> Start (00000165CF5DA9A0) callback=013B3950
+
+<Scene> Stop (00000165CF5DA948) callback=013B39C0
+
+<ShaderParticleGeometry> Apply (00000165CF5DA8F0) callback=013B5240
+
+<ShaderParticleGeometry> Remove (00000165CF5DA840) callback=013B5260
+
+<SoundCategory> Pause (00000165CF5DA7E8) callback=013B5850
+
+<SoundCategory> UnPause (00000165CF5DA738) callback=013B5890
+
+<SoundCategory> Mute (00000165CF5DA6E0) callback=013B58D0
+
+<SoundCategory> UnMute (00000165CF5DA688) callback=013B5910
+
+<SoundCategory> SetVolume (00000165CF5DA630) callback=013B5950
+
+<SoundCategory> SetFrequency (00000165CF5DA5D8) callback=013B5990
+
+<SoundCategorySnapshot> Push (00000165CF5DA580) callback=012C6250
+
+<SoundCategorySnapshot> Remove (00000165CF5DA4D0) callback=012C6270
+
+<Terminal> ShowOnPipboy (00000165CF5DA478) callback=013B64B0
+
+<MagicEffect> GetAssociatedSkill (00000165CF5DA3C8) callback=013BCC60
+
+<EffectShader> play (00000165CF5DA370) callback=013E6F80
+
+<EffectShader> Stop (00000165CF5DA2C0) callback=013E70F0
+
+<Faction> CanPayCrimeGold (00000165CF5DA268) callback=013E80B0
+
+<Faction> GetCrimeGold (00000165CF5DA210) callback=013E80F0
+
+<Faction> GetCrimeGoldNonViolent (00000165CF5DA1B8) callback=013E8110
+
+<Faction> GetCrimeGoldViolent (00000165CF5DA160) callback=013E8130
+
+<Faction> GetInfamy (00000165CF5DA108) callback=013E8150
+
+<Faction> GetInfamyNonViolent (00000165CF5DA058) callback=013E8170
+
+<Faction> GetInfamyViolent (00000165CF5DDF48) callback=013E8190
+
+<Faction> GetFactionReaction (00000165CF5DDDE8) callback=013E81B0
+
+<Faction> GetStolenItemValueCrime (00000165CF5DDD38) callback=013E8250
+
+<Faction> GetStolenItemValueNoCrime (00000165CF5DDC88) callback=013E8270
+
+<Faction> IsFactionInCrimeGroup (00000165CF5DDC30) callback=013E9570
+
+<Faction> IsPlayerEnemy (00000165CF5DDBD8) callback=013E9590
+
+<Faction> IsPlayerExpelled (00000165CF5DDB80) callback=013E95A0
+
+<Faction> ModCrimeGold (00000165CF5DDB28) callback=013E8290
+
+<Faction> PlayerPayCrimeGold (00000165CF5DDAD0) callback=013E82B0
+
+<Faction> SendAssaultAlarm (00000165CF5DDA78) callback=013E82D0
+
+<Faction> SendPlayerToJail (00000165CF5DD918) callback=013E83F0
+
+<Faction> SetAlly (00000165CF5DD868) callback=013E84F0
+
+<Faction> SetCrimeGold (00000165CF5DD810) callback=013E85E0
+
+<Faction> SetCrimeGoldViolent (00000165CF5DD708) callback=013E8600
+
+<Faction> SetEnemy (00000165CF5DD6B0) callback=013E8620
+
+<Faction> SetPlayerEnemy (00000165CF5DD658) callback=013E95B0
+
+<Faction> SetPlayerExpelled (00000165CF5DD600) callback=013E95D0
+
+<Furniture> GetAssociatedForm (00000165CF5DD5A8) callback=013EE310
+
+<GlobalVariable> GetValue (00000165CF5DD4F8) callback=013EEC70
+
+<GlobalVariable> SetValue (00000165CF5DD4A0) callback=013EE9C0
+
+<ImageSpaceModifier> Apply (00000165CF5DD448) callback=013EF2A0
+
+<ImageSpaceModifier> ApplyCrossFade (00000165CF5DD398) callback=013EF2C0
+
+<ImageSpaceModifier> PopTo (00000165CF5DD340) callback=013EF2E0
+
+<ImageSpaceModifier> Remove (00000165CF5DD290) callback=013EF310
+
+<ImageSpaceModifier> RemoveCrossFade (00000165CF5DD238) callback=013EF6E0
+
+<LeveledActor> AddForm (00000165CF5DD1E0) callback=013F01B0
+
+<LeveledActor> Revert (00000165CF5DD130) callback=013F0440
+
+<LeveledItem> AddForm (00000165CF5DD0D8) callback=013F0B90
+
+<LeveledItem> Revert (00000165CF5DD080) callback=013F0E20
+
+<LeveledSpell> AddForm (00000165CF5DD028) callback=013F15E0
+
+<LeveledSpell> Revert (00000165CF5DCF78) callback=013F1870
+
+<ActorBase> GetClass (00000165CF5DCF20) callback=013F2CA0
+
+<ActorBase> GetDeadCount (00000165CF5DCEC8) callback=013F20A0
+
+<ActorBase> GetGiftFilter (00000165CF5DCE70) callback=013F2CB0
+
+<ActorBase> GetRace (00000165CF5DCE18) callback=013F2CC0
+
+<ActorBase> GetLevel (00000165CF5DCDC0) callback=013F2CD0
+
+<ActorBase> GetLevelExact (00000165CF5DCD68) callback=013F2CF0
+
+<ActorBase> GetSex (00000165CF5DCD10) callback=013F2D00
+
+<ActorBase> GetUniqueActor (00000165CF5DCCB8) callback=013F20D0
+
+<ActorBase> IsEssential (00000165CF5DCC60) callback=013F2D10
+
+<ActorBase> IsInvulnerable (00000165CF5DCC08) callback=013F2D20
+
+<ActorBase> IsProtected (00000165CF5DCBB0) callback=013F2D40
+
+<ActorBase> IsUnique (00000165CF5DCB58) callback=013F2D50
+
+<ActorBase> SetEssential (00000165CF5DCB00) callback=013F2D60
+
+<ActorBase> SetInvulnerable (00000165CF5DCAA8) callback=013F2DB0
+
+<ActorBase> SetProtected (00000165CF5DCA50) callback=013F2DD0
+
+<ActorBase> SetOutfit (00000165CF5DC9F8) callback=013F2120
+
+<Activator> IsRadio (00000165CF5DC9A0) callback=013F5740
+
+<Cell> EnableFastTravel (00000165CF5DC948) callback=013F5AF0
+
+<Cell> GetActorOwner (00000165CF5DC8F0) callback=013F5B10
+
+<Cell> GetFactionOwner (00000165CF5DC898) callback=013F5B40
+
+<Cell> IsAttached (00000165CF5DC840) callback=013F64F0
+
+<Cell> IsInterior (00000165CF5DC7E8) callback=013F6500
+
+<Cell> IsLoaded (00000165CF5DC790) callback=013F5B70
+
+<Cell> Reset (00000165CF5DC738) callback=013F5B90
+
+<Cell> SetActorOwner (00000165CF5DC6E0) callback=013F6510
+
+<Cell> SetFactionOwner (00000165CF5DC688) callback=013F6530
+
+<Cell> SetFogColor (00000165CF5DC630) callback=013F5C00
+
+<Cell> SetFogPlanes (00000165CF5DC5D8) callback=013F5CA0
+
+<Cell> SetFogPower (00000165CF5DC580) callback=013F6550
+
+<Cell> SetPublic (00000165CF5DC528) callback=013F6570
+
+<ObjectReference> Activate (00000165CF5DC4D0) callback=014008D0
+
+<ObjectReference> AddDependentAnimatedObjectReference (00000165CF5DC478) callback=01400990
+
+<ObjectReference> AddItem (00000165CF5DC420) callback=01400AC0
+
+<ObjectReference> AddKeyword (00000165CF5DC3C8) callback=01400CC0
+
+<ObjectReference> AddTextReplacementData (00000165CF5DC370) callback=01400EC0
+
+<ObjectReference> AddToMap (00000165CF5DC318) callback=01401150
+
+<ObjectReference> ApplyConveyorBelt (00000165CF5DC2C0) callback=014015C0
+
+<ObjectReference> ApplyHavokImpulse (00000165CF5DC268) callback=014012A0
+
+<ObjectReference> ApplyFanMotor (00000165CF5DC210) callback=01401540
+
+<ObjectReference> IsFanMotorOn (00000165CF5DC1B8) callback=014015B0
+
+<ObjectReference> FanMotorOn (00000165CF5DC160) callback=01401590
+
+<ObjectReference> AttachMod (00000165CF5DC108) callback=01401A90
+
+<ObjectReference> AttachModToInventoryItem (00000165CF5DC0B0) callback=01401B70
+
+<ObjectReference> AttachTo (00000165CF5DC058) callback=01401CF0
+
+<ObjectReference> BlockActivation (00000165CF5DC000) callback=01401D80
+
+<ObjectReference> CalculateEncounterLevel (00000165CF5E5FA0) callback=01401E20
+
+<ObjectReference> CanFastTravelToMarker (00000165CF5E5F48) callback=01401EA0
+
+<ObjectReference> CanProduceForWorkshop (00000165CF5E5EF0) callback=01401F10
+
+<ObjectReference> ClearDestruction (00000165CF5E5E98) callback=01401F20
+
+<ObjectReference> ClearFromOldLocations (00000165CF5E5E40) callback=01402010
+
+<ObjectReference> ConveyorBeltOn (00000165CF5E5DE8) callback=01401620
+
+<ObjectReference> CountActorsLinkedToMe (00000165CF5E5D90) callback=01402080
+
+<ObjectReference> countLinkedRefChain (00000165CF5E5D38) callback=014021C0
+
+<ObjectReference> CountRefsLinkedToMe (00000165CF5E5CE0) callback=01402130
+
+<ObjectReference> CreateDetectionEvent (00000165CF5E5C88) callback=014023C0
+
+<ObjectReference> DamageObject (00000165CF5E5C30) callback=014024A0
+
+<ObjectReference> DamageValue (00000165CF5E5BD8) callback=014025A0
+
+<ObjectReference> Delete (00000165CF5E5B80) callback=014028E0
+
+<ObjectReference> Disable (00000165CF5E5B28) callback=01402CC0
+
+<ObjectReference> DisableLinkChain (00000165CF5E5AD0) callback=01402CF0
+
+<ObjectReference> DisableNoWait (00000165CF5E5A78) callback=01402E50
+
+<ObjectReference> Drop (00000165CF5E5A20) callback=01402E80
+
+<ObjectReference> DropFirstObject (00000165CF5E59C8) callback=014031C0
+
+<ObjectReference> DropObject (00000165CF5E5970) callback=01403250
+
+<ObjectReference> Enable (00000165CF5E5918) callback=01403480
+
+<ObjectReference> EnableFastTravel (00000165CF5E58C0) callback=014034B0
+
+<ObjectReference> EnableLinkChain (00000165CF5E5868) callback=01403560
+
+<ObjectReference> EnableNoWait (00000165CF5E5810) callback=014036C0
+
+<ObjectReference> FindAllReferencesOfType (00000165CF5E57B8) callback=014036F0
+
+<ObjectReference> FindAllReferencesWithKeyword (00000165CF5E5760) callback=01403A80
+
+<ObjectReference> ForceAddRagdollToWorld (00000165CF5E5708) callback=01403DF0
+
+<ObjectReference> ForceRemoveRagdollFromWorld (00000165CF5E56B0) callback=01403EE0
+
+<ObjectReference> GetActorOwner (00000165CF5E5658) callback=01403FD0
+
+<ObjectReference> GetActorRefOwner (00000165CF5E5600) callback=01404090
+
+<ObjectReference> GetActorsLinkedToMe (00000165CF5E55A8) callback=01404110
+
+<ObjectReference> GetAngleX (00000165CF5E5550) callback=01404490
+
+<ObjectReference> GetAngleY (00000165CF5E54F8) callback=014044B0
+
+<ObjectReference> GetAngleZ (00000165CF5E54A0) callback=014044D0
+
+<ObjectReference> GetAnimationVariableBool (00000165CF5E53F0) callback=014044F0
+
+<ObjectReference> GetAnimationVariableInt (00000165CF5E5398) callback=014045A0
+
+<ObjectReference> GetAnimationVariableFloat (00000165CF5E5340) callback=01404650
+
+<ObjectReference> GetBaseObject (00000165CF5E52E8) callback=01404700
+
+<ObjectReference> GetBaseValue (00000165CF5E5290) callback=014047C0
+
+<ObjectReference> GetCurrentDestructionStage (00000165CF5E5238) callback=01404860
+
+<ObjectReference> GetCurrentLocation (00000165CF5E51E0) callback=014141D0
+
+<ObjectReference> GetCurrentScene (00000165CF5E5188) callback=014141E0
+
+<ObjectReference> getDistance (00000165CF5E5130) callback=01404870
+
+<ObjectReference> GetEditorLocation (00000165CF5E50D8) callback=01414200
+
+<ObjectReference> GetEncounterZone (00000165CF5E5080) callback=01414220
+
+<ObjectReference> GetFactionOwner (00000165CF5E5028) callback=01404920
+
+<ObjectReference> GetHeadingAngle (00000165CF5E4FD0) callback=014049E0
+
+<ObjectReference> GetHeight (00000165CF5E4F78) callback=01404B30
+
+<ObjectReference> GetInventoryValue (00000165CF5E4F20) callback=01414230
+
+<ObjectReference> GetItemCount (00000165CF5E4EC8) callback=01404B80
+
+<ObjectReference> GetComponentCount (00000165CF5E4E70) callback=01404BB0
+
+<ObjectReference> GetContainer (00000165CF5E4E18) callback=01404BE0
+
+<ObjectReference> GetItemHealthPercent (00000165CF5E4DC0) callback=01414240
+
+<ObjectReference> GetKey (00000165CF5E4D68) callback=01404BF0
+
+<ObjectReference> GetLength (00000165CF5E4D10) callback=01404C20
+
+<ObjectReference> getLinkedRef (00000165CF5E4CB8) callback=01414250
+
+<ObjectReference> GetLinkedRefChain (00000165CF5E4C60) callback=01404C70
+
+<ObjectReference> getLinkedRefChildren (00000165CF5E4C08) callback=01404EC0
+
+<ObjectReference> GetLockLevel (00000165CF5E4BB0) callback=01405030
+
+<ObjectReference> GetLocRefTypes (00000165CF5E4B58) callback=01405070
+
+<ObjectReference> GetMass (00000165CF5E4B00) callback=014051D0
+
+<ObjectReference> GetNthLinkedRef (00000165CF5E4AA8) callback=01405200
+
+<ObjectReference> GetOpenState (00000165CF5E4A50) callback=01405270
+
+<ObjectReference> GetParentCell (00000165CF5E49F8) callback=01414270
+
+<ObjectReference> GetPositionX (00000165CF5E49A0) callback=01405280
+
+<ObjectReference> GetPositionY (00000165CF5E4948) callback=01405290
+
+<ObjectReference> GetPositionZ (00000165CF5E48F0) callback=014052A0
+
+<ObjectReference> GetRadioFrequency (00000165CF5E4898) callback=014052B0
+
+<ObjectReference> GetRadioVolume (00000165CF5E4840) callback=01405350
+
+<ObjectReference> GetRefsLinkedToMe (00000165CF5E47E8) callback=014042E0
+
+<ObjectReference> GetResourceDamage (00000165CF5E4790) callback=014053F0
+
+<ObjectReference> GetSafePosition (00000165CF5E4738) callback=01405570
+
+<ObjectReference> GetWorkshopOwnedObjects (00000165CF5E46E0) callback=01405A70
+
+<ObjectReference> GetWorkshopResourceDamage (00000165CF5E45D8) callback=014059D0
+
+<ObjectReference> GetWorkshopResourceObjects (00000165CF5E43C8) callback=01405D50
+
+<ObjectReference> GetScale (00000165CF5E4318) callback=01414280
+
+<ObjectReference> GetTriggerObjectCount (00000165CF5E42C0) callback=01414290
+
+<ObjectReference> GetTeleportCell (00000165CF5E4268) callback=01405EB0
+
+<ObjectReference> GetTransitionCell (00000165CF5E4210) callback=01405F30
+
+<ObjectReference> GetTransmitterDistance (00000165CF5E41B8) callback=01405FB0
+
+<ObjectReference> GetValue (00000165CF5E4160) callback=01405800
+
+<ObjectReference> GetValuePercentage (00000165CF5E4108) callback=014058F0
+
+<ObjectReference> GetVoiceType (00000165CF5E40B0) callback=014142A0
+
+<ObjectReference> GetWidth (00000165CF5E4058) callback=01406090
+
+<ObjectReference> GetWorldSpace (00000165CF5E4000) callback=014142B0
+
+<ObjectReference> HasActorRefOwner (00000165CF5E7FA0) callback=014060E0
+
+<ObjectReference> HasDirectLOS (00000165CF5E7F48) callback=01406150
+
+<ObjectReference> HasEffectKeyword (00000165CF5E7EF0) callback=014142C0
+
+<ObjectReference> HasKeyword (00000165CF5E7E98) callback=01406570
+
+<ObjectReference> HasKeywordInFormList (00000165CF5E7E40) callback=014066C0
+
+<ObjectReference> HasNode (00000165CF5E7DE8) callback=01406840
+
+<ObjectReference> HasLocRefType (00000165CF5E7D90) callback=01406910
+
+<ObjectReference> HasSharedPowerGrid (00000165CF5E7D38) callback=014069B0
+
+<ObjectReference> IgnoreFriendlyHits (00000165CF5E7CE0) callback=01406A50
+
+<ObjectReference> InterruptCast (00000165CF5E7C88) callback=01406A80
+
+<ObjectReference> Is3DLoaded (00000165CF5E7C30) callback=01406B10
+
+<ObjectReference> IsActivateChild (00000165CF5E7BD8) callback=01406B40
+
+<ObjectReference> IsActivationBlocked (00000165CF5E7B80) callback=01406B60
+
+<ObjectReference> IsConveyorBeltOn (00000165CF5E7B28) callback=01401640
+
+<ObjectReference> IsCreated (00000165CF5E7AD0) callback=014142E0
+
+<ObjectReference> IsDeleted (00000165CF5E7A78) callback=014142F0
+
+<ObjectReference> IsDestroyed (00000165CF5E7A20) callback=01414300
+
+<ObjectReference> IsDisabled (00000165CF5E79C8) callback=01414310
+
+<ObjectReference> IsFurnitureInUse (00000165CF5E7918) callback=01406C20
+
+<ObjectReference> IsFurnitureMarkerInUse (00000165CF5E78C0) callback=01406D00
+
+<ObjectReference> IsIgnoringFriendlyHits (00000165CF5E7868) callback=01414320
+
+<ObjectReference> IsInDialogueWithPlayer (00000165CF5E7810) callback=01406D50
+
+<ObjectReference> IsLockBroken (00000165CF5E77B8) callback=01406DC0
+
+<ObjectReference> IsLocked (00000165CF5E7760) callback=01406DF0
+
+<ObjectReference> IsMapMarkerVisible (00000165CF5E7708) callback=01406E20
+
+<ObjectReference> IsOwnedBy (00000165CF5E76B0) callback=01406E90
+
+<ObjectReference> IsPowered (00000165CF5E7658) callback=01406EB0
+
+<ObjectReference> IsQuestItem (00000165CF5E7600) callback=01406EC0
+
+<ObjectReference> IsRadioOn (00000165CF5E75A8) callback=01406F30
+
+<ObjectReference> IsRefInTransitionCell (00000165CF5E7550) callback=01406FD0
+
+<ObjectReference> IsTeleportAreaLoaded (00000165CF5E74F8) callback=014070A0
+
+<ObjectReference> IsWithinBuildableArea (00000165CF5E74A0) callback=01407360
+
+<ObjectReference> KnockAreaEffect (00000165CF5E7448) callback=01407430
+
+<ObjectReference> Lock (00000165CF5E73F0) callback=01407450
+
+<ObjectReference> MakeRadioReceiver (00000165CF5E7398) callback=01414330
+
+<ObjectReference> MakeTransmitterRepeater (00000165CF5E72E8) callback=01407500
+
+<ObjectReference> ModValue (00000165CF5E7290) callback=01407610
+
+<ObjectReference> MoveTo (00000165CF5E7238) callback=01407720
+
+<ObjectReference> MoveToMyEditorLocation (00000165CF5E7188) callback=014079E0
+
+<ObjectReference> MoveToNearestNavmeshLocation (00000165CF5E7130) callback=01407BD0
+
+<ObjectReference> MoveToNode (00000165CF5E70D8) callback=01407DC0
+
+<ObjectReference> OpenWorkshopSettlementMenu (00000165CF5E7080) callback=01408300
+
+<ObjectReference> OpenWorkshopSettlementMenuEx (00000165CF5E7028) callback=01408470
+
+<ObjectReference> RaidTargetsAvailable (00000165CF5E6F78) callback=01408630
+
+<ObjectReference> PauseAudio (00000165CF5E6F20) callback=01414360
+
+<ObjectReference> ResumeAudio (00000165CF5E6EC8) callback=01414380
+
+<ObjectReference> PlaceAtMe (00000165CF5E6E70) callback=01409060
+
+<ObjectReference> PlaceActorAtMe (00000165CF5E6DC0) callback=014092E0
+
+<ObjectReference> PlaceAtNode (00000165CF5E6D68) callback=014096A0
+
+<ObjectReference> PlayAnimation (00000165CF5E6D10) callback=014098E0
+
+<ObjectReference> PlayAnimationAndWait (00000165CF5E6CB8) callback=01409A90
+
+<ObjectReference> PlayGamebryoAnimation (00000165CF5E6C60) callback=01409CE0
+
+<ObjectReference> PlayImpactEffect (00000165CF5E6C08) callback=01409EB0
+
+<ObjectReference> PlaySyncedAnimationSS (00000165CF5E6BB0) callback=01409FB0
+
+<ObjectReference> PlaySyncedAnimationAndWaitSS (00000165CF5E6B58) callback=0140A130
+
+<ObjectReference> PlayTerrainEffect (00000165CF5E6AA8) callback=0140A4C0
+
+<ObjectReference> PreloadExteriorCell (00000165CF5E6A50) callback=0140A660
+
+<ObjectReference> PreloadTargetArea (00000165CF5E69F8) callback=0140A740
+
+<ObjectReference> ProcessTrapHit (00000165CF5E69A0) callback=0140A980
+
+<ObjectReference> PushActorAway (00000165CF5E6948) callback=0140AB20
+
+<ObjectReference> RecalculateResources (00000165CF5E68F0) callback=0140AD60
+
+<ObjectReference> RemoveAllItems (00000165CF5E6898) callback=0140AE10
+
+<ObjectReference> RemoveComponents (00000165CF5E6840) callback=0140AE80
+
+<ObjectReference> RemoveDependentAnimatedObjectReference (00000165CF5E67E8) callback=0140B050
+
+<ObjectReference> RemoveItem (00000165CF5E6790) callback=0140B170
+
+<ObjectReference> RemoveItemByComponent (00000165CF5E6738) callback=0140B390
+
+<ObjectReference> RemoveKeyword (00000165CF5E66E0) callback=0140B5B0
+
+<ObjectReference> RemoveAllMods (00000165CF5E6688) callback=0140B880
+
+<ObjectReference> RemoveAllModsFromInventoryItem (00000165CF5E6630) callback=0140B910
+
+<ObjectReference> RemoveMod (00000165CF5E65D8) callback=0140B940
+
+<ObjectReference> RemoveModFromInventoryItem (00000165CF5E6580) callback=0140BAE0
+
+<ObjectReference> Repair (00000165CF5E6528) callback=0140BB10
+
+<ObjectReference> Reset (00000165CF5E64D0) callback=0140BB30
+
+<ObjectReference> ResetKeyword (00000165CF5E6478) callback=0140BC60
+
+<ObjectReference> RestoreValue (00000165CF5E6420) callback=0140BE60
+
+<ObjectReference> ReverseConveyorBelt (00000165CF5E63C8) callback=01401650
+
+<ObjectReference> Say (00000165CF5E6370) callback=0140C280
+
+<ObjectReference> SayCustom (00000165CF5E6318) callback=0140C2E0
+
+<ObjectReference> SendStealAlarm (00000165CF5E62C0) callback=0140C390
+
+<ObjectReference> SetActivateTextOverride (00000165CF5E6268) callback=0140C470
+
+<ObjectReference> SetActorCause (00000165CF5E6210) callback=0140C4B0
+
+<ObjectReference> SetActorOwner (00000165CF5E61B8) callback=0140C530
+
+<ObjectReference> SetActorRefOwner (00000165CF5E6160) callback=0140C6D0
+
+<ObjectReference> SetAngle (00000165CF5E6108) callback=0140C860
+
+<ObjectReference> SetAnimationVariableBool (00000165CF5E60B0) callback=0140CAB0
+
+<ObjectReference> SetAnimationVariableFloat (00000165CF5E6058) callback=0140CB50
+
+<ObjectReference> SetAnimationVariableInt (00000165CF5E6000) callback=0140CBF0
+
+<ObjectReference> SetAttractionActive (00000165CF4F3810) callback=0140CC90
+
+<ObjectReference> SetConveyorBeltVelocity (00000165CF4F37B8) callback=01401670
+
+<ObjectReference> SetDestroyed (00000165CF4F33F0) callback=014143A0
+
+<ObjectReference> SetDirectAtTarget (00000165CF4F3658) callback=0140CCD0
+
+<ObjectReference> SetScale (00000165CF5E9FA0) callback=0140CE90
+
+<ObjectReference> SetFactionOwner (00000165CF5E9F48) callback=0140CF90
+
+<ObjectReference> SetHarvested (00000165CF5E9EF0) callback=0140D120
+
+<ObjectReference> SetLinkedRef (00000165CF5E9E98) callback=014143C0
+
+<ObjectReference> SetLockLevel (00000165CF5E9E40) callback=0140D180
+
+<ObjectReference> SetLocRefType (00000165CF5E9DE8) callback=0140D200
+
+<ObjectReference> SetMotionType (00000165CF5E9D90) callback=0140D490
+
+<ObjectReference> SetNoFavorAllowed (00000165CF5E9D38) callback=014143E0
+
+<ObjectReference> SetOpen (00000165CF5E9CE0) callback=0140D6E0
+
+<ObjectReference> SetPersistLoc (00000165CF5E9C88) callback=0140D790
+
+<ObjectReference> SetPlayerHasTaken (00000165CF5E9C30) callback=0140D820
+
+<ObjectReference> SetPosition (00000165CF5E9BD8) callback=0140D9C0
+
+<ObjectReference> SetRadioOn (00000165CF5E9B80) callback=0140DBF0
+
+<ObjectReference> SetRadioFrequency (00000165CF5E9B28) callback=0140DC70
+
+<ObjectReference> SetRadioVolume (00000165CF5E9AD0) callback=0140DCD0
+
+<ObjectReference> SetValue (00000165CF5E9A78) callback=0140DD30
+
+<ObjectReference> SplineTranslateTo (00000165CF5E9A20) callback=0140DEB0
+
+<ObjectReference> SplineTranslateToRefNode (00000165CF5E99C8) callback=0140E150
+
+<ObjectReference> StartWorkshop (00000165CF5E9918) callback=0140E460
+
+<ObjectReference> StopTranslation (00000165CF5E98C0) callback=0140E500
+
+<ObjectReference> StoreInWorkshop (00000165CF5E9868) callback=0140E670
+
+<ObjectReference> TranslateTo (00000165CF5E9810) callback=0140E720
+
+<ObjectReference> WaitFor3DLoad (00000165CF5E97B8) callback=0140EAC0
+
+<ObjectReference> WaitForAnimationEvent (00000165CF5E9760) callback=0140E9B0
+
+<ObjectReference> WaitForWorkshopResourceRecalc (00000165CF5E9708) callback=0140EC10
+
+<Weapon> Fire (00000165CF5E96B0) callback=01444880
+
+<Weapon> GetAmmo (00000165CF5E9658) callback=014449F0
+
+<Package> GetOwningQuest (00000165CF5E9600) callback=01445EC0
+
+<Package> GetTemplate (00000165CF5E95A8) callback=01445CA0
+
+<Quest> CompleteAllObjectives (00000165CF5E9550) callback=014489F0
+
+<Quest> CompleteQuest (00000165CF5E94F8) callback=01446D30
+
+<Quest> FailAllObjectives (00000165CF5E94A0) callback=01448A00
+
+<Quest> GetAlias (00000165CF5E9448) callback=01448A10
+
+<Quest> GetCurrentStageID (00000165CF5E93F0) callback=01448A30
+
+<Quest> HasObjective (00000165CF5E9398) callback=01446DA0
+
+<Quest> IsActive (00000165CF5E9340) callback=01448A40
+
+<Quest> IsCompleted (00000165CF5E92E8) callback=01448A50
+
+<Quest> IsObjectiveCompleted (00000165CF5E9290) callback=01446E40
+
+<Quest> IsObjectiveDisplayed (00000165CF5E9238) callback=01446EE0
+
+<Quest> IsObjectiveFailed (00000165CF5E91E0) callback=01446F80
+
+<Quest> IsRunning (00000165CF5E9188) callback=01448A70
+
+<Quest> IsStageDone (00000165CF5E9130) callback=01446DC0
+
+<Quest> IsStarting (00000165CF5E90D8) callback=01448AA0
+
+<Quest> IsStopping (00000165CF5E9080) callback=01448AD0
+
+<Quest> IsStopped (00000165CF5E9028) callback=01448B00
+
+<Quest> Reset (00000165CF5E8FD0) callback=01447020
+
+<Quest> ResetSpeechChallenges (00000165CF5E8F78) callback=01448B30
+
+<Quest> SetActive (00000165CF5E8F20) callback=01448B40
+
+<Quest> SetCurrentStageID (00000165CF5E8EC8) callback=014474D0
+
+<Quest> SetObjectiveCompleted (00000165CF5E8E70) callback=014470D0
+
+<Quest> SetObjectiveDisplayed (00000165CF5E8DC0) callback=01447230
+
+<Quest> SetObjectiveFailed (00000165CF5E8D68) callback=01447380
+
+<Quest> Start (00000165CF5E8D10) callback=01447710
+
+<Quest> Stop (00000165CF5E8CB8) callback=01447860
+
+<Quest> UpdateCurrentInstanceGlobal (00000165CF5E8C60) callback=01448B60
+
+<Sound> play (00000165CF5E8C08) callback=0144B400
+
+<Sound> PlayAndWait (00000165CF5E8BB0) callback=0144B5A0
+
+<Sound> StopInstance (00000165CF5E8B58) callback=0144B790
+
+<Sound> SetInstanceVolume (00000165CF5E8B00) callback=0144B830
+
+<Topic> Add (00000165CF5E8AA8) callback=0144C930
+
+<TopicInfo> GetOwningQuest (00000165CF5E8A50) callback=0144CD20
+
+<TopicInfo> HasBeenSaid (00000165CF5E89F8) callback=0144CF70
+
+<Actor> AddPerk (00000165CF5E89A0) callback=013851D0
+
+<Actor> AddSpell (00000165CF5E8948) callback=01385620
+
+<Actor> AllowBleedoutDialogue (00000165CF5E88F0) callback=0138EE10
+
+<Actor> AllowPCDialogue (00000165CF5E8898) callback=01385810
+
+<Actor> AttachAshPile (00000165CF5E8840) callback=01385830
+
+<Actor> AttemptAnimationSetSwitch (00000165CF5E87E8) callback=01385B60
+
+<Actor> CanFlyHere (00000165CF5E8790) callback=0138EE40
+
+<Actor> ChangeAnimArchetype (00000165CF5E8738) callback=01385B90
+
+<Actor> ChangeAnimFlavor (00000165CF5E86E0) callback=01385C20
+
+<Actor> ChangeHeadPart (00000165CF5E8688) callback=01385CB0
+
+<Actor> ClearArrested (00000165CF5E8630) callback=01385DB0
+
+<Actor> ClearExpressionOverride (00000165CF5E85D8) callback=01385E10
+
+<Actor> ClearExtraArrows (00000165CF5E8580) callback=01385E90
+
+<Actor> ClearLookAt (00000165CF5E8528) callback=01385EA0
+
+<Actor> Dismember (00000165CF5E84D0) callback=01385F10
+
+<Actor> Dismount (00000165CF5E8478) callback=0138EE50
+
+<Actor> DispelAllSpells (00000165CF5E8420) callback=0138EE60
+
+<Actor> DispelSpell (00000165CF5E83C8) callback=01385480
+
+<Actor> DoCombatSpellApply (00000165CF5E8370) callback=0138EE80
+
+<Actor> EnableAI (00000165CF5E8318) callback=0138EEA0
+
+<Actor> EndDeferredKill (00000165CF5E82C0) callback=0138A8B0
+
+<Actor> EquipItem (00000165CF5E8268) callback=013860C0
+
+<Actor> EquipSpell (00000165CF5E8210) callback=013865A0
+
+<Actor> EvaluatePackage (00000165CF5E81B8) callback=01386740
+
+<Actor> GetAllCombatTargets (00000165CF5E8160) callback=01386770
+
+<Actor> GetBribeAmount (00000165CF5E8108) callback=0138EEC0
+
+<Actor> GetCrimeFaction (00000165CF5E80B0) callback=0138EED0
+
+<Actor> GetCombatState (00000165CF5E8058) callback=01386920
+
+<Actor> GetCombatTarget (00000165CF5E8000) callback=01386930
+
+<Actor> GetCurrentPackage (00000165CF4F35A8) callback=01386990
+
+<Actor> GetDialogueTarget (00000165CF5EDFA0) callback=01386A00
+
+<Actor> GetEquippedSpell (00000165CF5EDF48) callback=01386A70
+
+<Actor> GetEquippedWeapon (00000165CF5EDEF0) callback=01386B40
+
+<Actor> GetEquippedShield (00000165CF5EDE98) callback=0138EEE0
+
+<Actor> GetEquippedItemType (00000165CF5EDE40) callback=01386B90
+
+<Actor> GetFactionRank (00000165CF5EDDE8) callback=01386C80
+
+<Actor> GetFactionReaction (00000165CF5EDD90) callback=01386D30
+
+<Actor> GetFlyingState (00000165CF5EDD38) callback=0138EF20
+
+<Actor> GetGoldAmount (00000165CF5EDCE0) callback=0138EF40
+
+<Actor> GetHighestRelationshipRank (00000165CF5EDC88) callback=01386DD0
+
+<Actor> GetKiller (00000165CF5EDC30) callback=01386E10
+
+<Actor> GetForcedLandingMarker (00000165CF5EDBD8) callback=01386E90
+
+<Actor> GetLevel (00000165CF5EDB80) callback=0138EF50
+
+<Actor> GetLeveledActorBase (00000165CF5EDB28) callback=01386EF0
+
+<Actor> GetLightLevel (00000165CF5EDAD0) callback=0138EF70
+
+<Actor> GetLowestRelationshipRank (00000165CF5EDA78) callback=01386F10
+
+<Actor> GetNoBleedoutRecovery (00000165CF5EDA20) callback=0138EF80
+
+<Actor> GetPlayerControls (00000165CF5ED9C8) callback=01386F50
+
+<Actor> GetRace (00000165CF5ED970) callback=0138EFA0
+
+<Actor> GetRelationshipRank (00000165CF5ED918) callback=013876E0
+
+<Actor> GetSitState (00000165CF5ED8C0) callback=013877C0
+
+<Actor> GetSleepState (00000165CF5ED868) callback=01387820
+
+<Actor> HasAssociation (00000165CF5ED810) callback=01386F90
+
+<Actor> HasDetectionLOS (00000165CF5ED7B8) callback=01387090
+
+<Actor> HasFamilyRelationship (00000165CF5ED760) callback=013870F0
+
+<Actor> HasMagicEffect (00000165CF5ED708) callback=013854E0
+
+<Actor> HasMagicEffectWithKeyword (00000165CF5ED6B0) callback=01385580
+
+<Actor> HasParentRelationship (00000165CF5ED658) callback=01387170
+
+<Actor> HasPerk (00000165CF5ED600) callback=013852E0
+
+<Actor> HasSpell (00000165CF5ED5A8) callback=01385740
+
+<Actor> IsAIEnabled (00000165CF5ED550) callback=0138EFB0
+
+<Actor> IsAlarmed (00000165CF5ED4F8) callback=01387240
+
+<Actor> IsAlerted (00000165CF5ED4A0) callback=0138EFD0
+
+<Actor> IsAllowedToFly (00000165CF5ED448) callback=01387280
+
+<Actor> IsArrested (00000165CF5ED3F0) callback=01387290
+
+<Actor> IsArrestingTarget (00000165CF5ED398) callback=0138EFE0
+
+<Actor> IsBeingRidden (00000165CF5ED340) callback=0138EFF0
+
+<Actor> IsBeingRiddenBy (00000165CF5ED2E8) callback=0138F000
+
+<Actor> IsBleedingOut (00000165CF5ED290) callback=013872C0
+
+<Actor> IsBribed (00000165CF5ED238) callback=0138F020
+
+<Actor> IsChild (00000165CF5ED1E0) callback=0138F030
+
+<Actor> IsCommandedActor (00000165CF5ED188) callback=0138F050
+
+<Actor> IsDead (00000165CF5ED130) callback=013872E0
+
+<Actor> IsDetectedBy (00000165CF5ED0D8) callback=01387300
+
+<Actor> IsDismembered (00000165CF5ED080) callback=013873C0
+
+<Actor> IsDoingFavor (00000165CF5ED028) callback=0138F070
+
+<Actor> IsEquipped (00000165CF5ECFD0) callback=013874C0
+
+<Actor> IsEssential (00000165CF5ECF78) callback=0138F080
+
+<Actor> IsFlying (00000165CF5ECF20) callback=0138F0A0
+
+<Actor> IsGhost (00000165CF5ECEC8) callback=0138F0C0
+
+<Actor> IsGuard (00000165CF5ECE70) callback=0138F0D0
+
+<Actor> IsHostileToActor (00000165CF5ECE18) callback=0138F0F0
+
+<Actor> IsInCombat (00000165CF5ECDC0) callback=0138F110
+
+<Actor> IsInFaction (00000165CF5ECD68) callback=0138F130
+
+<Actor> IsInIronSights (00000165CF5ECD10) callback=0138F150
+
+<Actor> IsInKillMove (00000165CF5ECCB8) callback=0138F170
+
+<Actor> IsInScene (00000165CF5ECC60) callback=0138F180
+
+<Actor> IsIntimidated (00000165CF5ECC08) callback=0138F1A0
+
+<Actor> IsOnMount (00000165CF5ECBB0) callback=0138F1B0
+
+<Actor> IsOverEncumbered (00000165CF5ECB58) callback=0138F1C0
+
+<Actor> IsPlayersLastRiddenHorse (00000165CF5ECB00) callback=01387690
+
+<Actor> IsPlayerTeammate (00000165CF5ECAA8) callback=0138F1D0
+
+<Actor> IsRunning (00000165CF5ECA50) callback=0138F1F0
+
+<Actor> IsSeatOccupied (00000165CF5EC9F8) callback=0138F200
+
+<Actor> IsSneaking (00000165CF5EC9A0) callback=0138F220
+
+<Actor> IsSprinting (00000165CF5EC948) callback=0138F280
+
+<Actor> IsTalking (00000165CF5EC8F0) callback=0138F2A0
+
+<Actor> IsTrespassing (00000165CF5EC898) callback=0138F2C0
+
+<Actor> IsUnconscious (00000165CF5EC840) callback=0138F2E0
+
+<Actor> IsWeaponDrawn (00000165CF5EC7E8) callback=0138F300
+
+<Actor> KillSilent (00000165CF5EC738) callback=01387AD0
+
+<Actor> Kill (00000165CF5EC6E0) callback=01387B00
+
+<Actor> MarkItemAsFavorite (00000165CF5EC688) callback=01386200
+
+<Actor> ModFactionRank (00000165CF5EC630) callback=01387B30
+
+<Actor> MoveToPackageLocation (00000165CF5EC580) callback=01387EB0
+
+<Actor> OpenInventory (00000165CF5EC4D0) callback=01388050
+
+<Actor> PathToReference (00000165CF5EC478) callback=01388080
+
+<Actor> PlayIdle (00000165CF5EC3C8) callback=01388170
+
+<Actor> PlayIdleAction (00000165CF5EC370) callback=013885D0
+
+<Actor> PlayIdleWithTarget (00000165CF5EC318) callback=013881A0
+
+<Actor> PlaySubGraphAnimation (00000165CF5EC268) callback=013881D0
+
+<Actor> RemoveFromFaction (00000165CF5EC1B8) callback=0138F320
+
+<Actor> RemoveFromAllFactions (00000165CF5EC160) callback=013882B0
+
+<Actor> RemovePerk (00000165CF5EC108) callback=01385380
+
+<Actor> RemoveSpell (00000165CF5EC0B0) callback=01385420
+
+<Actor> ResetHealthAndLimbs (00000165CF5EC058) callback=0138F340
+
+<Actor> Resurrect (00000165CF5EC000) callback=01388460
+
+<Actor> SendAssaultAlarm (00000165CF5EFFA0) callback=01388600
+
+<Actor> SendTrespassAlarm (00000165CF5EFF48) callback=01388660
+
+<Actor> SetAlert (00000165CF5EFEF0) callback=0138F350
+
+<Actor> SetAllowFlying (00000165CF5EFE98) callback=01388710
+
+<Actor> SetAlpha (00000165CF5EFE40) callback=013887F0
+
+<Actor> SetAttackActorOnSight (00000165CF5EFDE8) callback=0138F370
+
+<Actor> SetAvoidPlayer (00000165CF5EFD90) callback=013892F0
+
+<Actor> SetBribed (00000165CF5EFD38) callback=0138F390
+
+<Actor> SetCommandState (00000165CF5EFCE0) callback=01389340
+
+<Actor> SetCanDoCommand (00000165CF5EFC88) callback=0138F3B0
+
+<Actor> SetCombatStyle (00000165CF5EFC30) callback=0138F3D0
+
+<Actor> SetCrimeFaction (00000165CF5EFBD8) callback=0138F3F0
+
+<Actor> SetCriticalStage (00000165CF5EFB80) callback=01388870
+
+<Actor> SetDoingFavor (00000165CF5EFB28) callback=0138F410
+
+<Actor> ChangeAnimFaceArchetype (00000165CF5EFAD0) callback=01388940
+
+<Actor> SetEssential (00000165CF5EFA78) callback=01388B80
+
+<Actor> SetEyeTexture (00000165CF5EFA20) callback=013889C0
+
+<Actor> SetFactionRank (00000165CF5EF9C8) callback=01388BB0
+
+<Actor> SetGhost (00000165CF5EF970) callback=0138F430
+
+<Actor> SetHasCharGenSkeleton (00000165CF5EF918) callback=0138F450
+
+<Actor> SetHeadTracking (00000165CF5EF8C0) callback=01388C50
+
+<Actor> SetForcedLandingMarker (00000165CF5EF868) callback=01388C70
+
+<Actor> SetIntimidated (00000165CF5EF810) callback=0138F470
+
+<Actor> SetLookAt (00000165CF5EF7B8) callback=01388CD0
+
+<Actor> SetNoBleedoutRecovery (00000165CF5EF760) callback=0138F490
+
+<Actor> SetNotShowOnStealthMeter (00000165CF5EF708) callback=0138F4B0
+
+<Actor> SetOutfit (00000165CF5EF6B0) callback=01388E50
+
+<Actor> SetOverrideVoiceType (00000165CF5EF658) callback=013895C0
+
+<Actor> SetPlayerControls (00000165CF5EF600) callback=01388F70
+
+<Actor> SetPlayerResistingArrest (00000165CF5EF5A8) callback=01388FE0
+
+<Actor> SetPlayerTeammate (00000165CF5EF550) callback=0138F4D0
+
+<Actor> SetProtected (00000165CF5EF4F8) callback=01389010
+
+<Actor> SetRace (00000165CF5EF4A0) callback=01389040
+
+<Actor> SetRelationshipRank (00000165CF5EF448) callback=013890D0
+
+<Actor> SetRestrained (00000165CF5EF3F0) callback=01389290
+
+<Actor> SetSubGraphFloatVariable (00000165CF5EF398) callback=013893B0
+
+<Actor> SetUnconscious (00000165CF5EF340) callback=01389480
+
+<Actor> SetVehicle (00000165CF5EF2E8) callback=01389580
+
+<Actor> ShowBarterMenu (00000165CF5EF290) callback=01389600
+
+<Actor> SnapIntoInteraction (00000165CF5EF238) callback=01389610
+
+<Actor> StartCannibal (00000165CF5EF1E0) callback=013896E0
+
+<Actor> StartCombat (00000165CF5EF188) callback=01389820
+
+<Actor> StartDeferredKill (00000165CF5EF130) callback=0138A8A0
+
+<Actor> StartFrenzyAttack (00000165CF5EF0D8) callback=01389A30
+
+<Actor> StartVampireFeed (00000165CF5EF080) callback=01389AE0
+
+<Actor> StopCombat (00000165CF5EF028) callback=01389C80
+
+<Actor> StopCombatAlarm (00000165CF5EEFD0) callback=01389CE0
+
+<Actor> SwitchToPowerArmor (00000165CF5EEEC8) callback=01389D70
+
+<Actor> TrapSoul (00000165CF5EEC08) callback=01389F00
+
+<Actor> UnequipAll (00000165CF5EEB58) callback=01389F20
+
+<Actor> UnequipItem (00000165CF5EEB00) callback=01389F30
+
+<Actor> UnequipItemSlot (00000165CF5EEAA8) callback=0138A240
+
+<Actor> UnequipSpell (00000165CF5EEA50) callback=01386670
+
+<Actor> UnLockOwnedDoorsInCell (00000165CF5EE9F8) callback=0138A310
+
+<Actor> WillIntimidateSucceed (00000165CF5EE9A0) callback=0138F4F0
+
+<Actor> WornHasKeyword (00000165CF5EE948) callback=0138A3C0
+
+<Actor> WouldBeStealing (00000165CF5EE8F0) callback=0138A460
+
+<Actor> WouldRefuseCommand (00000165CF5EE898) callback=0138A510
+
+<Actor> StartSneaking (00000165CF5EE840) callback=0138A5B0
+
+<Actor> DrawWeapon (00000165CF5EE7E8) callback=0138A680
+
+<Actor> DogPlaceInMouth (00000165CF5EE790) callback=0138A6A0
+
+<Actor> DogDropItems (00000165CF5EE738) callback=0138F500
+
+<Alias> GetOwningQuest (00000165CF5EE6E0) callback=013A3AE0
+
+<Alias> StartObjectProfiling (00000165CF5EE688) callback=013A3620
+
+<Alias> StopObjectProfiling (00000165CF5EE630) callback=013A36F0
+
+<ReferenceAlias> ApplyToRef (00000165CF5EE5D8) callback=013AF910
+
+<ReferenceAlias> Clear (00000165CF5EE580) callback=013AFA00
+
+<ReferenceAlias> GetReference (00000165CF5EE528) callback=013AFA50
+
+<ReferenceAlias> ForceRefTo (00000165CF5EE4D0) callback=013AFAE0
+
+<ReferenceAlias> RemoveFromRef (00000165CF5EE478) callback=013AFB50
+
+<RefCollectionAlias> addRef (00000165CF5EE420) callback=013B0ED0
+
+<RefCollectionAlias> Find (00000165CF5EE3C8) callback=013B0F20
+
+<RefCollectionAlias> GetAt (00000165CF5EE370) callback=013B0F60
+
+<RefCollectionAlias> GetCount (00000165CF5EE318) callback=013B1050
+
+<RefCollectionAlias> RemoveAll (00000165CF5EE2C0) callback=013B1070
+
+<RefCollectionAlias> RemoveRef (00000165CF5EE268) callback=013B10C0
+
+<LocationAlias> Clear (00000165CF5EE210) callback=013A7610
+
+<LocationAlias> GetLocation (00000165CF5EE1B8) callback=013A7660
+
+<LocationAlias> ForceLocationTo (00000165CF5EE160) callback=013A7680
+
+<FormList> AddForm (00000165CF5EE108) callback=013D19A0
+
+<FormList> Find (00000165CF5EE0B0) callback=013D1560
+
+<FormList> GetAt (00000165CF5EE058) callback=013D19C0
+
+<FormList> GetSize (00000165CF5EE000) callback=013D15B0
+
+<FormList> HasForm (00000165CF5F3FA0) callback=013D19E0
+
+<FormList> RemoveAddedForm (00000165CF5F3F48) callback=013D1A00
+
+<FormList> Revert (00000165CF5F3EF0) callback=013D1A20
+
+<SPELL> Cast (00000165CF5F3E98) callback=013E5770
+
+<SPELL> RemoteCast (00000165CF5F3E40) callback=013E58A0
+
+<SPELL> IsHostile (00000165CF5F3DE8) callback=013E5C70
+
+<Scroll> Cast (00000165CF5F3D90) callback=013E3CF0
+
+<ActiveMagicEffect> Dispel (00000165CF5F3CE0) callback=01382D50
+
+<ActiveMagicEffect> GetBaseObject (00000165CF5F3C30) callback=01382D60
+
+<ActiveMagicEffect> GetCasterActor (00000165CF5F3BD8) callback=01382770
+
+<ActiveMagicEffect> GetTargetActor (00000165CF5F3B80) callback=013827D0
+
+<ActiveMagicEffect> StartObjectProfiling (00000165CF5F3B28) callback=013827F0
+
+<ActiveMagicEffect> StopObjectProfiling (00000165CF5F3AD0) callback=013828C0
+
+<Weather> EnableAmbientParticles (00000165CF5F3A78) callback=0144DFC0
+
+<Weather> FindWeather (00000165CF5F39C8) callback=0144DFD0
+
+<Weather> ForceActive (00000165CF5F3970) callback=0144D8B0
+
+<Weather> GetClassification (00000165CF5F3918) callback=0144D910
+
+<Weather> GetCurrentWeather (00000165CF5F38C0) callback=0144E000
+
+<Weather> GetCurrentWeatherTransition (00000165CF5F3868) callback=0144E020
+
+<Weather> GetOutgoingWeather (00000165CF5F3810) callback=0144E040
+
+<Weather> GetSkyMode (00000165CF5F37B8) callback=0144E060
+
+<Weather> ReleaseOverride (00000165CF5F3760) callback=0144E080
+
+<Weather> SetActive (00000165CF5F3708) callback=0144D8D0
+
+<Ingredient> IsHostile (00000165CF5F36B0) callback=013CCFA0
+
+<Ingredient> LearnEffect (00000165CF5F3600) callback=013CCFC0
+
+<Ingredient> LearnNextEffect (00000165CF5F35A8) callback=013CCFE0
+
+<Ingredient> LearnAllEffects (00000165CF5F3550) callback=013CCFF0
+
+<Potion> IsHostile (00000165CF5F34F8) callback=013A2FE0
+
+<Enchantment> IsHostile (00000165CF5F3448) callback=013BD490
+
+<EncounterZone> CountActors (00000165CF5F33F0) callback=013A4880
+
+<EncounterZone> GetActors (00000165CF5F3340) callback=013A4650
+
+<EncounterZone> Reset (00000165CF5F32E8) callback=013A4620
+
+<InputEnableLayer> Create (00000165CF5F3290) callback=013CDDA0
+
+<InputEnableLayer> Delete (00000165CF5F2F78) callback=013CDEB0
+
+<InputEnableLayer> DisablePlayerControls (00000165CF5F2F20) callback=013CDF00
+
+<InputEnableLayer> EnableActivate (00000165CF5F2EC8) callback=013CE000
+
+<InputEnableLayer> EnableVATS (00000165CF5F2E70) callback=013CE030
+
+<InputEnableLayer> EnableCamSwitch (00000165CF5F2E18) callback=013CE060
+
+<InputEnableLayer> EnableFastTravel (00000165CF5F2DC0) callback=013CE090
+
+<InputEnableLayer> EnableFavorites (00000165CF5F2D68) callback=013CE0C0
+
+<InputEnableLayer> EnableFighting (00000165CF5F2D10) callback=013CE0F0
+
+<InputEnableLayer> EnableJournal (00000165CF5F2CB8) callback=013CE120
+
+<InputEnableLayer> EnableJumping (00000165CF5F2C60) callback=013CE150
+
+<InputEnableLayer> EnableLooking (00000165CF5F2C08) callback=013CE180
+
+<InputEnableLayer> EnableMenu (00000165CF5F2BB0) callback=013CE1B0
+
+<InputEnableLayer> EnableMovement (00000165CF5F2B58) callback=013CE1E0
+
+<InputEnableLayer> EnableRunning (00000165CF5F2B00) callback=013CE210
+
+<InputEnableLayer> EnableSprinting (00000165CF5F2AA8) callback=013CE250
+
+<InputEnableLayer> EnableZKey (00000165CF5F2A50) callback=013CE290
+
+<InputEnableLayer> EnablePlayerControls (00000165CF5F29F8) callback=013CE2C0
+
+<InputEnableLayer> EnableSneaking (00000165CF5F29A0) callback=013CE3C0
+
+<InputEnableLayer> IsActivateEnabled (00000165CF5F2948) callback=013CE3F0
+
+<InputEnableLayer> IsVATSEnabled (00000165CF5F28F0) callback=013CE410
+
+<InputEnableLayer> IsCamSwitchEnabled (00000165CF5F2898) callback=013CE430
+
+<InputEnableLayer> IsFastTravelEnabled (00000165CF5F2840) callback=013CE450
+
+<InputEnableLayer> IsFavoritesEnabled (00000165CF5F27E8) callback=013CE470
+
+<InputEnableLayer> IsFightingEnabled (00000165CF5F2790) callback=013CE490
+
+<InputEnableLayer> IsJournalEnabled (00000165CF5F2738) callback=013CE4B0
+
+<InputEnableLayer> IsJumpingEnabled (00000165CF5F26E0) callback=013CE4D0
+
+<InputEnableLayer> IsLookingEnabled (00000165CF5F2688) callback=013CE4F0
+
+<InputEnableLayer> IsMenuEnabled (00000165CF5F2630) callback=013CE510
+
+<InputEnableLayer> IsMovementEnabled (00000165CF5F25D8) callback=013CE530
+
+<InputEnableLayer> IsRunningEnabled (00000165CF5F2580) callback=013CE580
+
+<InputEnableLayer> IsSprintingEnabled (00000165CF5F2528) callback=013CE5A0
+
+<InputEnableLayer> IsZKeyEnabled (00000165CF5F24D0) callback=013CE5C0
+
+<InputEnableLayer> IsSneakingEnabled (00000165CF5F2478) callback=013CE5E0
+
+<InputEnableLayer> Reset (00000165CF5F2420) callback=013CFBC0
+
+<ScriptObject> RegisterForKey (00000165CF5F23C8) callback=6329DA50
+
+<ScriptObject> UnregisterForKey (00000165CF5F2370) callback=6329DB20
+
+<ScriptObject> RegisterForControl (00000165CF5F2318) callback=6329DBF0
+
+<ScriptObject> UnregisterForControl (00000165CF5F22C0) callback=6329DCC0
+
+<ScriptObject> RegisterForExternalEvent (00000165CF5F2268) callback=6329DD90
+
+<ScriptObject> UnregisterForExternalEvent (00000165CF5F2210) callback=6329DEA0
+
+<ScriptObject> RegisterForCameraState (00000165CF5F21B8) callback=6329DF70
+
+<ScriptObject> UnregisterForCameraState (00000165CF5F2160) callback=6329E040
+
+<ScriptObject> RegisterForFurnitureEvent (00000165CF5F2108) callback=6329E110
+
+<ScriptObject> UnregisterForFurnitureEvent (00000165CF5F20B0) callback=6329E8A0
+
+<equipslot> GetParents (00000165CF5F2058) callback=63283240
+
+<watertype> GetConsumeSpell (00000165CF5F2000) callback=632A7DC0
+
+<watertype> SetConsumeSpell (00000165CF5F9FA0) callback=632A7DD0
+
+<watertype> GetContactSpell (00000165CF5F9F48) callback=632A7DE0
+
+<watertype> SetContactSpell (00000165CF5F9EF0) callback=632A7DF0
+
+<F4SE> GetVersion (00000165CF5F9E98) callback=63262470
+
+<F4SE> GetVersionMinor (00000165CF5F9DE8) callback=63284CF0
+
+<F4SE> GetVersionBeta (00000165CF5F9D90) callback=63262470
+
+<F4SE> GetVersionRelease (00000165CF5F9CE0) callback=63284D00
+
+<F4SE> GetPluginVersion (00000165CF5F9C88) callback=63284D10
+
+<math> LeftShift (00000165CF5F9C30) callback=632927F0
+
+<math> RightShift (00000165CF5F9BD8) callback=63292810
+
+<math> LogicalAnd (00000165CF5F9B80) callback=63292830
+
+<math> LogicalOr (00000165CF5F9B28) callback=63292840
+
+<math> LogicalXor (00000165CF5F9AD0) callback=63292850
+
+<math> LogicalNot (00000165CF5F9A78) callback=63292860
+
+<math> Log (00000165CF5F9A20) callback=63292870
+
+<math> Exp (00000165CF5F99C8) callback=63292880
+
+<Form> GetName (00000165CF5F9970) callback=632853A0
+
+<Form> SetName (00000165CF5F9918) callback=63285420
+
+<Form> GetDescription (00000165CF5F98C0) callback=63285BC0
+
+<Form> GetWeight (00000165CF5F9868) callback=63285470
+
+<Form> SetWeight (00000165CF5F9810) callback=632854C0
+
+<Form> SetGoldValue (00000165CF5F97B8) callback=63285510
+
+<Form> GetKeywords (00000165CF5F9760) callback=63285550
+
+<Form> HasWorldModel (00000165CF5F9708) callback=63285650
+
+<Form> GetWorldModelPath (00000165CF5F96B0) callback=632856A0
+
+<Form> SetWorldModelPath (00000165CF5F9658) callback=63285760
+
+<Form> GetIconPath (00000165CF5F9600) callback=632857D0
+
+<Form> SetIconPath (00000165CF5F95A8) callback=63285880
+
+<Form> GetMessageIconPath (00000165CF5F9550) callback=632858D0
+
+<Form> SetMessageIconPath (00000165CF5F94F8) callback=63285980
+
+<Form> GetEnchantment (00000165CF5F94A0) callback=632859D0
+
+<Form> SetEnchantment (00000165CF5F9448) callback=63285A20
+
+<Form> GetEnchantmentValue (00000165CF5F93F0) callback=63285A70
+
+<Form> SetEnchantmentValue (00000165CF5F9398) callback=63285AD0
+
+<Form> GetEquipType (00000165CF5F9340) callback=63285B20
+
+<Form> SetEquipType (00000165CF5F92E8) callback=63285B70
+
+<ObjectReference> GetAllMods (00000165CF5F9290) callback=63295F90
+
+<ObjectReference> GetConnectedObjects (00000165CF5F9238) callback=632967D0
+
+<ObjectReference> AttachWire (00000165CF5F91E0) callback=63296710
+
+<ObjectReference> GetDisplayName (00000165CF5F9188) callback=632969F0
+
+<ObjectReference> GetInventoryItems (00000165CF5F9130) callback=63296C60
+
+<ObjectReference> GetInventoryWeight (00000165CF5F90D8) callback=63296C40
+
+<ObjectReference> GetConnectPoints (00000165CF5F9080) callback=632974E0
+
+<ObjectReference> TransmitConnectedPower (00000165CF5F9028) callback=632979B0
+
+<ActorBase> GetTemplate (00000165CF5F8FD0) callback=6327B060
+
+<ActorBase> HasHeadPartOverlays (00000165CF5F8F78) callback=6327B0A0
+
+<ActorBase> GetHeadParts (00000165CF5F8F20) callback=6327B0C0
+
+<ActorBase> GetOutfit (00000165CF5F8EC8) callback=6327B1B0
+
+<ActorBase> SetBodyWeight (00000165CF5F8E70) callback=6327B1D0
+
+<ActorBase> GetBodyWeight (00000165CF5F8E18) callback=6327B2E0
+
+<Actor> GetWornItem (00000165CF5F8DC0) callback=63278760
+
+<Actor> GetWornItemMods (00000165CF5F8D68) callback=63278AC0
+
+<Actor> QueueUpdate (00000165CF5F8D10) callback=63278C50
+
+<Actor> GetFurnitureReference (00000165CF5F8CB8) callback=63278C80
+
+<HeadPart> GetType (00000165CF5F8C60) callback=632899B0
+
+<HeadPart> GetExtraParts (00000165CF5F8C08) callback=632899C0
+
+<HeadPart> HasExtraPart (00000165CF5F8BB0) callback=63289BD0
+
+<HeadPart> IsExtraPart (00000165CF5F8B58) callback=63289BB0
+
+<HeadPart> GetValidRaces (00000165CF5F8B00) callback=63289C10
+
+<HeadPart> SetValidRaces (00000165CF5F8AA8) callback=63289C20
+
+<game> GetCurrentConsoleRef (00000165CF5F8A50) callback=63287710
+
+<game> GetInstalledPlugins (00000165CF5F89F8) callback=63287760
+
+<game> GetInstalledLightPlugins (00000165CF5FB970) callback=63287A30
+
+<game> GetPluginDependencies (00000165CF5FB9C8) callback=63287D00
+
+<game> SetGameSettingFloat (00000165CF5FB918) callback=63287E60
+
+<game> SetGameSettingInt (00000165CF5FBA78) callback=63287EF0
+
+<game> SetGameSettingBool (00000165CF5FBAD0) callback=63287F80
+
+<game> SetGameSettingString (00000165CF5FBB28) callback=63288010
+
+<utility> VarToVarArray (00000165CF5FB8C0) callback=632A7470
+
+<utility> VarArrayToVar (00000165CF5FB868) callback=632A74F0
+
+<UI> set (00000165CF5FB810) callback=632A3CB0
+
+<UI> Get (00000165CF5FB760) callback=632A3DD0
+
+<UI> Invoke (00000165CF5FB708) callback=632A3E60
+
+<UI> Load (00000165CF5FB6B0) callback=632A3F60
+
+<Weapon> GetEmbeddedMod (00000165CF5FB600) callback=632A8270
+
+<Weapon> SetEmbeddedMod (00000165CF5FB5A8) callback=632A8280
+
+<ObjectMod> GetPropertyModifiers (00000165CF5FB550) callback=632946B0
+
+<ObjectMod> GetMaxRank (00000165CF5FB4F8) callback=63294CD0
+
+<ObjectMod> SetMaxRank (00000165CF5FB4A0) callback=63294CE0
+
+<ObjectMod> GetPriority (00000165CF5FB448) callback=63294D00
+
+<ObjectMod> SetPriority (00000165CF5FB3F0) callback=63294D10
+
+<ObjectMod> GetLooseMod (00000165CF5FB398) callback=63294D30
+
+<instancedata> GetAttackDamage (00000165CF5FB340) callback=6328AF60
+
+<instancedata> SetAttackDamage (00000165CF5FB2E8) callback=6328AFF0
+
+<instancedata> GetDamageTypes (00000165CF5FB290) callback=6328B2E0
+
+<instancedata> SetDamageTypes (00000165CF5FB238) callback=6328B5C0
+
+<instancedata> GetAmmoCapacity (00000165CF5FB1E0) callback=6328B090
+
+<instancedata> SetAmmoCapacity (00000165CF5FB188) callback=6328B120
+
+<instancedata> GetAmmo (00000165CF5FB130) callback=6328B1C0
+
+<instancedata> SetAmmo (00000165CF5FB0D8) callback=6328B250
+
+<instancedata> GetAccuracyBonus (00000165CF5FB080) callback=6328B8C0
+
+<instancedata> SetAccuracyBonus (00000165CF5FB028) callback=6328B950
+
+<instancedata> GetActionPointCost (00000165CF5FAFD0) callback=6328BEB0
+
+<instancedata> SetActionPointCost (00000165CF5FAF78) callback=6328BF50
+
+<instancedata> GetAttackDelay (00000165CF5FAF20) callback=6328BC50
+
+<instancedata> SetAttackDelay (00000165CF5FAEC8) callback=6328BCF0
+
+<instancedata> GetOutOfRangeMultiplier (00000165CF5FAE70) callback=6328BD80
+
+<instancedata> SetOutOfRangeMultiplier (00000165CF5FAE18) callback=6328BE20
+
+<instancedata> GetReloadSpeed (00000165CF5FADC0) callback=6328BFE0
+
+<instancedata> SetReloadSpeed (00000165CF5FAD68) callback=6328C080
+
+<instancedata> GetReach (00000165CF5FAD10) callback=6328C110
+
+<instancedata> SetReach (00000165CF5FACB8) callback=6328C1B0
+
+<instancedata> GetMinRange (00000165CF5FAC60) callback=6328C4B0
+
+<instancedata> SetMinRange (00000165CF5FAC08) callback=6328C550
+
+<instancedata> GetMaxRange (00000165CF5FABB0) callback=6328C5E0
+
+<instancedata> SetMaxRange (00000165CF5FAB58) callback=6328C680
+
+<instancedata> GetSpeed (00000165CF5FAB00) callback=6328C240
+
+<instancedata> SetSpeed (00000165CF5FAAA8) callback=6328C2E0
+
+<instancedata> GetStagger (00000165CF5FAA50) callback=6328C370
+
+<instancedata> SetStagger (00000165CF5FA9F8) callback=6328C410
+
+<instancedata> GetSkill (00000165CF5FA9A0) callback=6328C710
+
+<instancedata> SetSkill (00000165CF5FA948) callback=6328C7A0
+
+<instancedata> GetResist (00000165CF5FA8F0) callback=6328C830
+
+<instancedata> SetResist (00000165CF5FA898) callback=6328C8C0
+
+<instancedata> GetCritMultiplier (00000165CF5FA840) callback=6328B9F0
+
+<instancedata> SetCritMultiplier (00000165CF5FA7E8) callback=6328BA90
+
+<instancedata> GetCritChargeBonus (00000165CF5FA790) callback=6328BB20
+
+<instancedata> SetCritChargeBonus (00000165CF5FA738) callback=6328BBC0
+
+<instancedata> GetProjectileOverride (00000165CF5FA6E0) callback=6328C950
+
+<instancedata> SetProjectileOverride (00000165CF5FA688) callback=6328C9F0
+
+<instancedata> GetNumProjectiles (00000165CF5FA630) callback=6328CA90
+
+<instancedata> SetNumProjectiles (00000165CF5FA5D8) callback=6328CB20
+
+<instancedata> GetSightedTransition (00000165CF5FA580) callback=6328CBC0
+
+<instancedata> SetSightedTransition (00000165CF5FA3C8) callback=6328CC60
+
+<instancedata> GetFlag (00000165CF5FA210) callback=6328CD00
+
+<instancedata> SetFlag (00000165CF5FA160) callback=6328CDB0
+
+<instancedata> GetArmorHealth (00000165CF5FA0B0) callback=6328CE60
+
+<instancedata> SetArmorHealth (00000165CF5FA058) callback=6328CEF0
+
+<instancedata> GetArmorRating (00000165CF5FA000) callback=6328CF80
+
+<instancedata> SetArmorRating (00000165CF60DFA0) callback=6328D010
+
+<instancedata> GetWeight (00000165CF60DF48) callback=6328D0A0
+
+<instancedata> SetWeight (00000165CF60DEF0) callback=6328D180
+
+<instancedata> GetGoldValue (00000165CF60DE98) callback=6328D260
+
+<instancedata> SetGoldValue (00000165CF60DD38) callback=6328D340
+
+<Cell> GetWaterType (00000165CF60DB80) callback=6327D6C0
+
+<Perk> IsPlayable (00000165CF60DAD0) callback=6329BB90
+
+<Perk> IsHidden (00000165CF60DA20) callback=6329BB90
+
+<Perk> GetLevel (00000165CF60D9C8) callback=6329BBA0
+
+<Perk> GetNumRanks (00000165CF60D868) callback=6329BBB0
+
+<Perk> GetNextPerk (00000165CF60D760) callback=6329BBC0
+
+<Perk> GetSWFPath (00000165CF60D658) callback=6329BBD0
+
+<Perk> IsEligible (00000165CF60D600) callback=6329BC40
+
+<EncounterZone> GetLocation (00000165CF60D5A8) callback=63282480
+
+<EncounterZone> SetLocation (00000165CF60D550) callback=63282490
+
+<EncounterZone> GetRank (00000165CF60D4F8) callback=632824A0
+
+<EncounterZone> SetRank (00000165CF60D4A0) callback=632824B0
+
+<EncounterZone> GetMinLevel (00000165CF60D448) callback=632824C0
+
+<EncounterZone> SetMinLevel (00000165CF60D3F0) callback=632824D0
+
+<EncounterZone> GetMaxLevel (00000165CF60D398) callback=632824E0
+
+<EncounterZone> SetMaxLevel (00000165CF60D340) callback=632824F0
+
+<EncounterZone> IsNeverResetable (00000165CF60D2E8) callback=63282500
+
+<EncounterZone> SetNeverResetable (00000165CF60D290) callback=63282510
+
+<EncounterZone> IsWorkshop (00000165CF60D238) callback=63282530
+
+<EncounterZone> SetWorkshop (00000165CF60D1E0) callback=63282550
+
+<Location> GetParent (00000165CF60D188) callback=632920A0
+
+<Location> SetParent (00000165CF60D130) callback=632920B0
+
+<Location> GetEncounterZone (00000165CF60D0D8) callback=632920C0
+
+<Location> SetEncounterZone (00000165CF60D080) callback=632920E0
+
+<Input> GetMappedKey (00000165CF60CEC8) callback=6328A5D0
+
+<Input> GetMappedControl (00000165CF60CCB8) callback=6328A750
+
+<DefaultObject> GetDefaultObject (00000165CF60CC08) callback=6327FFA0
+
+<DefaultObject> Get (00000165CF60CB58) callback=6327FFB0
+
+<DefaultObject> set (00000165CF60CAA8) callback=6327FFC0
+
+<ConstructibleObject> GetConstructibleComponents (00000165CF60CA50) callback=6327DF50
+
+<ConstructibleObject> SetConstructibleComponents (00000165CF60C0B0) callback=6327E190
+
+<ConstructibleObject> GetCreatedObject (00000165CF60C058) callback=6327E3E0
+
+<ConstructibleObject> SetCreatedObject (00000165CF60C000) callback=6327E3F0
+
+<ConstructibleObject> GetCreatedCount (00000165CF615FA0) callback=6327E400
+
+<ConstructibleObject> SetCreatedCount (00000165CF615F48) callback=6327E410
+
+<ConstructibleObject> GetPriority (00000165CF615EF0) callback=6327E420
+
+<ConstructibleObject> SetPriority (00000165CF615E98) callback=6327E430
+
+<ConstructibleObject> GetWorkbenchKeyword (00000165CF615E40) callback=6327E440
+
+<ConstructibleObject> SetWorkbenchKeyword (00000165CF615D90) callback=6327E450
+
+<Component> GetScrapItem (00000165CF615D38) callback=6327D860
+
+<Component> SetScrapItem (00000165CF615CE0) callback=6327D870
+
+<Component> GetScrapScalar (00000165CF615C88) callback=6327D890
+
+<Component> SetScrapScalar (00000165CF615B80) callback=6327D8A0
+
+<MiscObject> GetMiscComponents (00000165CF615A78) callback=63293260
+
+<MiscObject> SetMiscComponents (00000165CF615868) callback=632934B0
+

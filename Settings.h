@@ -1,0 +1,107 @@
+#pragma once
+#include <string>
+#include <vector>
+using std::string;
+
+struct Settings
+{
+	static string		BASEINFO_ID;
+	static string		BASEINFO_BASEID;
+	static string		BASEINFO_TYPE;
+	static string		BASEINFO_LOCATE;
+	static string		BASEINFO_DEFINE;
+	static string		BASEINFO_LASTBASECHANGE;
+	static string		EXTRAINFO_ID;
+	static string		EXTRAINFO_BASEID;
+	static string		EXTRAINFO_TYPE;
+	static string		EXTRAINFO_NAME;
+	static string		EXTRAINFO_MOD;
+	static string		EXTRAINFO_RACE;
+	static string		EXTRAINFO_RACEID;
+	static string		EXTRAINFO_SEX;
+	static string		EXTRAINFO_LEVEL;
+	static string		EXTRAINFO_MINLEVEL;
+	static string		EXTRAINFO_MAXLEVEL;
+	static string		EXTRAINFO_PCLVMULT;
+	static string		EXTRAINFO_UNIQUE;
+	static string		EXTRAINFO_ESSENTIAL;
+	static string		EXTRAINFO_PROTECTED;
+	static string		EXTRAINFO_INVULNERABLE;
+	static string		EXTRAINFO_MEMORY;
+	static string		EXTRAINFO_TRUE;
+	static string		EXTRAINFO_FALSE;
+	static string		EXTRAINFO_NULL;
+	static string		EXTRAINFO_MALE;
+	static string		EXTRAINFO_FEMALE;
+	static string		POSITIONINFO;
+	static string		POSITIONINFO_POSX;
+	static string		POSITIONINFO_POSY;
+	static string		POSITIONINFO_POSZ;
+	static string		POSITIONINFO_ROTX;
+	static string		POSITIONINFO_ROTY;
+	static string		POSITIONINFO_ROTZ;
+	static string		CELLINFO;
+	static string		CELLINFO_ISINTERIOR;
+	static string		LOCATIONINFO;
+	static string		WORLDSPACEINFO;
+	static string		ENCOUNTERZONEINFO;
+	static string		ENCOUNTERZONEINFO_NEVERRESET;
+	static string		ENCOUNTERZONEINFO_MINLEVEL;
+	static string		ENCOUNTERZONEINFO_MAXLEVEL;
+	static string		ENCOUNTERZONEINFO_CURRENTLEVEL;
+	static string		ENCOUNTERZONEINFO_DISABLEBOUNDARY;
+	static string		ENCOUNTERZONEINFO_MATCHPCLEVEL;
+	static string		ENCOUNTERZONEINFO_ISWORKSHOP;
+	static string		ENCOUNTERZONEINFO_LOCATIONID;
+	static string		PERKINFO;
+	static string		PERKINFO_LEVEL;
+	static string		PERKINFO_RANK;
+	static string		FACTIONINFO;
+	static string		FACTIONINFO_RANK;
+	static string		FACTIONINFO_MERCHANTFACTION;
+	static string		FACTIONINFO_MERCHANTCONTAINERID;
+	static string		EFFECTINFO;
+	static string		EFFECTINFO_ELAPSED;
+	static string		EFFECTINFO_DURATION;
+	static string		EFFECTINFO_MAGNITUDE;
+	static string		EFFECTINFO_INACTIVE;
+	static string		EFFECTINFO_DETRIMENTAL;
+	static string		EFFECTINFO_MODIFIEDAV;
+	static string		EFFECTINFO_SPELLNAME;
+	static string		EFFECTINFO_SPELLID;
+	static string		EFFECTINFO_SPELLMOD;
+	static string		EFFECTINFO_SPELLTYPE;
+	static string		AVINFO;
+	static string		AVINFO_TYPE;
+	static string		AVINFO_BASEVALUE;
+	static string		AVINFO_CURRENTVALUE;
+	static string		EQUIPMENTINFO;
+	static string		EQUIPMENTINFO_SLOTINDEX;
+	static string		EQUIPMENTINFO_HEALTH;
+	static string		EQUIPMENTINFO_CHARGE;
+	static string		EQUIPMENTINFO_CLASS;
+	static string		EQUIPMENTINFO_AMMO;
+	static string		EQUIPMENTINFO_SPEED;
+	static string		EQUIPMENTINFO_RANGE;
+	static string		EQUIPMENTINFO_ACCURACY;
+	static string		EQUIPMENTINFO_VALUE;
+	static string		EQUIPMENTINFO_WEIGHT;
+
+	static string		EQUIPMENTINFO_PHYSICALDAMAGE;
+	static string		EQUIPMENTINFO_POISONDAMAGE;
+	static string		EQUIPMENTINFO_FIREDAMAGE;
+	static string		EQUIPMENTINFO_ENERGYDAMAGE;
+	static string		EQUIPMENTINFO_FROSTDAMAGE;
+	static string		EQUIPMENTINFO_RADDAMAGE;
+	static string		EQUIPMENTINFO_PHYSICALRESIST;
+	static string		EQUIPMENTINFO_POISONRESIST;
+	static string		EQUIPMENTINFO_FIRERESIST;
+	static string		EQUIPMENTINFO_ENERGYRESIST;
+	static string		EQUIPMENTINFO_FROSTRESIST;
+	static string		EQUIPMENTINFO_RADRESIST;
+
+	static std::vector<string>	DAMAGETYPES;
+	static std::vector<string>	RESISTTYPES;
+
+	static void LoadSettings();
+};
