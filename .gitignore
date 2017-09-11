@@ -13,6 +13,13 @@ $RECYCLE.BIN/
 *.msi
 *.msm
 *.msp
+*.log
+*.tlog
+*.obj
+*.pdb
+*.idb
+*.res
+
 
 # Windows shortcuts
 *.lnk
@@ -42,6 +49,7 @@ $RECYCLE.BIN/
 # Directories potentially created on remote AFP share
 .AppleDB
 .AppleDesktop
+.x64
 Network Trash Folder
 Temporary Items
 .apdisk
