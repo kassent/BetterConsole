@@ -272,8 +272,8 @@ void BetterConsole_GetBaseData::Invoke(Args * args)
 
 		TESForm* pBaseForm = pRef->baseForm;
 
-		RelocAddr<BSExtraData*(*)(ExtraDataList*, UInt8 type)> GetExtraData = 0x436A0; // 5B    V1.10
-		BSExtraData* pExtraData = GetExtraData(pRef->extraDataList, kExtraData_LeveledCreature);
+		//RelocAddr<BSExtraData*(*)(ExtraDataList*, UInt8 type)> GetExtraData = 0x436A0; // 5B    V1.10.26
+		BSExtraData* pExtraData = pRef->extraDataList->GetExtraData(kExtraData_LeveledCreature);
 		if (pExtraData != nullptr)
 		{
 			auto leveledBaseForm = *reinterpret_cast<TESForm**>((uintptr_t)pExtraData + 0x18);
@@ -291,7 +291,7 @@ void BetterConsole_GetBaseData::Invoke(Args * args)
 		RegisterString(args->result, args->movie->movieRoot, "baseFormType", FormTypes[pBaseForm->formType].c_str());
 
 		const char* pRefName = CALL_MEMBER_FN(pRef, GetReferenceName)();
-		auto pExtraTextData = static_cast<ExtraTextDisplayData*>(GetExtraData(pRef->extraDataList, kExtraData_TextDisplayData));
+		auto pExtraTextData = static_cast<ExtraTextDisplayData*>(pRef->extraDataList->GetExtraData(kExtraData_TextDisplayData));
 		if (pExtraTextData != nullptr)
 		{
 			pRefName = pExtraTextData->name.c_str();
@@ -304,7 +304,7 @@ void BetterConsole_GetBaseData::Invoke(Args * args)
 		TESFullName* pFullName = DYNAMIC_CAST(pBaseForm, TESForm, TESFullName);
 		if (pFullName != nullptr && strlen(pFullName->name.c_str()))
 		{
-			RegisterString(args->result, args->movie->movieRoot, "baseName", pFullName->name.c_str());
+			RegisterString(args->result, args->movie->movieRoot, "baseName", pFullName->GetFullName());
 		}
 
 		auto pModInfo = (*g_dataHandler)->GetLocatedModInfo(pBaseForm);
@@ -326,6 +326,8 @@ void BetterConsole_GetBaseData::Invoke(Args * args)
 	}
 }
 
+RelocAddr<void(*)(Actor*, HasPerkVisitor&)> DumpPerks = 0xDA5BE0; //48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC 20 48 8D 99 ? ? ? ? 48 8B F9 48 8B F2 48 8B CB E8 ? ? ? ? 48 8B 8F ? ? ? ?
+
 void BetterConsole_GetPerkData::Invoke(Args * args)
 {
 	TESObjectREFR* pRef = nullptr;
@@ -335,7 +337,7 @@ void BetterConsole_GetPerkData::Invoke(Args * args)
 		args->movie->movieRoot->CreateArray(args->result);
 
 		Actor* actor = static_cast<Actor*>(pRef);
-		RelocAddr<void(*)(Actor*, HasPerkVisitor&)> DumpPerks = 0xDA4140; //V1.10
+		
 		if (actor->middleProcess != nullptr)
 		{
 			HasPerkVisitor visitor;
@@ -445,7 +447,7 @@ void	CollectPerkData			(GFxValue& object, GFxMovieRoot * root, Actor *  actor, U
 {
 	if (object.GetType() == GFxValue::kType_Object && actor->formType == kFormType_ACHR && root != nullptr)
 	{
-		RelocAddr<void(*)(Actor*, HasPerkVisitor&)> DumpPerks = 0xDA4140; ///V1.10
+		//RelocAddr<void(*)(Actor*, HasPerkVisitor&)> DumpPerks = 0xDA4140; ///V1.10
 		if (actor->middleProcess != nullptr)
 		{
 			HasPerkVisitor visitor;
@@ -516,8 +518,7 @@ void	CollectFactionData		(GFxValue& object, GFxMovieRoot * root, Actor *  actor,
 	{
 		std::unique_ptr<char[]>	sResult(new char[MAX_PATH]);
 		std::map<TESFaction*, SInt8>	collector;
-		RelocAddr<BSExtraData*(*)(ExtraDataList*, UInt8 type)> GetExtraData = 0x436A0; // 5B
-		BSExtraData* pExtraData = GetExtraData(actor->extraDataList, kExtraData_FactionChanges);
+		BSExtraData* pExtraData = actor->extraDataList->GetExtraData(kExtraData_FactionChanges);
 		if (pExtraData != nullptr)
 		{
 			auto pFactionChanges = static_cast<ExtraFactionChanges*>(pExtraData);
@@ -541,8 +542,6 @@ void	CollectFactionData		(GFxValue& object, GFxMovieRoot * root, Actor *  actor,
 
 		for (const auto& info : collector)
 		{
-			//DumpClass(info.first, 0x100 >> 3);
-			//_MESSAGE("");
 			GFxValue factionData;
 			root->CreateObject(&factionData);
 			TESFullName* pFullName = DYNAMIC_CAST(info.first, TESFaction, TESFullName);
@@ -705,7 +704,7 @@ void	CollectEffectData		(GFxValue& object, GFxMovieRoot * root, Actor *  actor, 
 
 						if (pEffectSetting->actorValInfoD8)
 						{
-							const char * pName = CALL_MEMBER_FN(pEffectSetting->actorValInfoD8, GetDisplayName)();
+							const char * pName = pEffectSetting->actorValInfoD8->GetDisplayName();
 							if (!pName || !pName[0])
 							{
 								pName = pEffectSetting->actorValInfoD8->avName;
@@ -789,7 +788,7 @@ void	CollectValueData		(GFxValue& object, GFxMovieRoot * root, Actor *  actor, U
 				float currentValue = actor->actorValueOwner.GetValue(pAVI);
 				if (data.value != 0.0f || currentValue != 0.0f)
 				{
-					const char * actorValueName = CALL_MEMBER_FN(pAVI, GetDisplayName)();
+					const char * actorValueName = pAVI->GetDisplayName();
 					if (!actorValueName || !actorValueName[0])
 					{
 						actorValueName = pAVI->avName;
@@ -894,16 +893,15 @@ void	ColllectInventoryData	(GFxValue& arrObj, GFxMovieRoot * root, Actor * actor
 						TESForm					* form;
 						TBO_InstanceData		* data;
 					};
-					RelocAddr<InstanceData *(*)(InstanceData& out, TESForm *, TBO_InstanceData *)> CalcInstanceData = 0x2F7A40; //V1.10
+					RelocAddr<InstanceData *(*)(InstanceData& out, TESForm *, TBO_InstanceData *)> CalcInstanceData(0x2F7A30); ///48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC 20 48 89 11 49 8B F8
 
 					ExtraDataList * pExtraDataList = stack->extraData;
 					TBO_InstanceData * pExtraInstanceData = nullptr;
 					const char * pName = nullptr;
 					if (pExtraDataList != nullptr)
 					{
-						RelocAddr<TBO_InstanceData *(*)(ExtraDataList *)> GetExtraInstanceData = 0x8A430; //V1.10
-						pExtraInstanceData = GetExtraInstanceData(pExtraDataList);
-						auto pExtraName = static_cast<ExtraTextDisplayData*>(pExtraDataList->GetByType(kExtraData_TextDisplayData));
+						pExtraInstanceData = pExtraDataList->GetExtraInstanceData();
+						auto pExtraName = static_cast<ExtraTextDisplayData*>(pExtraDataList->GetExtraData(kExtraData_TextDisplayData));
 						pName = (pExtraName != nullptr) ? pExtraName->name.c_str() : nullptr;
 					}
 					if (!pName)
@@ -933,25 +931,24 @@ void	ColllectInventoryData	(GFxValue& arrObj, GFxMovieRoot * root, Actor * actor
 					Register<UInt32>(&itemType, "filterFlag", 2);
 					arrObj.PushBack(&itemType);
 
-					InstanceData	instData{ nullptr, nullptr };
-					CalcInstanceData(instData, pBaseForm, pExtraInstanceData);
+					InstanceData	objInst{ nullptr, nullptr };
+					CalcInstanceData(objInst, pBaseForm, pExtraInstanceData);
 
 					switch (pBaseForm->formType)
 					{
 					case FormType::kFormType_ARMO:
 					{
 						TESObjectARMO* pArmor = static_cast<TESObjectARMO*>(pBaseForm);
-						auto pArmorInst = (TESObjectARMO::InstanceData*)((instData.data != nullptr) ? instData.data : pArmor->GetInstanceData());///V1.10
+						auto pArmorInst = (TESObjectARMO::InstanceData*)((objInst.data != nullptr) ? objInst.data : pArmor->GetInstanceData());///V1.10
 
 						struct ResistInfo
 						{
 							UInt32	type;
 							float	resist;
 						};
-						SimpleArray<ResistInfo>		resistInfo{ 0, nullptr, 0, 0 };
-						RelocAddr<void(*)(BGSInventoryItem&, BGSInventoryItem::Stack *, SimpleArray<ResistInfo>	&, float)> CollectResistInfo = 0xC090D0; ///V1.10
+						SimpleCollector<ResistInfo>		resistInfo{ 0, nullptr, 0, 0 };
+						RelocAddr<void(*)(BGSInventoryItem&, BGSInventoryItem::Stack *, SimpleCollector<ResistInfo>	&, float)> CollectResistInfo = 0xC0AB30; ///V1.10.26 //48 8B C4 F3 0F 11 58 ? 48 89 48 08 55 41 54
 						CollectResistInfo(item, stack, resistInfo, 1.0f);
-						//_MESSAGE(pName);
 						for (size_t i = 0; i < resistInfo.count; ++i)
 						{
 							if (resistInfo.items[i].resist != 0.0f)
@@ -963,19 +960,18 @@ void	ColllectInventoryData	(GFxValue& arrObj, GFxMovieRoot * root, Actor * actor
 								Register<UInt32>(&itemResist, "filterFlag", 2);
 								arrObj.PushBack(&itemResist);
 							}
-							//_MESSAGE("%d = %.2f", resistInfo.items[i].type, resistInfo.items[i].resist);
 						}
 						if (resistInfo.items != nullptr)
 						{
-							RelocAddr<void(*)(SimpleArray<ResistInfo>&)>	Release = 0x1B0F430; ///V1.10
+							RelocAddr<void(*)(SimpleCollector<ResistInfo>&)>	Release = 0x1B10F10; ///V1.10.26 ////40 53 48 83 EC 20 48 8B 51 08 48 8B D9 48 85 D2 74 1A
 							Release(resistInfo);
 						}
-						RelocAddr<BGSKeyword*(*)()> GeHealthtKW = 0x1E2A20; ///V1.10
+						RelocAddr<BGSKeyword*(*)()> GeHealthtKW = 0x1E2A10; ///V1.10.26 //E8 ? ? ? ? 4C 8B C3 48 8B D0 48 8B CF FF 56 08 48 8B 74 24 ?
 						BGSKeyword * pKW = GeHealthtKW(); 
 						if (pArmor->keywordForm.keywordBase.HasKeyword(pKW))
 						{
-							UInt32 fullHealth = CALL_MEMBER_FN(pArmor, GetFullHealth)(pArmorInst);///V1.10		
-							UInt32 currentHealth = (pExtraDataList != nullptr) ? static_cast<UInt32>(CALL_MEMBER_FN(pExtraDataList, GetCurrentHealth)(pArmor)) : fullHealth;	 ///V1.10			
+							UInt32 fullHealth = pArmor->GetFullHealth(pArmorInst);///V1.10.26
+							UInt32 currentHealth = (pExtraDataList != nullptr) ? static_cast<UInt32>(pExtraDataList->GetCurrentHealth(pArmor)) : fullHealth;	 ///V1.10.26		
 
 							GFxValue itemHealth;
 							root->CreateObject(&itemHealth);
@@ -989,12 +985,11 @@ void	ColllectInventoryData	(GFxValue& arrObj, GFxMovieRoot * root, Actor * actor
 					case FormType::kFormType_AMMO:
 					{
 						auto pAmmo = static_cast<TESAmmo*>(pBaseForm);
-						RelocAddr<BGSKeyword*(*)()> GetChargeKW = 0x1E29C0; ///V1.10
+						RelocAddr<BGSKeyword*(*)()> GetChargeKW = 0x1E29B0; ///V1.10.26 //E8 ? ? ? ? 33 FF 45 33 C9 45 33 C0
 						BGSKeyword * pKW = GetChargeKW(); //Charge keyword.
 						if (pAmmo->keywordForm.keywordBase.HasKeyword(pKW))
 						{
-							UInt32 currentCharge = static_cast<UInt32>(CALL_MEMBER_FN(stack->extraData, GetCharge)());
-
+							UInt32 currentCharge = pExtraDataList->GetCharge();
 							GFxValue itemCharge;
 							root->CreateObject(&itemCharge);
 							sprintf_s(sResult.get(), MAX_PATH, "%s: %d/%d", Settings::EQUIPMENTINFO_CHARGE.c_str(), currentCharge, 100);
@@ -1007,7 +1002,7 @@ void	ColllectInventoryData	(GFxValue& arrObj, GFxMovieRoot * root, Actor * actor
 					case FormType::kFormType_WEAP:
 					{
 						TESObjectWEAP * pWeapon = static_cast<TESObjectWEAP*>(pBaseForm);
-						auto pWeaponInst = (TESObjectWEAP::InstanceData*)((instData.data != nullptr) ? instData.data : pWeapon->GetInstanceData());
+						auto pWeaponInst = (TESObjectWEAP::InstanceData*)((objInst.data != nullptr) ? objInst.data : pWeapon->GetInstanceData()); //V1.10.26
 
 						if (pWeaponInst != nullptr) {
 							GFxValue weaponType;
@@ -1020,8 +1015,8 @@ void	ColllectInventoryData	(GFxValue& arrObj, GFxMovieRoot * root, Actor * actor
 							TESAmmo* pAmmo = (pWeaponInst != nullptr) ? pWeaponInst->ammo : pWeapon->weapData.ammo;
 							if (pAmmo != nullptr)
 							{
-								bool isJunk = CALL_MEMBER_FN(pAmmo, IsJunk)();
-								RelocAddr<const char *(*)(UInt64 &)> GetCRCString = 0x1B2E20; ///V1.10
+								bool isJunk = pAmmo->IsJunk();
+								RelocAddr<const char *(*)(UInt64 &)> GetCRCString = 0x1B2E10; ///V1.10.26 			//E8 ? ? ? ? 45 33 C0 48 8B CF 48 8B D0 E8 ? ? ? ? 48 8D 54 24 ? 48 8B CF E8 ? ? ? ? 48 8B 7C 24 ? 48 85 FF 74 2E 83 3D ? ? ? ? ? 74 13 48 8D 15 ? ? ? ? 48 8D 0D ? ? ? ? small
 								GFxValue itemAmmo;
 								root->CreateObject(&itemAmmo);
 								sprintf_s(sResult.get(), MAX_PATH, "%s: %s", Settings::EQUIPMENTINFO_AMMO.c_str(), GetCRCString(pAmmo->crcString));
@@ -1032,7 +1027,7 @@ void	ColllectInventoryData	(GFxValue& arrObj, GFxMovieRoot * root, Actor * actor
 							///V1.10
 							if (pWeapon->weapData.weaponType > TESObjectWEAP::InstanceData::kWeaponType_TwoHandedAxe)
 							{
-								float shotSpeed = CALL_MEMBER_FN(pWeapon, GetShootSpeed)(pWeaponInst);///V1.10
+								float shotSpeed = pWeapon->GetShootSpeed(pWeaponInst);///V1.10.26
 
 								GFxValue itemSpeed;
 								root->CreateObject(&itemSpeed);
@@ -1041,8 +1036,8 @@ void	ColllectInventoryData	(GFxValue& arrObj, GFxMovieRoot * root, Actor * actor
 								Register<UInt32>(&itemSpeed, "filterFlag", 2);
 								arrObj.PushBack(&itemSpeed);
 
-								RelocAddr<float(*)(InstanceData&)> GetRange = 0x661C50;///V1.10
-								float range = GetRange(instData);
+								RelocAddr<float(*)(InstanceData&)> GetRange = 0x661C50;///V1.10.26  40 53 48 83 EC 20 48 83 39 00 0F 57 C9
+								float range = GetRange(objInst);
 
 								GFxValue itemRange;
 								root->CreateObject(&itemRange);
@@ -1051,8 +1046,8 @@ void	ColllectInventoryData	(GFxValue& arrObj, GFxMovieRoot * root, Actor * actor
 								Register<UInt32>(&itemRange, "filterFlag", 2);
 								arrObj.PushBack(&itemRange);
 
-								RelocAddr<float(*)(InstanceData&, Actor*)> GetAccuracy = 0x661D30; ///V1.10
-								float accuracy = GetAccuracy(instData, actor);
+								RelocAddr<float(*)(InstanceData&, Actor*)> GetAccuracy = 0x661D30; ///40 53 48 83 EC 30 0F 29 74 24 ? 48 8B D9 E8 ? ? ? ? 48 8B 4B 08
+								float accuracy = GetAccuracy(objInst, actor);
 
 								GFxValue itemAccuracy;
 								root->CreateObject(&itemAccuracy);
@@ -1063,14 +1058,11 @@ void	ColllectInventoryData	(GFxValue& arrObj, GFxMovieRoot * root, Actor * actor
 							}
 							else
 							{
-								RelocAddr<UInt32(*)(TESObjectWEAP*)> GetWeaponClass = 0x34D150; ///V1.10
-								UInt32 weaponClass = GetWeaponClass(pWeapon);
-								RelocAddr<float(*)(UInt32)>	GetWeaponSpeed = 0x34D340; ///V1.10
-								float speed = GetWeaponSpeed(weaponClass);
-
+								UInt32 attackSpeed = pWeapon->GetAttackSpeed();
+								//RelocAddr<const char * (*)(UInt32)>	GetWeaponSpeedDesc = 0x34D330; ///V1.10.26
 								GFxValue itemSpeed;
 								root->CreateObject(&itemSpeed);
-								sprintf_s(sResult.get(), MAX_PATH, "%s: %.2f", Settings::EQUIPMENTINFO_SPEED.c_str(), speed);
+								sprintf_s(sResult.get(), MAX_PATH, "%s: %d", Settings::EQUIPMENTINFO_SPEED.c_str(), attackSpeed);
 								RegisterString(&itemSpeed, root, "text", sResult.get());
 								Register<UInt32>(&itemSpeed, "filterFlag", 2);
 								arrObj.PushBack(&itemSpeed);
@@ -1081,10 +1073,10 @@ void	ColllectInventoryData	(GFxValue& arrObj, GFxMovieRoot * root, Actor * actor
 								UInt32	type;
 								float	damage;
 							};
-							SimpleArray<DamageInfo>		damageInfo{ 0, nullptr, 0, 0 };
-							RelocAddr<void(*)(BGSInventoryItem&, BGSInventoryItem::Stack *, SimpleArray<DamageInfo>&)> CollectDamageInfo = 0xC08C70; ///V1.10
+
+							SimpleCollector<DamageInfo>		damageInfo{ 0, nullptr, 0, 0 };
+							RelocAddr<void(*)(BGSInventoryItem&, BGSInventoryItem::Stack *, SimpleCollector<DamageInfo>&)> CollectDamageInfo = 0xC0A6D0; ///V1.10.26 //48 8B C4 48 89 50 10 55 56 41 54
 							CollectDamageInfo(item, stack, damageInfo);
-							//_MESSAGE(pName);
 							for (size_t i = 0; i < damageInfo.count; ++i)
 							{
 								if (damageInfo.items[i].damage != 0.0f)
@@ -1099,17 +1091,21 @@ void	ColllectInventoryData	(GFxValue& arrObj, GFxMovieRoot * root, Actor * actor
 							}
 							if (damageInfo.items != nullptr)
 							{
-								RelocAddr<void(*)(SimpleArray<DamageInfo>&)>	Release = 0x1B0F430; ///V1.10
+								RelocAddr<void(*)(SimpleCollector<DamageInfo>&)>	Release = 0x1B10F10; ///V1.10.26 //40 53 48 83 EC 20 48 8B 51 08 48 8B D9 48 85 D2 74 1A
 								Release(damageInfo);
 							}
 						}
 						break;
 					}
-					default:
-						{}
 					}
 
-					UInt32 value = CALL_MEMBER_FN(pBaseForm, GetValue)(pExtraDataList);
+					if (objInst.data != nullptr)
+					{
+						objInst.data->DecRefHandle();
+						objInst.data = nullptr;
+					}
+
+					UInt32 value = pBaseForm->GetValue(pExtraDataList);
 
 					GFxValue itemValue;
 					root->CreateObject(&itemValue);
@@ -1118,7 +1114,7 @@ void	ColllectInventoryData	(GFxValue& arrObj, GFxMovieRoot * root, Actor * actor
 					Register<UInt32>(&itemValue, "filterFlag", 2);
 					arrObj.PushBack(&itemValue);
 
-					float weight = CALL_MEMBER_FN(pBaseForm, GetWeight)(instData.data);
+					float weight = pBaseForm->GetWeight(objInst.data);
 					weight = actor->CalcFormWeight(pBaseForm, stack, weight, nullptr);
 
 					GFxValue itemWeight;
@@ -1159,7 +1155,7 @@ void	ColllectInventoryData	(GFxValue& arrObj, GFxMovieRoot * root, Actor * actor
 		Register<UInt32>(&itemType, "filterFlag", 2);
 		arrObj.PushBack(&itemType);
 
-		float weight = CALL_MEMBER_FN(pBaseForm, GetWeight)(nullptr);
+		float weight = pBaseForm->GetWeight(nullptr);
 		GFxValue itemWeight;
 		root->CreateObject(&itemWeight);
 		sprintf_s(sResult.get(), MAX_PATH, "%s: %.2f", Settings::EQUIPMENTINFO_WEIGHT.c_str(), weight);
@@ -1332,8 +1328,8 @@ void DumpInventory(Actor* actor)
 						pName = (pFullName != nullptr) ? pFullName->name.c_str() : nullptr;
 					}
 					_MESSAGE("formID: %08X	count: %d	name: %s	type: %s", pBaseForm->formID, stack->count, pName, FormTypes[pBaseForm->formType].c_str());
-					InstanceData	instData{ nullptr, nullptr };
-					CalcInstanceData(instData, pBaseForm, pExtraInstanceData);
+					InstanceData	objInst{ nullptr, nullptr };
+					CalcInstanceData(objInst, pBaseForm, pExtraInstanceData);
 
 					switch (pBaseForm->formType)
 					{
@@ -1341,15 +1337,15 @@ void DumpInventory(Actor* actor)
 						{
 							_MESSAGE(">>>>>>>>>>>>>>>>>>>[ARMO]");
 							TESObjectARMO* pArmor = static_cast<TESObjectARMO*>(pBaseForm);
-							auto pArmorInst = (TESObjectARMO::InstanceData*)((instData.data != nullptr) ? instData.data : pArmor->GetInstanceData());//V1.10
+							auto pArmorInst = (TESObjectARMO::InstanceData*)((objInst.data != nullptr) ? objInst.data : pArmor->GetInstanceData());//V1.10
 
 							struct ResistInfo
 							{
 								UInt32	type;
 								float	resist;
 							};
-							SimpleArray<ResistInfo>		resistInfo{ 0, nullptr, 0, 0 };
-							RelocAddr<void(*)(BGSInventoryItem&, BGSInventoryItem::Stack *, SimpleArray<ResistInfo>	&, float)> CollectResistInfo = 0xC090D0; //1.10
+							SimpleCollector<ResistInfo>		resistInfo{ 0, nullptr, 0, 0 };
+							RelocAddr<void(*)(BGSInventoryItem&, BGSInventoryItem::Stack *, SimpleCollector<ResistInfo>	&, float)> CollectResistInfo = 0xC090D0; //1.10
 							CollectResistInfo(item, stack, resistInfo, 1.0f);
 
 							for (size_t i = 0; i < resistInfo.count; ++i)
@@ -1358,7 +1354,7 @@ void DumpInventory(Actor* actor)
 							}
 							if (resistInfo.items != nullptr)
 							{
-								RelocAddr<void(*)(SimpleArray<ResistInfo>&)>	Release = 0x1B0F430; //V1.10
+								RelocAddr<void(*)(SimpleCollector<ResistInfo>&)>	Release = 0x1B0F430; //V1.10
 								Release(resistInfo);
 							}
 							RelocAddr<BGSKeyword*(*)()> GeHealthtKW = 0x1E2A20; //V1.10
@@ -1463,7 +1459,7 @@ void DumpInventory(Actor* actor)
 						{
 							_MESSAGE(">>>>>>>>>>>>>>>>>>>[WEAP]");
 							TESObjectWEAP * pWeapon = static_cast<TESObjectWEAP*>(pBaseForm);
-							auto pWeaponInst = (TESObjectWEAP::InstanceData*)((instData.data != nullptr) ? instData.data : pWeapon->GetInstanceData());
+							auto pWeaponInst = (TESObjectWEAP::InstanceData*)((objInst.data != nullptr) ? objInst.data : pWeapon->GetInstanceData());
 
 							if (pWeaponInst != nullptr){
 								TESAmmo* pAmmo = (pWeaponInst != nullptr) ? pWeaponInst->ammo : pWeapon->weapData.ammo;
@@ -1487,9 +1483,9 @@ void DumpInventory(Actor* actor)
 								{
 									float shotSpeed = CALL_MEMBER_FN(pWeapon, GetShootSpeed)(pWeaponInst);///V1.10
 									RelocAddr<float(*)(InstanceData&)> GetRange = 0x661C50;///V1.10
-									float range = GetRange(instData);
+									float range = GetRange(objInst);
 									RelocAddr<float(*)(InstanceData&, Actor*)> GetAccuracy = 0x661D30; ///V1.10
-									float accuracy = GetAccuracy(instData, (*g_player));
+									float accuracy = GetAccuracy(objInst, (*g_player));
 									_MESSAGE("shotSpeed: %.2f  range: %.2f  accuracy: %.2f", shotSpeed, range, accuracy);
 								}
 								else
@@ -1506,8 +1502,8 @@ void DumpInventory(Actor* actor)
 									UInt32	type;
 									float	damage;
 								};
-								SimpleArray<DamageInfo>		damageInfo{ 0, nullptr, 0, 0 };
-								RelocAddr<void(*)(BGSInventoryItem&, BGSInventoryItem::Stack *, SimpleArray<DamageInfo>&)> CollectDamageInfo = 0xC08C70; ///V1.10
+								SimpleCollector<DamageInfo>		damageInfo{ 0, nullptr, 0, 0 };
+								RelocAddr<void(*)(BGSInventoryItem&, BGSInventoryItem::Stack *, SimpleCollector<DamageInfo>&)> CollectDamageInfo = 0xC08C70; ///V1.10
 								CollectDamageInfo(item, stack, damageInfo);
 								for (size_t i = 0; i < damageInfo.count; ++i)
 								{
@@ -1515,7 +1511,7 @@ void DumpInventory(Actor* actor)
 								}
 								if (damageInfo.items != nullptr)
 								{
-									RelocAddr<void(*)(SimpleArray<DamageInfo>&)>	Release = 0x1B0F430; ///V1.10
+									RelocAddr<void(*)(SimpleCollector<DamageInfo>&)>	Release = 0x1B0F430; ///V1.10
 									Release(damageInfo);
 								}
 							}
@@ -1632,7 +1628,7 @@ void DumpInventory(Actor* actor)
 					}
 
 					UInt32 value = CALL_MEMBER_FN(pBaseForm, GetValue)(pExtraDataList);
-					float weight = CALL_MEMBER_FN(pBaseForm, GetWeight)(instData.data);
+					float weight = CALL_MEMBER_FN(pBaseForm, GetWeight)(objInst.data);
 					weight = actor->CalcFormWeight(pBaseForm, stack, weight, nullptr);
 					_MESSAGE("VALUE: %d WEIGHT: %.2f", value, weight);
 					return true;
@@ -1675,8 +1671,7 @@ void BetterConsole_GetExtraData::Invoke(Args * args)
 		args->result->PushBack(&refID);
 
 		TESForm* pBaseForm = pRef->baseForm;
-		RelocAddr<BSExtraData*(*)(ExtraDataList*, UInt8 type)> GetExtraData = 0x436A0; // 5B
-		BSExtraData* pExtraData = GetExtraData(pRef->extraDataList, kExtraData_LeveledCreature);
+		BSExtraData* pExtraData = pRef->extraDataList->GetExtraData(kExtraData_LeveledCreature);
 		if (pExtraData != nullptr)
 		{
 			auto leveledBaseForm = *reinterpret_cast<TESForm**>((uintptr_t)pExtraData + 0x18);
@@ -1712,7 +1707,7 @@ void BetterConsole_GetExtraData::Invoke(Args * args)
 			Register<UInt32>(&race, "filterFlag", 2);
 			args->result->PushBack(&race);
 		}
-		//EXTRAINFO_RACEID
+
 		GFxValue raceID;
 		args->movie->movieRoot->CreateObject(&raceID);
 		sprintf_s(sResult.get(), MAX_PATH, "%s: %08X", Settings::EXTRAINFO_RACEID.c_str(), actor->race->formID);
@@ -1731,7 +1726,7 @@ void BetterConsole_GetExtraData::Invoke(Args * args)
 
 		GFxValue level;
 		args->movie->movieRoot->CreateObject(&level);
-		sprintf_s(sResult.get(), MAX_PATH, "%s: %d", Settings::EXTRAINFO_LEVEL.c_str(), CALL_MEMBER_FN(actor, GetLevel)());///V1.10
+		sprintf_s(sResult.get(), MAX_PATH, "%s: %d", Settings::EXTRAINFO_LEVEL.c_str(), actor->GetLevel());///V1.10
 		RegisterString(&level, args->movie->movieRoot, "text", sResult.get());
 		Register<UInt32>(&level, "filterFlag", 2);
 		args->result->PushBack(&level);
@@ -1763,8 +1758,8 @@ void BetterConsole_GetExtraData::Invoke(Args * args)
 
 		GFxValue health;
 		args->movie->movieRoot->CreateObject(&health);
-		RelocAddr<ActorValueInfo**(*)()> fnGetAVHolder = 0x006B1F0;
-		auto pAVs = fnGetAVHolder();
+		RelocAddr<ActorValueInfo**(*)()> GetActorValueHolder = 0x006B1F0; //E8 ? ? ? ? 48 8B C8 E8 ? ? ? ? 48 8B 0D ? ? ? ? E8 ? ? ? ? E8 ? ? ? ?
+		auto pAVs = GetActorValueHolder();
 		ActorValueInfo*	pHealth = *reinterpret_cast<ActorValueInfo**>(pAVs + 0x1B);
 		sprintf_s(sResult.get(), MAX_PATH, "HP: %d", static_cast<UInt32>(actor->actorValueOwner.GetValue(pHealth)));
 		RegisterString(&health, args->movie->movieRoot, "text", sResult.get());
@@ -1865,7 +1860,7 @@ void BetterConsole_GetExtraData::Invoke(Args * args)
 			args->result->PushBack(&cell);
 		}		
 
-		auto pLocation = CALL_MEMBER_FN(actor, GetCurrentLocation)(); //extra
+		auto pLocation = actor->GetCurrentLocation(); //extra V1.10.20
 		if (pLocation != nullptr)
 		{
 			GFxValue location;  
@@ -1943,7 +1938,7 @@ void BetterConsole_GetExtraData::Invoke(Args * args)
 			args->result->PushBack(&worldSpace);
 		}
 
-		auto pZone = CALL_MEMBER_FN(actor, GetEncounterZone)();
+		auto pZone = actor->GetEncounterZone();
 		if (pZone != nullptr)
 		{
 			GFxValue zone;

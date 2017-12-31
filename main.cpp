@@ -1,5 +1,6 @@
 #include "F4SE/PluginAPI.h"
 #include "F4SE/GameMenus.h"
+#include "f4se/GameReferences.h"
 
 #include "F4SE_common/F4SE_version.h"
 #include "F4SE_common/Relocation.h"
@@ -13,99 +14,103 @@
 
 #include <shlobj.h>
 
-#define PLUGIN_VERSION	MAKE_EXE_VERSION(1, 0, 1)
+#include "xbyak/xbyak.h"
+
+#define PLUGIN_VERSION	MAKE_EXE_VERSION(1, 3, 0)
 
 IDebugLog						gLog;
 PluginHandle					g_pluginHandle = kPluginHandle_Invalid;
 F4SEScaleformInterface			* g_scaleform = nullptr;
 F4SEMessagingInterface			* g_messaging = nullptr;
 
+//#pragma warning (push)
+//#pragma warning (disable : 4200)
+//struct TypeHierarchy
+//{
+//	struct Node
+//	{
+//		UInt32	    type;  //32bit RTTIType*
+//		UInt32		depth;
+//		UInt32		offset;
+//	};
+//
+//	UInt32		memPtr;
+//	UInt32		unk04;
+//	UInt32		length;
+//	UInt32		nodes;     //32bit Node**
+//};
+//
+//
+//struct RTTIType
+//{
+//	void	 ** vtbl;
+//	UInt64	data;
+//	char	name[0];
+//};
+//
+//struct RTTILocator
+//{
+//	UInt32		sig, offset, cdOffset;
+//	UInt32		typeDesc;
+//	UInt32		herarchyDesc;
+//	UInt32		thisLocator;
+//};
+//#pragma warning (pop)
+//
+//
+//const RelocAddr<uintptr_t>	type_info_vtbl = 0x30CDC08;
+//
+//const RelocAddr<uintptr_t>  rdata_begin = 0x2C40000;
+//const RelocAddr<uintptr_t>  rdata_end = 0x3702000;
+//
+//const RelocAddr<uintptr_t>  data_begin = 0x3702000;
+//const RelocAddr<uintptr_t>  data_end = 0x676D000;
+//
+//const RelocAddr<uintptr_t>  text_begin = 0x1000;
+//const RelocAddr<uintptr_t>  text_end = 0x2C35000;
+//
+//
+//
+//void SearchVTable(uintptr_t typeinfo_addr)
+//{
+//	for (uintptr_t i = rdata_begin.GetUIntPtr(); i < rdata_end.GetUIntPtr(); i += sizeof(int))
+//	{
+//		static uintptr_t iOffset = (uintptr_t)GetModuleHandle(nullptr);
+//		if ((*reinterpret_cast<UInt32*>(i) + iOffset) == typeinfo_addr)
+//		{
+//			const RTTILocator * rtti = reinterpret_cast<RTTILocator*>(i - 0x0C);
+//
+//			if (rtti->sig != 1 || rtti->cdOffset != 0) continue;
+//
+//			uintptr_t location = reinterpret_cast<uintptr_t>(rtti);
+//			for (uintptr_t i = rdata_begin.GetUIntPtr(); i < rdata_end.GetUIntPtr(); i += sizeof(uintptr_t))
+//			{
+//				uintptr_t * p = reinterpret_cast<uintptr_t*>(i);
+//				if (*p == location)
+//				{
+//					uintptr_t * vtbl = reinterpret_cast<uintptr_t*>(p + 1);
+//					if (text_begin.GetUIntPtr() <= vtbl[0] && vtbl[0] < text_end.GetUIntPtr())
+//					{
+//						_MESSAGE("VTBL: %08X	OFFSET: %04X	CLASS: %s", (uintptr_t)vtbl - iOffset, rtti->offset, (char*)(typeinfo_addr + 0x10));
+//						TypeHierarchy* pHierarchy = reinterpret_cast<TypeHierarchy *>(rtti->herarchyDesc + iOffset);
+//						UInt32 * pInt = reinterpret_cast<UInt32*>(pHierarchy->nodes + iOffset);
+//
+//						for (size_t i = 0; i < pHierarchy->length; ++i)
+//						{
+//							auto pNode = reinterpret_cast<TypeHierarchy::Node*>(pInt[i] + iOffset);
+//							RTTIType* pRTTI = reinterpret_cast<RTTIType*>(pNode->type + iOffset);
+//							_MESSAGE("		>> DEPTH: %d	OFFSET: %04X	CLASS: %s", pNode->depth, pNode->offset, pRTTI->name);
+//						}
+//					}
+//				}
+//			}
+//			_MESSAGE(" ");
+//		}
+//	}
+//};
+
 #ifdef DEBUG
-#pragma warning (push)
-#pragma warning (disable : 4200)
-struct TypeHierarchy
-{
-	struct Node
-	{
-		UInt32	    type;  //32bit RTTIType*
-		UInt32		depth;
-		UInt32		offset;
-	};
 
-	UInt32		memPtr;
-	UInt32		unk04;
-	UInt32		length;
-	UInt32		nodes;     //32bit Node**
-};
-
-
-struct RTTIType
-{
-	void	 ** vtbl;
-	UInt64	data;
-	char	name[0];
-};
-
-struct RTTILocator
-{
-	UInt32		sig, offset, cdOffset;
-	UInt32		typeDesc;
-	UInt32		herarchyDesc;
-	UInt32		thisLocator;
-};
-#pragma warning (pop)
-
-
-const RelocAddr<uintptr_t>	type_info_vtbl = 0x30B92E8;
-
-const RelocAddr<uintptr_t>  rdata_begin = 0x2C2D000;
-const RelocAddr<uintptr_t>  rdata_end = 0x36E9000;
-
-const RelocAddr<uintptr_t>  data_begin = 0x36E9000;
-const RelocAddr<uintptr_t>  data_end = 0x6753000;
-
-const RelocAddr<uintptr_t>  text_begin = 0x1000;
-const RelocAddr<uintptr_t>  text_end = 0x2C22000;
-
-
-
-void SearchVTable(uintptr_t typeinfo_addr)
-{
-	for (uintptr_t i = rdata_begin.GetUIntPtr(); i < rdata_end.GetUIntPtr(); i += sizeof(int))
-	{
-		static uintptr_t iOffset = (uintptr_t)GetModuleHandle(nullptr);
-		if ((*reinterpret_cast<UInt32*>(i) + iOffset) == typeinfo_addr)
-		{
-			const RTTILocator * rtti = reinterpret_cast<RTTILocator*>(i - 0x0C);
-
-			if (rtti->sig != 1 || rtti->cdOffset != 0) continue;
-
-			uintptr_t location = reinterpret_cast<uintptr_t>(rtti);
-			for (uintptr_t i = rdata_begin.GetUIntPtr(); i < rdata_end.GetUIntPtr(); i += sizeof(uintptr_t))
-			{
-				uintptr_t * p = reinterpret_cast<uintptr_t*>(i);
-				if (*p == location)
-				{
-					uintptr_t * vtbl = reinterpret_cast<uintptr_t*>(p + 1);
-					if (text_begin.GetUIntPtr() <= vtbl[0] && vtbl[0] < text_end.GetUIntPtr())
-					{
-						_MESSAGE("VTBL: %08X	OFFSET: %04X	CLASS: %s", (uintptr_t)vtbl - iOffset, rtti->offset, (char*)(typeinfo_addr + 0x10));
-						TypeHierarchy* pHierarchy = reinterpret_cast<TypeHierarchy *>(rtti->herarchyDesc + iOffset);
-						UInt32 * pInt = reinterpret_cast<UInt32*>(pHierarchy->nodes + iOffset);
-
-						for (size_t i = 0; i < pHierarchy->length; ++i)
-						{
-							auto pNode = reinterpret_cast<TypeHierarchy::Node*>(pInt[i] + iOffset);
-							RTTIType* pRTTI = reinterpret_cast<RTTIType*>(pNode->type + iOffset);
-							_MESSAGE("		>> DEPTH: %d	OFFSET: %04X	CLASS: %s", pNode->depth, pNode->offset, pRTTI->name);
-						}
-					}
-				}
-			}
-			_MESSAGE(" ");
-		}
-	}
-};
 
 #include "f4se/PapyrusVM.h"
 #include "f4se/PapyrusNativeFunctions.h"
@@ -126,11 +131,13 @@ public:
 	static void InitHook()
 	{
 		//Dump all papyrus functions.
-		fnRegisterFunction = HookUtil::SafeWrite64(RelocAddr<uintptr_t>(0x03093A28).GetUIntPtr() + 8 * 0x1B, &RegisterFunction_Hook);//V1.10
+		fnRegisterFunction = HookUtil::SafeWrite64(RelocAddr<uintptr_t>(0x030A8608).GetUIntPtr() + 8 * 0x1B, &RegisterFunction_Hook);//V1.10 .?AVVirtualMachine@Internal@BSScript@@
 	}
 };
 
+
 VirtualMachineEx::FnRegisterFunction VirtualMachineEx::fnRegisterFunction = nullptr;
+
 #endif
 
 #ifdef DEBUG
@@ -318,9 +325,21 @@ public:
 
 bool ScaleformCallback(GFxMovieView * view, GFxValue * value)
 {
-	RegisterFunction<BetterConsole_GetBaseData>(value, view->movieRoot, "GetBaseData");
-	RegisterFunction<BetterConsole_GetExtraData>(value, view->movieRoot, "GetExtraData");
-	RegisterFunction<BetterConsole_WriteLog>(value, view->movieRoot, "WriteLog");
+	GFxMovieRoot * movieRoot = view->movieRoot;
+	if (movieRoot)
+	{
+		GFxValue loaderInfo;
+		if (movieRoot->GetVariable(&loaderInfo, "root.loaderInfo.url"))
+		{
+			std::string sResult = loaderInfo.GetString();
+			if (sResult.find("Console.swf") != std::string::npos)
+			{
+				RegisterFunction<BetterConsole_GetBaseData>(value, view->movieRoot, "GetBaseData");
+				RegisterFunction<BetterConsole_GetExtraData>(value, view->movieRoot, "GetExtraData");
+				RegisterFunction<BetterConsole_WriteLog>(value, view->movieRoot, "WriteLog");
+			}
+		}
+	}
 	return true;
 }
 
@@ -331,10 +350,13 @@ public:
 	using	FnPickNext = bool(__thiscall Console::*)(void* pData);
 	static	FnPickNext	 fnPickNext;
 
-	bool	PickNext_Hook(void* pData)
+	bool	PickNext_Hook(void * pData)
 	{
 		GFxValue result(true);
-		stage.Invoke("canScrollMouse", &result, nullptr, 0);
+		if (stage.IsDisplayObject())
+		{
+			stage.Invoke("canScrollMouse", &result, nullptr, 0);
+		}
 		if (!result.GetBool())
 		{
 			return false;
@@ -342,13 +364,15 @@ public:
 		return (this->*fnPickNext)(pData);
 	}
 
+	static const char * GetReferenceName(TESObjectREFR * pRef)
+	{
+		return pRef->GetReferenceName();
+	}
+
 	static void InitHook()
 	{
-		fnPickNext = HookUtil::SafeWrite64(RelocAddr<uintptr_t>(0x02D9B818).GetUIntPtr() + 8 * 0xF, &PickNext_Hook); //V1.10
-		//UInt8 nops[] = { 0x90, 0x90, 0x90, 0x90, 0x90 };
-		//SafeWriteBuf(RelocAddr<uintptr_t>(0x125B4D1).GetUIntPtr(), nops, sizeof(nops));
-		UInt8 codes[] = { 0xE8, 0x8C, 0x01, 0x1B, 0xFF, 0x90 };
-		SafeWriteBuf(RelocAddr<uintptr_t>(0x125B43F).GetUIntPtr(), codes, sizeof(codes));
+		fnPickNext = HookUtil::SafeWrite64(RelocAddr<uintptr_t>(0x02DAE938).GetUIntPtr() + 8 * 0xF, &PickNext_Hook); //V1.10.26 //48 8D 05 ? ? ? ? BD ? ? ? ? F3 0F 11 44 24 ? //02DAE938
+		g_branchTrampoline.Write6Call(RelocAddr<uintptr_t>(0x125CF0F).GetUIntPtr(), (uintptr_t)GetReferenceName); //FF 90 ? ? ? ? 48 89 74 24 ? 4C 89 7C 24 ?
 	}
 };
 Console::FnPickNext			Console::fnPickNext = nullptr;
@@ -361,48 +385,37 @@ public:
 	virtual ~MenuOpenCloseHandler() { };
 	virtual	EventResult	ReceiveEvent(MenuOpenCloseEvent * evn, void * dispatcher) override
 	{ 
-		RelocAddr<BSFixedString*(*)()> GetConsoleString = 0x2049030; //V1.10
-		if (evn->menuName == *GetConsoleString() && evn->isOpen)
+		static BSFixedString console("Console");
+		if (evn->menuName == console && evn->isOpen)
 		{
 			GFxValue dispatchEvent;
 			GFxValue eventArgs[3];
-			IMenu* pConsole = (*g_ui)->GetMenu(GetConsoleString());
-			GFxMovieView * view = pConsole->movie;
-			view->movieRoot->CreateString(&eventArgs[0], "OnConsoleOpen");
-			eventArgs[1] = GFxValue(true);
-			eventArgs[2] = GFxValue(false);
-			view->movieRoot->CreateObject(&dispatchEvent, "flash.events.Event", eventArgs, 3);
-			view->movieRoot->Invoke("root.dispatchEvent", nullptr, &dispatchEvent, 1);
-#ifdef DEBUG
-			RelocAddr<void(*)(const char*, bool, bool)> Notification = 0xAE1CE0;
-			Notification("Press SHIFT to show extra info menu.", false, true);
-
-			TESForm * form = LookupFormByID(0x1249F76);
-			RelocAddr<void(*)(uintptr_t, TESForm*, BSFixedString, float, float, UInt32, BSFixedString, UInt32)> ShowAsHelpMessage = 0x1274790;
-			ShowAsHelpMessage((*RelocPtr<uintptr_t>(0x59F84E8)), form, BSFixedString("BetterConsole"), 5.0f, 30.0f, 3, BSFixedString(), 0);
-#endif
+			IMenu * pConsole = (*g_ui)->GetMenu(&console);
+			auto * movieRoot = pConsole->movie->movieRoot;
+			movieRoot->CreateString(&eventArgs[0], "OnConsoleOpen");
+			eventArgs[1].SetBool(true);
+			eventArgs[2].SetBool(false);
+			movieRoot->CreateObject(&dispatchEvent, "flash.events.Event", eventArgs, 3);
+			movieRoot->Invoke("root.dispatchEvent", nullptr, &dispatchEvent, 1);
 		}
 		return kEvent_Continue; 
 	};
 
 	static void Register()
 	{
-		static auto pHandler = new MenuOpenCloseHandler();
-		(*g_ui)->menuOpenCloseEventSource.AddEventSink(pHandler);
+		static auto * pHandler = new MenuOpenCloseHandler();
+		(*g_ui)->menuOpenCloseEventSource.AddEventSink(pHandler); //V1.10.26
 	}
 };
 
-//#include "F4SE/GameForms.h"
 void F4SEMessageHandler(F4SEMessagingInterface::Message* msg)
 {
-	if (msg->type == F4SEMessagingInterface::kMessage_GameDataReady)
+	if (msg->type == F4SEMessagingInterface::kMessage_GameLoaded)
 	{
 		MenuOpenCloseHandler::Register();
-		//00024F8E
-		//BGSEncounterZone * pForm = static_cast<BGSEncounterZone*>(LookupFormByID(0x24F8E));
-		//_MESSAGE("%08X | %016I64X", pForm->formID, (uintptr_t)pForm);
 	}
 }
+
 
 
 extern "C"
@@ -418,9 +431,9 @@ extern "C"
 
 		g_pluginHandle = f4se->GetPluginHandle();
 
-		if (f4se->runtimeVersion != RUNTIME_VERSION_1_10_20)
+		if (f4se->runtimeVersion != RUNTIME_VERSION_1_10_50)
 		{
-			MessageBox(nullptr, "UNSUPPORTED GAME VERSION.THE REQUIRED VERSION IS: V1.10.20", "BetterConsole", MB_OK);
+			MessageBox(nullptr, "UNSUPPORTED GAME VERSION.THE REQUIRED VERSION IS: V1.10.40", "BetterConsole", MB_OK);
 			return false;
 		}
 
@@ -450,21 +463,13 @@ extern "C"
 
 	bool F4SEPlugin_Load(const F4SEInterface * f4se)
 	{
-#ifdef DEBUG
+
 		if (!g_branchTrampoline.Create(1024 * 64))
 		{
 			_ERROR("couldn't create branch trampoline. this is fatal. skipping remainder of init process.");
 			return false;
 		}
 
-		if (!g_localTrampoline.Create(1024 * 64, nullptr))
-		{
-			_ERROR("couldn't create codegen buffer. this is fatal. skipping remainder of init process.");
-			return false;
-		}
-
-		g_branchTrampoline.Write5Call (RelocAddr<uintptr_t>(0x485897).GetUIntPtr(), (uintptr_t)GetBSString); //V1.10
-#endif
 		if (g_messaging != nullptr)
 			g_messaging->RegisterListener(g_pluginHandle, "F4SE", F4SEMessageHandler);
 
@@ -472,11 +477,25 @@ extern "C"
 			g_scaleform->Register("BetterConsole", ScaleformCallback);
 
 		Settings::LoadSettings();
+
 		Console::InitHook();
+
 #ifdef DEBUG
-		RegisterCommands();
+
+		for (uintptr_t i = data_begin.GetUIntPtr(); i < data_end.GetUIntPtr(); i += sizeof(uintptr_t))
+		{
+			uintptr_t * pointer = reinterpret_cast<uintptr_t*>(i);
+			if (*pointer == type_info_vtbl.GetUIntPtr())
+			{
+				SearchVTable(i);
+			}
+		}
 		VirtualMachineEx::InitHook();
+		RegisterCommands();
+
 #endif
 		return true;
 	}
 };
+
+

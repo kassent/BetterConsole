@@ -244,7 +244,7 @@ struct ActorValueInfoHolder
 };
 
 template<typename T>
-struct SimpleArray
+struct SimpleCollector
 {
 	UInt64		unk00;
 	T			* items;
@@ -252,7 +252,7 @@ struct SimpleArray
 	UInt64		count;
 };
 
-extern RelocAddr<ActorValueInfoHolder*>	g_actorValues;
+//extern RelocAddr<ActorValueInfoHolder*>	g_actorValues;
 
 
 

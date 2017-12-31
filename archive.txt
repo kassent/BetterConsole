@@ -3244,3 +3244,162 @@ and then use
             "function": "papMessageBox",
             "params": ["Hello world! value = {value}!"]
           },
+		  \
+
+
+		  class Scaleform_papMessageBox : public GFxFunctionHandler
+{
+public:
+
+
+    virtual void    Invoke(Args * args){
+        papMessageBox(args->args[0].GetString());
+    }
+};
+and then use
+         "action": {
+            "type": "CallExternalFunction",
+            "plugin": "def_plugin",
+            "function": "papMessageBox",
+            "params": ["Hello world! value = {value}!"]
+          },
+
+
+
+
+		                                        ; sub_2A91490+56o ...
+.rdata:0000000002D2CD11                 align 4
+.rdata:0000000002D2CD14 ; char aAll_0[]
+.rdata:0000000002D2CD14 aAll_0          db 'All',0              ; DATA XREF: sub_A4ECB0+1Co
+.rdata:0000000002D2CD14                                         ; sub_A4F200+35o ...
+.rdata:0000000002D2CD18 aAutovanity     db 'AutoVanity',0       ; DATA XREF: sub_A4FB90+1Ao
+.rdata:0000000002D2CD23                 align 8
+.rdata:0000000002D2CD28 aBookmode       db 'BookMode',0         ; DATA XREF: sub_A4FBF0+1Ao
+.rdata:0000000002D2CD31                 align 8
+.rdata:0000000002D2CD38 aChargen_init   db 'CharGen_Init',0     ; DATA XREF: sub_A4FC50+1Ao
+.rdata:0000000002D2CD38                                         ; sub_2A91690+1F4o ...
+.rdata:0000000002D2CD45                 align 8
+.rdata:0000000002D2CD48 aChargen_walkin db 'CharGen_WalkingToVault',0
+.rdata:0000000002D2CD48                                         ; DATA XREF: sub_A4FCB0+1Ao
+.rdata:0000000002D2CD48                                         ; sub_2A91490+1AFo ...
+.rdata:0000000002D2CD5F                 align 20h
+.rdata:0000000002D2CD60 aContainermode  db 'ContainerMode',0    ; DATA XREF: sub_A4FD10+1Ao
+.rdata:0000000002D2CD60                                         ; sub_2A93BE0+4EBo ...
+.rdata:0000000002D2CD6E                 align 10h
+.rdata:0000000002D2CD70 aDialoguecame_0 db 'DialogueCameraMode',0
+.rdata:0000000002D2CD70                                         ; DATA XREF: sub_A4F0D0+26o
+.rdata:0000000002D2CD70                                         ; sub_A4F0D0+A1o ...
+.rdata:0000000002D2CD83                 align 8
+.rdata:0000000002D2CD88 aDialoguemode   db 'DialogueMode',0     ; DATA XREF: sub_A4FDD0+1Ao
+.rdata:0000000002D2CD88                                         ; sub_2A91490+9Bo ...
+.rdata:0000000002D2CD95                 align 8
+.rdata:0000000002D2CD98 aFurnitureenter db 'FurnitureEnterExit',0
+.rdata:0000000002D2CD98                                         ; DATA XREF: sub_A4FE90+1Ao
+.rdata:0000000002D2CD98                                         ; sub_2A941A0+4EBo ...
+.rdata:0000000002D2CDAB                 align 10h
+.rdata:0000000002D2CDB0 aInspectmode    db 'InspectMode',0      ; DATA XREF: sub_A4FFB0+1Ao
+.rdata:0000000002D2CDB0                                         ; sub_B1CF80+36o ...
+.rdata:0000000002D2CDBC                 align 20h
+.rdata:0000000002D2CDC0 aInsidememory   db 'InsideMemory',0     ; DATA XREF: sub_A4FF50+1Ao
+.rdata:0000000002D2CDC0                                         ; sub_2A91690+27Eo ...
+.rdata:0000000002D2CDCD                 align 10h
+.rdata:0000000002D2CDD0 aIronsights     db 'IronSights',0       ; DATA XREF: sub_A50010+1Ao
+.rdata:0000000002D2CDD0                                         ; sub_2A91490+125o ...
+.rdata:0000000002D2CDDB                 align 20h
+.rdata:0000000002D2CDE0 aLoading        db 'Loading',0          ; DATA XREF: sub_A50070+1Ao
+.rdata:0000000002D2CDE8 aLockpickingmod db 'LockpickingMode',0  ; DATA XREF: sub_A500D0+1Ao
+.rdata:0000000002D2CDE8                                         ; sub_2A941A0+308o ...
+.rdata:0000000002D2CDF8 aLooksmenu      db 'LooksMenu',0        ; DATA XREF: sub_A50130+1Ao
+.rdata:0000000002D2CDF8                                         ; sub_B3C1A0+1E5o ...
+.rdata:0000000002D2CE02                 align 8
+.rdata:0000000002D2CE08 aMessagemode    db 'MessageMode',0      ; DATA XREF: sub_A50190+1Ao
+.rdata:0000000002D2CE14                 align 8
+.rdata:0000000002D2CE18 aMovementdisabl db 'MovementDisabled',0 ; DATA XREF: sub_A501F0+1Ao
+.rdata:0000000002D2CE18                                         ; sub_2A941A0+2C3o ...
+.rdata:0000000002D2CE29                 align 10h
+.rdata:0000000002D2CE30 aPausemode      db 'PauseMode',0        ; DATA XREF: sub_A502B0+1Ao
+.rdata:0000000002D2CE3A                 align 4
+.rdata:0000000002D2CE3C ; char aPipboy[]
+.rdata:0000000002D2CE3C aPipboy         db 'Pipboy',0           ; DATA XREF: sub_A50310+1Ao
+.rdata:0000000002D2CE3C                                         ; sub_B3B2C0+31o ...
+.rdata:0000000002D2CE43                 align 8
+.rdata:0000000002D2CE48 aPowerarmor     db 'PowerArmor',0       ; DATA XREF: sub_A4EF80+94o
+.rdata:0000000002D2CE48                                         ; sub_A50370+1Ao ...
+.rdata:0000000002D2CE53                 align 8
+.rdata:0000000002D2CE58 aScopemenu      db 'ScopeMenu',0        ; DATA XREF: sub_A503D0+1Ao
+.rdata:0000000002D2CE58                                         ; sub_204A7D0+1Ao ...
+.rdata:0000000002D2CE62                 align 8
+.rdata:0000000002D2CE68 aSitwaitmode    db 'SitWaitMode',0      ; DATA XREF: sub_A50430+1Ao
+.rdata:0000000002D2CE68                                         ; sub_2A91690+9Bo ...
+.rdata:0000000002D2CE74                 align 8
+.rdata:0000000002D2CE78 aSleepwaitmode  db 'SleepWaitMode',0    ; DATA XREF: sub_A50490+1Ao
+.rdata:0000000002D2CE86                 align 8
+.rdata:0000000002D2CE88 aSpecialmode    db 'SpecialMode',0      ; DATA XREF: sub_A504F0+1Ao
+.rdata:0000000002D2CE94                 align 8
+.rdata:0000000002D2CE98 aTerminalmode   db 'TerminalMode',0     ; DATA XREF: sub_A50550+1Ao
+.rdata:0000000002D2CE98                                         ; sub_2A927C0+239o ...
+.rdata:0000000002D2CEA5                 align 8
+.rdata:0000000002D2CEA8 aVats           db 'VATS',0             ; DATA XREF: sub_A505B0+1Ao
+.rdata:0000000002D2CEA8                                         ; sub_1294700+619o ...
+.rdata:0000000002D2CEAD                 align 10h
+.rdata:0000000002D2CEB0 aVatsplayback   db 'VATSPlayback',0     ; DATA XREF: sub_A50610+1Ao
+.rdata:0000000002D2CEB0                                         ; sub_2A91F60+9Bo ...
+.rdata:0000000002D2CEBD                 align 20h
+.rdata:0000000002D2CEC0 aVertibirdmode  db 'VertibirdMode',0    ; DATA XREF: sub_A50670+1Ao
+.rdata:0000000002D2CEC0                                         ; sub_2A91690+E0o ...
+.rdata:0000000002D2CECE                 align 10h
+.rdata:0000000002D2CED0 aWorkshopmode   db 'WorkshopMode',0     ; DATA XREF: sub_A506D0+1Ao
+.rdata:0000000002D2CED0                                         ; sub_2A92050+1AFo ...
+.rdata:0000000002D2CEDD                 align 20h
+.rdata:0000000002D2CEE0 aWorkshopcarava db 'WorkshopCaravanMode',0
+.rdata:0000000002D2CEE0                                         ; DATA XREF: sub_A50730+1Ao
+.rdata:0000000002D2CEE0                                         ; sub_2A95790+41Co
+.rdata:0000000002D2CEF4                 align 8
+.rdata:0000000002D2CEF8 aEndingvideo    db 'EndingVideo',0      ; DATA XREF: sub_A50790+1Ao
+.rdata:0000000002D2CF04                 align 8
+.rdata:0000000002D2CF08 aInvalid_0      db 'Invalid',0          ; DATA XREF: sub_A4F310+15o
+.rdata:0000000002D2CF08        
+
+
+
+.rdata:0000000002D372B8                                         ; sub_B7F340+Eo ...
+.rdata:0000000002D372C0                 dq offset sub_54F7A0
+.rdata:0000000002D372C8                 dq offset sub_54F790
+.rdata:0000000002D372D0 aQuittodesktop  db 'QuitToDesktop',0    ; DATA XREF: sub_B7D690+7Do
+.rdata:0000000002D372D0                                         ; sub_B7F6E0+1Co ...
+.rdata:0000000002D372DE                 align 20h
+.rdata:0000000002D372E0 aFloadgamefades db 'fLoadGameFadeSecs:General',0
+.rdata:0000000002D372E0                                         ; DATA XREF: .data:000000000379EC98o
+.rdata:0000000002D372FA                 align 20h
+.rdata:0000000002D37300 aBsavegameonqui db 'bSaveGameOnQuitToMainMenu:General',0
+.rdata:0000000002D37300                                         ; DATA XREF: .data:000000000379ECB0o
+.rdata:0000000002D37322                 align 8
+.rdata:0000000002D37328 aTogglepausefs  db 'TogglePauseFS',0    ; DATA XREF: sub_2A9CFA0+4o
+.rdata:0000000002D37336                 align 8
+.rdata:0000000002D37338 aIndex          db 'index',0            ; DATA XREF: sub_B7F760+B3o
+.rdata:0000000002D37338                                         ; sub_208A4A0+D5o ...
+.rdata:0000000002D3733E                 align 20h
+.rdata:0000000002D37340                 dq offset unk_3146C28
+.rdata:0000000002D37348 off_2D37348     dq offset sub_B7FA90    ; DATA XREF: sub_B7CF40+528o
+.rdata:0000000002D37348                                         ; .text:0000000000B7F400o
+.rdata:0000000002D37350                 dq offset sub_B7F8A0
+.rdata:0000000002D37358                 dq offset unk_3146CB0
+.rdata:0000000002D37360 off_2D37360     dq offset sub_B7F9B0    ; DATA XREF: sub_B7CF40+27Bo
+.rdata:0000000002D37360                                         ; sub_B7CF40+2CAo ...
+.rdata:0000000002D37368                 dq offset sub_B7F680
+.rdata:0000000002D37370                 dq offset unk_3146D38
+.rdata:0000000002D37378 off_2D37378     dq offset sub_B7FA00    ; DATA XREF: sub_B7CF40+424o
+.rdata:0000000002D37378                                         ; .text:0000000000B7F3C0o
+.rdata:0000000002D37380                 dq offset sub_B7F6E0
+.rdata:0000000002D37388 aPausemode_0    db 'pauseMode',0        ; DATA XREF: sub_B7C800+104o
+.rdata:0000000002D37392                 align 8
+.rdata:0000000002D37398 aUimenupauseent db 'UIMenuPauseEnter',0 ; DATA XREF: sub_B7C800:loc_B7C941o
+.rdata:0000000002D373A9                 align 10h
+.rdata:0000000002D373B0 aAllowquittodes db 'allowQuitToDesktop',0
+.rdata:0000000002D373B0                                         ; DATA XREF: sub_B7C800+164o
+.rdata:0000000002D373C3                 align 8
+.rdata:0000000002D373C8 aSettomenu      db 'SetToMenu',0        ; DATA XREF: sub_B7C800+1B2o
+.rdata:0000000002D373C8                                         ; sub_BBA160+2A3o
+.rdata:0000000002D373D2                 align 8
+.rdata:0000000002D373D8 aHelppanel_mc_h db 'HelpPanel_mc.HelpList_mc',0
+.rdata:0000000002D373D8                                         ; DATA XREF: sub_B7C800+238o
