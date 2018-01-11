@@ -64,9 +64,6 @@
     <Text Include="papyrus.txt">
       <Filter>Resource Files</Filter>
     </Text>
-    <Text Include="RTTI.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc">

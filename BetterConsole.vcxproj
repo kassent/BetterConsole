@@ -187,7 +187,6 @@
   <ItemGroup>
     <Text Include="..\ChineseInput\ConsoleCommands.txt" />
     <Text Include="archive.txt" />
-    <Text Include="RTTI.txt" />
     <Text Include="papyrus.txt" />
   </ItemGroup>
   <ItemGroup>
