@@ -23,10 +23,13 @@ struct Settings
 	static string		EXTRAINFO_MINLEVEL;
 	static string		EXTRAINFO_MAXLEVEL;
 	static string		EXTRAINFO_PCLVMULT;
-	static string		EXTRAINFO_UNIQUE;
-	static string		EXTRAINFO_ESSENTIAL;
-	static string		EXTRAINFO_PROTECTED;
-	static string		EXTRAINFO_INVULNERABLE;
+
+	static string		FLAGINFO;
+	static string		FLAGINFO_UNIQUE;
+	static string		FLAGINFO_ESSENTIAL;
+	static string		FLAGINFO_PROTECTED;
+	static string		FLAGINFO_INVULNERABLE;
+
 	static string		EXTRAINFO_MEMORY;
 	static string		EXTRAINFO_TRUE;
 	static string		EXTRAINFO_FALSE;

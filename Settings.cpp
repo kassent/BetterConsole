@@ -19,10 +19,11 @@ string  Settings::EXTRAINFO_LEVEL = "level";
 string  Settings::EXTRAINFO_MINLEVEL = "minLevel";
 string  Settings::EXTRAINFO_MAXLEVEL = "maxLevel";
 string  Settings::EXTRAINFO_PCLVMULT = "PCLevelMult";
-string  Settings::EXTRAINFO_UNIQUE = "isUnique";
-string  Settings::EXTRAINFO_ESSENTIAL = "isEssential";
-string  Settings::EXTRAINFO_PROTECTED = "isProtected";
-string  Settings::EXTRAINFO_INVULNERABLE = "isInvulnerable";
+string	Settings::FLAGINFO = "flags";
+string  Settings::FLAGINFO_UNIQUE = "isUnique";
+string  Settings::FLAGINFO_ESSENTIAL = "isEssential";
+string  Settings::FLAGINFO_PROTECTED = "isProtected";
+string  Settings::FLAGINFO_INVULNERABLE = "isInvulnerable";
 string  Settings::EXTRAINFO_MEMORY = "memory";
 string	Settings::EXTRAINFO_TRUE = "true";
 string	Settings::EXTRAINFO_FALSE = "false";
@@ -131,7 +132,7 @@ std::vector<string>	Settings::RESISTTYPES = {
 
 void Settings::LoadSettings()
 {
-	constexpr char* configFile = "Data\\F4se\\Plugins\\BetterConsole_Translation.ini";
+	constexpr char* configFile = "Data\\F4se\\Plugins\\BetterConsole.translation";
 	constexpr char* settingsSection = "Translations";
 
 	std::unique_ptr<char[]> sResult(new char[MAX_PATH]);
@@ -148,10 +149,11 @@ void Settings::LoadSettings()
 	LoadSetting(EXTRAINFO_MINLEVEL);
 	LoadSetting(EXTRAINFO_MAXLEVEL);
 	LoadSetting(EXTRAINFO_PCLVMULT);
-	LoadSetting(EXTRAINFO_UNIQUE);
-	LoadSetting(EXTRAINFO_ESSENTIAL);
-	LoadSetting(EXTRAINFO_PROTECTED);
-	LoadSetting(EXTRAINFO_INVULNERABLE);
+	LoadSetting(FLAGINFO);
+	LoadSetting(FLAGINFO_UNIQUE);
+	LoadSetting(FLAGINFO_ESSENTIAL);
+	LoadSetting(FLAGINFO_PROTECTED);
+	LoadSetting(FLAGINFO_INVULNERABLE);
 	LoadSetting(EXTRAINFO_MEMORY);
 	LoadSetting(EXTRAINFO_TRUE);
 	LoadSetting(EXTRAINFO_FALSE);

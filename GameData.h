@@ -152,10 +152,10 @@ class HasPerkVisitor
 public:
 	struct Entry
 	{
-		BGSPerk*	perk;
+		BGSPerk		* perk;
 		UInt8		rank;
 	};
-	virtual uintptr_t Accept(Entry* pEntry);
+	virtual uintptr_t Accept(Entry * pEntry);
 
 	std::vector<Entry>				result;
 };
@@ -223,20 +223,11 @@ public:
 	float												unkA0;									// A0  //float
 	UInt32												unkA4;									// A4
 };
-static_assert(sizeof(ActiveEffect) == 0xA8, "sizeof(ActiveEffect) != 0xA8");
+STATIC_ASSERT(sizeof(ActiveEffect) == 0xA8);
 
 
 
-template <typename T>
-class BSSimpleList
-{
-public:
-	T*			items;	   // 00
-	UInt64		unk08;
-	UInt32		count;
-	UInt32		unk14;
-	UInt8		refCount;  // 18
-};
+
 
 struct ActorValueInfoHolder
 {
@@ -252,7 +243,36 @@ struct SimpleCollector
 	UInt64		count;
 };
 
-//extern RelocAddr<ActorValueInfoHolder*>	g_actorValues;
 
+struct ObjectInstanceData
+{
+	TESForm						* form;
+	TBO_InstanceData			* data;
+};
 
+struct InventoryItemStack
+{
+	UInt64						unk00;
+	UInt64						unk08;
+	UInt64						unk10;
+	ExtraDataList				* extraList;
+};
 
+struct InventoryItem
+{
+	TESForm						* form;
+	InventoryItemStack			* stack;
+};
+
+struct SimpleDataCollector
+{
+	struct Data {
+		UInt32					type;
+		float					value;
+	};
+
+	UInt64						unk00;
+	Data						* data;
+	UInt32						unk10;
+	UInt64						count;
+};
