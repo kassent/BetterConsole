@@ -12,6 +12,7 @@
 
 #include <memory>
 #include <string>
+#include <sstream>
 
 #include "Scaleform.h"
 #include "GameData.h"
@@ -347,9 +348,9 @@ RelocAddr<_CalcInstanceData>	CalcInstanceData(0x03E29D0); /// sub_1403E29D0
 using _RegisterMenuOpenCloseEvent = void(*)(BSTEventDispatcher<MenuOpenCloseEvent> & dispatcher, BSTEventSink<MenuOpenCloseEvent> * pHandler);
 RelocAddr <_RegisterMenuOpenCloseEvent>	RegisterMenuOpenCloseEvent(0x0612530);// sub_140612530
 
-RelocAddr <float *>    fNewBatteryCapacity(0x3761848);
-
-RelocPtr <BGSKeyword *>	pSyringerAmmoKW(0x591B350);///V1.10.26 ObjectTypeSyringerAmmo [KYWD:0018506F] 48 8B 15 ? ? ? ? 49 8D 8D ? ? ? ? 4C 89 6C 24 ?
+//RelocAddr <float *>    fNewBatteryCapacity(0x3761848);
+//
+//RelocPtr <BGSKeyword *>	pSyringerAmmoKW(0x591B350);///V1.10.26 ObjectTypeSyringerAmmo [KYWD:0018506F] 48 8B 15 ? ? ? ? 49 8D 8D ? ? ? ? 4C 89 6C 24 ?
 
 class BetterConsole_GetBaseData : public GFxFunctionHandler
 {
@@ -807,7 +808,7 @@ public:
 				float				base;
 				float				current;
 			};
-			std::map<std::string, AVInfo> dataBase;
+			std::map<std::string, AVInfo> actorValueDict;
 
 			for (uint32_t i = 0; i < actor->actorValueData.count; ++i)
 			{
@@ -820,22 +821,34 @@ public:
 					if (data.value != 0.0f || currentValue != 0.0f)
 					{
 						const char * actorValueName = pAVI->GetDisplayName();
-						if (!actorValueName || !actorValueName[0])
-						{
+						if (!actorValueName || !actorValueName[0]) {
 							actorValueName = pAVI->avName;
 						}
-						dataBase.insert({ actorValueName,{ pAVI, data.value, currentValue } });
+						if (!actorValueName || !actorValueName[0]) {
+							actorValueName = pAVI->GetFullName();
+						}
+						if (!actorValueName || !actorValueName[0]) {
+							continue;
+						}
+						//if (!actorValueName || !actorValueName[0]) {
+						//	static char formId[9] = { 0 }; 
+						//	sprintf_s(formId, "%08X", pForm->formID); // 使用 sprintf_s 格式化字符串并补零
+						//	actorValueName = formId;
+						//}
+						if (nullptr != actorValueName) {
+							actorValueDict.insert({ actorValueName,{ pAVI, data.value, currentValue } });
+						}
 					}
 				}
 			}
-			if (!dataBase.size())
+			if (!actorValueDict.size())
 				return;
 
 			GFxValue value;
 			root->CreateArray(&value); //extraData
 
 									   //sort by string.A-Z
-			for (const auto& map : dataBase)
+			for (const auto& map : actorValueDict)
 			{
 				++count;
 				auto pAVI = map.second.pAVI;
@@ -1382,6 +1395,14 @@ public:
 					Register<UInt32>(&AP, "filterFlag", 2);
 					args->result->PushBack(&AP);
 				}
+
+				GFxValue carryWeight;
+				args->movie->movieRoot->CreateObject(&carryWeight);
+				float fCarryWeight = pRef->GetCarryWeight();
+				sprintf_s(sResult.get(), MAX_PATH, "%s: %.2f", Settings::EXTRAINFO_CARRYWEIGHT.c_str(), fCarryWeight);
+				RegisterString(&carryWeight, args->movie->movieRoot, "text", sResult.get());
+				Register<UInt32>(&carryWeight, "filterFlag", 2);
+				args->result->PushBack(&carryWeight);
 			}
 
 			if (pRef->formType == kFormType_ACHR)
@@ -1827,14 +1848,14 @@ void InitRuntimeData()
 	RELOC_MEMBER_FN(GFxValue::ObjectInterface, GetMember, "E8 ? ? ? ? 84 C0 74 ? 48 8B 55 ? 44 8B CB", 0, 1, 5); // new
 	RELOC_MEMBER_FN(GFxValue::ObjectInterface, Invoke, "E8 ? ? ? ? EB ? 8B 07 39 05 ? ? ? ?", 0, 1, 5); // new
 
-	//RELOC_MEMBER_FN(GFxValue::ObjectInterface, PushBack, "40 53 48 83 EC 40 48 8B 41 08 4D 8B C8");
-	//RELOC_MEMBER_FN(GFxValue::ObjectInterface, GetArraySize, "E8 ? ? ? ? 85 C0 0F 85 ? ? ? ? 48 8B 4B 40", 0, 1, 5);
-	//RELOC_MEMBER_FN(GFxValue::ObjectInterface, AddManaged_Internal, "8B 42 08 25 ? ? ? ? 83 F8 06 74 2E");
-	//RELOC_MEMBER_FN(GFxValue::ObjectInterface, ReleaseManaged_Internal, "E8 ? ? ? ? 48 8D 15 ? ? ? ? 45 33 C0 49 8B CE 41 C6 86 ? ? ? ? ?", 0, 1, 5);
+	RELOC_MEMBER_FN(GFxValue::ObjectInterface, PushBack, "40 53 48 83 EC ? 48 8B 41 ? 4D 8B C8 48 8B DA 4C 8D 44 24 ? 49 8B D1"); // new
+	RELOC_MEMBER_FN(GFxValue::ObjectInterface, GetArraySize, "E8 ? ? ? ? 3B F8 0F 82 ? ? ? ? 4C 8D 9C 24 ? ? ? ?", 0, 1, 5);
+	RELOC_MEMBER_FN(GFxValue::ObjectInterface, AddManaged_Internal, "E8 ? ? ? ? 48 8D 44 24 ? EB ?", 0, 1, 5);
+	RELOC_MEMBER_FN(GFxValue::ObjectInterface, ReleaseManaged_Internal, "E8 ? ? ? ? 48 C7 03 ? ? ? ? 8B 46 ?", 0, 1, 5);
 
-	//RELOC_MEMBER_FN_EX(GFxValue::ObjectInterface, SetMember, "4C 8D 4D ? 3C ? 4C 8D 05 ? ? ? ?", 0x14, 1, 5); // new
-	//RELOC_MEMBER_FN_EX(GFxValue::ObjectInterface, AddManaged_Internal, "8B 42 08 25 ? ? ? ? 83 F8 06 74 2E");
-	//RELOC_MEMBER_FN_EX(GFxValue::ObjectInterface, ReleaseManaged_Internal, "E8 ? ? ? ? 48 8D 15 ? ? ? ? 45 33 C0 49 8B CE 41 C6 86 ? ? ? ? ?", 0, 1, 5);
+	RELOC_MEMBER_FN_EX(GFxValue::ObjectInterface, SetMember, "4C 8D 4D ? 3C ? 4C 8D 05 ? ? ? ?", 0x14, 1, 5); // new
+	RELOC_MEMBER_FN_EX(GFxValue::ObjectInterface, AddManaged_Internal, "E8 ? ? ? ? 48 8D 44 24 ? EB ?", 0, 1, 5);
+	RELOC_MEMBER_FN_EX(GFxValue::ObjectInterface, ReleaseManaged_Internal, "E8 ? ? ? ? 48 C7 03 ? ? ? ? 8B 46 ?", 0, 1, 5);
 
 	RELOC_MEMBER_FN_EX(UI, IsMenuOpen, "E8 ? ? ? ? 84 C0 0F 85 ? ? ? ? 48 8B 3D ? ? ? ?", 0, 1, 5);
 
@@ -1852,6 +1873,9 @@ void InitRuntimeData()
 	RELOC_MEMBER_FN_EX(TESObjectREFR, GetCurrentLocation, "83 79 ? ? 48 8B D9 75 ? 48 8B 05 ? ? ? ?", -0x6);
 	RELOC_MEMBER_FN_EX(TESObjectREFR, GetEncounterZone, "E8 ? ? ? ? 48 85 C0 75 ? 49 8B 86 ? ? ? ? 48 85 C0", 0, 1, 5);
 	RELOC_MEMBER_FN_EX(TESObjectREFR, GetWorldspace, "48 83 EC ? 48 8B 81 ? ? ? ? 48 85 C0 75 ? 48 8B 01");
+
+	RELOC_MEMBER_FN_EX(TESObjectREFR, GetInventoryWeight, "E8 ? ? ? ? 0F 2F C6 41 0F 43 DC", 0, 1, 5);
+	RELOC_MEMBER_FN_EX(TESObjectREFR, GetCarryWeight, "E8 ? ? ? ? F3 0F 5D C6 48 8B 74 24 ?", 0, 1, 5);
 
 	//DEFINE_MEMBER_FN(GetInventoryWeight, float, 0x004B3B20);
 	//DEFINE_MEMBER_FN(GetCarryWeight, float, 0x00BEACF0);

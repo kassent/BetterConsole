@@ -18,7 +18,7 @@
 
 #include "xbyak/xbyak.h"
 
-#define PLUGIN_VERSION	MAKE_EXE_VERSION(1, 4, 0)
+#define PLUGIN_VERSION	MAKE_EXE_VERSION(1, 5, 0)
 
 IDebugLog						gLog;
 PluginHandle					g_pluginHandle = kPluginHandle_Invalid;
@@ -228,19 +228,35 @@ VirtualMachineEx::FnRegisterFunction VirtualMachineEx::fnRegisterFunction = null
 
 extern "C"
 {
-	bool F4SEPlugin_Query(const F4SEInterface * f4se, PluginInfo * info)
+
+	F4SEPluginVersionData F4SEPlugin_Version =
+	{
+		F4SEPluginVersionData::kVersion,
+
+		PLUGIN_VERSION,
+		"BetterConsole",
+		"kassent",
+
+		F4SEPluginVersionData::kAddressIndependence_Signatures,	// not version independent
+		F4SEPluginVersionData::kStructureIndependence_1_10_980Layout,	// not version independent (extended field)
+		{ RUNTIME_VERSION_1_10_980, 0 },	// compatible with 1.10.980
+		0,	// works with any version of the script extender. you probably do not need to put anything here
+	};
+
+	bool F4SEPlugin_Preload(const F4SEInterface* f4se)
 	{
 		gLog.OpenRelative(CSIDL_MYDOCUMENTS, "\\My Games\\Fallout4\\F4SE\\BetterConsole.log");
 		_MESSAGE("BetterConsole: %08X", PLUGIN_VERSION);
-
-		info->infoVersion = PluginInfo::kInfoVersion;
-		info->name = "BetterConsole";
-		info->version = PLUGIN_VERSION;
 
 		g_pluginHandle = f4se->GetPluginHandle();
 
 		plugin_info.plugin_name = "BetterConsole";
 		plugin_info.runtime_version = f4se->runtimeVersion;
+
+		if (f4se->runtimeVersion < RUNTIME_VERSION_1_10_980) {
+			_FATALERROR("incompatible old verison: %08X...", f4se->runtimeVersion);
+			return false;
+		}
 
 		if (f4se->isEditor)
 		{

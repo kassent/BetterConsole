@@ -18,6 +18,7 @@ string  Settings::EXTRAINFO_SEX = "sex";
 string  Settings::EXTRAINFO_LEVEL = "level";
 string  Settings::EXTRAINFO_MINLEVEL = "minLevel";
 string  Settings::EXTRAINFO_MAXLEVEL = "maxLevel";
+string  Settings::EXTRAINFO_CARRYWEIGHT = "carryWeight";
 string  Settings::EXTRAINFO_PCLVMULT = "PCLevelMult";
 string	Settings::FLAGINFO = "flags";
 string  Settings::FLAGINFO_UNIQUE = "isUnique";
@@ -116,7 +117,7 @@ std::vector<string>	Settings::RESISTTYPES = {
 };
 
 #define LoadSetting(key)	\
-	GetPrivateProfileString(settingsSection, #key, "", sResult.get(), MAX_PATH, configFile); \
+	GetPrivateProfileString(settingsSection, #key, Settings::##key##.c_str(), sResult.get(), MAX_PATH, configFile); \
 	Settings::##key## =  sResult.get();														 \
 	_MESSAGE("%s=%s", #key, sResult.get());													
 
@@ -148,6 +149,7 @@ void Settings::LoadSettings()
 	LoadSetting(EXTRAINFO_LEVEL);
 	LoadSetting(EXTRAINFO_MINLEVEL);
 	LoadSetting(EXTRAINFO_MAXLEVEL);
+	LoadSetting(EXTRAINFO_CARRYWEIGHT);
 	LoadSetting(EXTRAINFO_PCLVMULT);
 	LoadSetting(FLAGINFO);
 	LoadSetting(FLAGINFO_UNIQUE);

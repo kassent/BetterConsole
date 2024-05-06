@@ -22,6 +22,8 @@ struct Settings
 	static string		EXTRAINFO_LEVEL;
 	static string		EXTRAINFO_MINLEVEL;
 	static string		EXTRAINFO_MAXLEVEL;
+
+	static string		EXTRAINFO_CARRYWEIGHT;
 	static string		EXTRAINFO_PCLVMULT;
 
 	static string		FLAGINFO;
