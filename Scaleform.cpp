@@ -1847,7 +1847,6 @@ void InitRuntimeData()
 	RELOC_MEMBER_FN(GFxValue::ObjectInterface, HasMember, "E8 ? ? ? ? 84 C0 74 ? 49 8B CF E8 ? ? ? ? 8B 4B ?", 0, 1, 5); // new
 	RELOC_MEMBER_FN(GFxValue::ObjectInterface, GetMember, "E8 ? ? ? ? 84 C0 74 ? 48 8B 55 ? 44 8B CB", 0, 1, 5); // new
 	RELOC_MEMBER_FN(GFxValue::ObjectInterface, Invoke, "E8 ? ? ? ? EB ? 8B 07 39 05 ? ? ? ?", 0, 1, 5); // new
-
 	RELOC_MEMBER_FN(GFxValue::ObjectInterface, PushBack, "40 53 48 83 EC ? 48 8B 41 ? 4D 8B C8 48 8B DA 4C 8D 44 24 ? 49 8B D1"); // new
 	RELOC_MEMBER_FN(GFxValue::ObjectInterface, GetArraySize, "E8 ? ? ? ? 3B F8 0F 82 ? ? ? ? 4C 8D 9C 24 ? ? ? ?", 0, 1, 5);
 	RELOC_MEMBER_FN(GFxValue::ObjectInterface, AddManaged_Internal, "E8 ? ? ? ? 48 8D 44 24 ? EB ?", 0, 1, 5);
