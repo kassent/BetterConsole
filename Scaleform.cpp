@@ -327,8 +327,8 @@ RelocAddr<_GetChargeKW> GetChargeKW(0x03200B0); /// sub_1403200B0
 using _GeHealthtKW = BGSKeyword*(*)();
 RelocAddr<_GeHealthtKW> GeHealthtKW(0x0320110); /// sub_140320110
 
-using _ReleaseSimpleColllector = void(*)(BGSInventoryItem::SimpleDataCollector&);
-RelocAddr<_ReleaseSimpleColllector>	ReleaseSimpleColllector(0x153F730); /// sub_14153F730
+//using _ReleaseSimpleColllector = void(*)(BGSInventoryItem::SimpleDataCollector&);
+//RelocAddr<_ReleaseSimpleColllector>	ReleaseSimpleColllector(0x153F730); /// sub_14153F730
 
 using _GetWeaponRange = float(*)(ObjectInstanceData&);
 RelocAddr<_GetWeaponRange> GetWeaponRange(0x0679C30);/// sub_140679C30
@@ -979,7 +979,7 @@ public:
 						{
 							TESObjectARMO * pArmor = static_cast<TESObjectARMO*>(pBaseForm);
 							auto * pArmorInst = (TESObjectARMO::InstanceData*)((objInst.data != nullptr) ? objInst.data : pArmor->GetInstanceData());///V1.10
-							BGSInventoryItem::SimpleDataCollector		resistInfo{ 0, nullptr, 0, 0 };
+							BGSInventoryItem::SimpleDataCollector resistInfo;
 							item.CollectResistData(stack, resistInfo, 1.0f);
 							for (size_t i = 0; i < resistInfo.count; ++i)
 							{
@@ -992,10 +992,6 @@ public:
 									Register<UInt32>(&itemResist, "filterFlag", 2);
 									arrObj.PushBack(&itemResist);
 								}
-							}
-							if (resistInfo.data != nullptr)
-							{
-								ReleaseSimpleColllector(resistInfo);
 							}
 							BGSKeyword * pKW = GeHealthtKW();
 							if (pArmor->keywordForm.keywordBase.HasKeyword(pKW))
@@ -1091,7 +1087,7 @@ public:
 									Register<UInt32>(&itemSpeed, "filterFlag", 2);
 									arrObj.PushBack(&itemSpeed);
 								}
-								BGSInventoryItem::SimpleDataCollector		damageInfo{ 0, nullptr, 0, 0 };
+								BGSInventoryItem::SimpleDataCollector damageInfo;
 								item.CollectDamageData(stack, damageInfo);
 								for (size_t i = 0; i < damageInfo.count; ++i)
 								{
@@ -1104,10 +1100,6 @@ public:
 										Register<UInt32>(&itemDamage, "filterFlag", 2);
 										arrObj.PushBack(&itemDamage);
 									}
-								}
-								if (damageInfo.data != nullptr)
-								{
-									ReleaseSimpleColllector(damageInfo);
 								}
 							}
 							break;
@@ -1891,6 +1883,7 @@ void InitRuntimeData()
 
 	RELOC_MEMBER_FN_EX(BGSInventoryItem, CollectDamageData, "E8 ? ? ? ? 44 8B 85 ? ? ? ? 41 0F 28 F2", 0, 1, 5);
 	RELOC_MEMBER_FN_EX(BGSInventoryItem, CollectResistData, "48 8B C4 F3 0F 11 58 ? 56");
+	RELOC_MEMBER_FN_EX(BGSInventoryItem::SimpleDataCollector, Release, "40 53 48 83 EC ? 48 8B 51 ? 48 8B D9 48 85 D2 74 ? 48 8B 09 E8 ? ? ? ?");
 
 	RELOC_MEMBER_FN_EX(TESDescription, Get, "E8 ? ? ? ? 48 8B 93 ? ? ? ? 48 8D 45 ?", 0, 1, 5);
 
@@ -1920,7 +1913,8 @@ void InitRuntimeData()
 	RELOC_GLOBAL_VAL(GetActorValueCollector, "E8 ? ? ? ? 48 8B 5C 24 ? 48 8B 88 ? ? ? ? 48 89 0D ? ? ? ?", 0, 1, 5); // new detail: sub_14020E8F0
 	RELOC_GLOBAL_VAL(GetChargeKW, "E8 ? ? ? ? 48 8B D0 48 C7 44 24 ? ? ? ? ? 45 33 C9 45 33 C0", 0, 1, 5);
 	RELOC_GLOBAL_VAL(GeHealthtKW, "E8 ? ? ? ? 48 8B D0 49 8D 8C 24 ? ? ? ? 45 33 C0", 0, 1, 5);
-	RELOC_GLOBAL_VAL(ReleaseSimpleColllector, "40 53 48 83 EC ? 48 8B 51 ? 48 8B D9 48 85 D2 74 ? 48 8B 09 E8 ? ? ? ?");
+	// RELOC_GLOBAL_VAL(ReleaseSimpleColllector, "40 53 48 83 EC ? 48 8B 51 ? 48 8B D9 48 85 D2 74 ? 48 8B 09 E8 ? ? ? ?");
+
 	RELOC_GLOBAL_VAL(GetWeaponRange, "40 53 48 83 EC ? 48 83 39 ? 48 8B D9 0F 57 C9"); 
 	RELOC_GLOBAL_VAL(GetWeaponAccuracy, "40 53 48 83 EC ? 0F 29 74 24 ? 48 8B D9 E8 ? ? ? ? 48 8B 4B ?");
 	RELOC_GLOBAL_VAL(GetWeaponSpeedDesc, "E8 ? ? ? ? 48 8B D0 48 8D 8D ? ? ? ? E8 ? ? ? ? 4C 8B C0", 0, 1, 5); // this function in main logic.
