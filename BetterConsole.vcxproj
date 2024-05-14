@@ -74,14 +74,14 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\..\..\SteamLibrary\steamapps\common\Fallout 4\Data\F4SE\Plugins</OutDir>
+    <OutDir>F:\BaiDuDisk\游戏本体\游戏本体9月\steam\steamapps\common\Fallout 4\Data\F4SE\Plugins</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\..\..\SteamLibrary\steamapps\common\Fallout 4\Data\F4SE\Plugins</OutDir>
+    <OutDir>F:\BaiDuDisk\游戏本体\游戏本体9月\steam\steamapps\common\Fallout 4\Data\F4SE\Plugins</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

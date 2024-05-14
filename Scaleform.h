@@ -9,3 +9,5 @@ bool ScaleformCallback(GFxMovieView * view, GFxValue * value);
 
 void InitRuntimeData();
 
+void InitRuntimeData_NG();
+

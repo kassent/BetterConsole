@@ -18,7 +18,8 @@
 
 #include "xbyak/xbyak.h"
 
-#define PLUGIN_VERSION	MAKE_EXE_VERSION(1, 5, 0)
+#define PLUGIN_VERSION	MAKE_EXE_VERSION(1, 5, 1)
+#define PLUGIN_NAME		"BetterConsole"
 
 IDebugLog						gLog;
 PluginHandle					g_pluginHandle = kPluginHandle_Invalid;
@@ -234,29 +235,69 @@ extern "C"
 		F4SEPluginVersionData::kVersion,
 
 		PLUGIN_VERSION,
-		"BetterConsole",
+		PLUGIN_NAME,
 		"kassent",
 
 		F4SEPluginVersionData::kAddressIndependence_Signatures,	// not version independent
-		F4SEPluginVersionData::kStructureIndependence_1_10_980Layout,	// not version independent (extended field)
-		{ RUNTIME_VERSION_1_10_980, 0 },	// compatible with 1.10.980
+		F4SEPluginVersionData::kStructureIndependence_NoStructs,	// not version independent (extended field)
+		{ 0 },	// compatible with 1.10.980
 		0,	// works with any version of the script extender. you probably do not need to put anything here
 	};
 
 	bool F4SEPlugin_Preload(const F4SEInterface* f4se)
 	{
-		gLog.OpenRelative(CSIDL_MYDOCUMENTS, "\\My Games\\Fallout4\\F4SE\\BetterConsole.log");
-		_MESSAGE("BetterConsole: %08X", PLUGIN_VERSION);
+		std::unique_ptr<char[]> sPath(new char[MAX_PATH]);
+		sprintf_s(sPath.get(), MAX_PATH, "%s%s.log", "\\My Games\\Fallout4\\F4SE\\", PLUGIN_NAME);
+		gLog.OpenRelative(CSIDL_MYDOCUMENTS, sPath.get());
+
+		_MESSAGE("%s: %08X", PLUGIN_NAME, PLUGIN_VERSION);
 
 		g_pluginHandle = f4se->GetPluginHandle();
+		g_runtimeVersion = f4se->runtimeVersion;
+
+		plugin_info.plugin_name = PLUGIN_NAME;
+		plugin_info.runtime_version = f4se->runtimeVersion;
+
+		if (f4se->isEditor)
+		{
+			_FATALERROR("loaded in editor, marking as incompatible");
+			return false;
+		}
+
+		g_scaleform = (F4SEScaleformInterface*)f4se->QueryInterface(kInterface_Scaleform);
+		if (!g_scaleform)
+		{
+			_FATALERROR("couldn't get scaleform interface");
+			return false;
+		}
+
+		g_messaging = (F4SEMessagingInterface*)f4se->QueryInterface(kInterface_Messaging);
+		if (!g_messaging)
+		{
+			_FATALERROR("couldn't get messaging interface");
+			return false;
+		}
+
+		return true;
+	}
+
+	bool F4SEPlugin_Query(const F4SEInterface* f4se, PluginInfo* info)
+	{
+		std::unique_ptr<char[]> sPath(new char[MAX_PATH]);
+		sprintf_s(sPath.get(), MAX_PATH, "%s%s.log", "\\My Games\\Fallout4\\F4SE\\", PLUGIN_NAME);
+		gLog.OpenRelative(CSIDL_MYDOCUMENTS, sPath.get());
+
+		_MESSAGE("%s: %08X", PLUGIN_NAME, PLUGIN_VERSION);
+
+		info->infoVersion = PluginInfo::kInfoVersion;
+		info->name = PLUGIN_NAME;
+		info->version = PLUGIN_VERSION;
+
+		g_pluginHandle = f4se->GetPluginHandle();
+		g_runtimeVersion = f4se->runtimeVersion;
 
 		plugin_info.plugin_name = "BetterConsole";
 		plugin_info.runtime_version = f4se->runtimeVersion;
-
-		if (f4se->runtimeVersion < RUNTIME_VERSION_1_10_980) {
-			_FATALERROR("incompatible old verison: %08X...", f4se->runtimeVersion);
-			return false;
-		}
 
 		if (f4se->isEditor)
 		{
@@ -293,7 +334,13 @@ extern "C"
 		try
 		{
 			sig_scan_timer timer;
-			InitRuntimeData();
+
+			if (g_runtimeVersion >= RUNTIME_VERSION_1_10_980) {
+				InitRuntimeData_NG();
+			}
+			else {
+				InitRuntimeData();
+			}
 		}
 		catch (const no_result_exception & exception)
 		{

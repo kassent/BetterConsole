@@ -871,7 +871,8 @@ public:
 
 				GFxValue avType;
 				root->CreateObject(&avType);
-				sprintf_s(sResult.get(), MAX_PATH, "%s: %s", Settings::AVINFO_TYPE.c_str(), ActorValueTypes[pAVI->type].c_str());
+				auto isValidIndex = pAVI->type >= 0 && pAVI->type < ActorValueTypes.size();
+				sprintf_s(sResult.get(), MAX_PATH, "%s: %s", Settings::AVINFO_TYPE.c_str(), isValidIndex ? ActorValueTypes[pAVI->type].c_str() : Settings::EXTRAINFO_NULL.c_str());
 				RegisterString(&avType, root, "text", sResult.get());
 				Register<UInt32>(&avType, "filterFlag", 2);
 				extraInfo.PushBack(&avType);
@@ -1783,6 +1784,12 @@ public:
 
 	static void InitHook()
 	{
+		PickNext_Original = HookUtil::SafeWrite64(RELOC_RUNTIME_ADDR("48 8D 05 ? ? ? ? BD ? ? ? ? F3 0F 11 44 24 ?", 0, 3, 7) + 8 * 0xF, &PickNext_Hook); //V1.10.26 //48 8D 05 ? ? ? ? BD ? ? ? ? F3 0F 11 44 24 ? //02DAE938
+		g_branchTrampoline.Write6Call(RELOC_RUNTIME_ADDR("FF 90 ? ? ? ? 48 89 74 24 ? 4C 89 7C 24 ?"), (uintptr_t)GetReferenceName); //FF 90 ? ? ? ? 48 89 74 24 ? 4C 89 7C 24 ?
+	}
+
+	static void InitHook_NG()
+	{
 		PickNext_Original = HookUtil::SafeWrite64(RELOC_RUNTIME_ADDR("48 8D 05 ? ? ? ? 48 89 06 4C 8D 46 ? 33 C9", 0, 3, 7) + 8 * 0xF, &PickNext_Hook); //V1.10.26 //48 8D 05 ? ? ? ? BD ? ? ? ? F3 0F 11 44 24 ? //02DAE938
 		g_branchTrampoline.Write6Call(RELOC_RUNTIME_ADDR("FF 90 ? ? ? ? 48 89 74 24 ? 4C 8D 05 ? ? ? ?"), (uintptr_t)GetReferenceName); //FF 90 ? ? ? ? 48 89 74 24 ? 4C 89 7C 24 ?
 	}
@@ -1818,11 +1825,120 @@ bool ScaleformCallback(GFxMovieView * view, GFxValue * value)
 }
 
 
-
 void InitRuntimeData()
 {
-	RELOC_GLOBAL_VAL(Runtime_RTTI_TESFullName, "4C 8D 0D ? ? ? ? 4C 8D 05 ? ? ? ? 89 7C 24 ? 33 D2 48 8B D9", 0, 3, 7); // 1.10.980
+	RELOC_GLOBAL_VAL(Runtime_RTTI_TESFullName, "4C 8D 0D ? ? ? ? 4C 8D 05 ? ? ? ? 33 FF 33 D2 48 8B D9 89 7C 24 20", 0, 3, 7);
+	RELOC_GLOBAL_VAL(Runtime_RTTI_TESForm, "4C 8D 05 ? ? ? ? 33 D2 48 8B C8 89 6C 24 20 E8 ? ? ? ? 48 85 C0 74 11", 0, 3, 7);
+	RELOC_GLOBAL_VAL(Runtime_DynamicCast_Internal, "E8 ? ? ? ? 48 8D 54 24 ? 48 8B CF 48 89 43 18", 0, 1, 5);
 
+	RELOC_MEMBER_FN(BSFixedString, ctor, "E8 ? ? ? ? 49 8B CF 48 8B D0 E8 ? ? ? ? 48 8D 8D ? ? ? ? 8B D8", 0, 1, 5);
+	RELOC_MEMBER_FN(BSFixedString, Set, "E8 ? ? ? ? 48 8D 4C 24 ? E8 ? ? ? ? 83 FB 02", 0, 1, 5);
+	RELOC_MEMBER_FN(BSFixedString, Release, "E8 ? ? ? ? 48 8B 0E E8 ? ? ? ? 48 C7 06 ? ? ? ?", 0, 1, 5);
+	RELOC_MEMBER_FN(BSFixedString, ctor_w, "E8 ? ? ? ? 48 8B 7D F0 48 8D 15 ? ? ? ?", 0, 1, 5);
+	RELOC_MEMBER_FN(BSFixedString, Set_w, "44 88 44 24 ? 48 89 4C 24 ? 53 55 56");
+
+	RELOC_MEMBER_FN(Heap, Allocate, "E8 ? ? ? ? 48 85 C0 74 08 48 8B C8 E8 ? ? ? ? 49 8B 0E", 0, 1, 5);
+	RELOC_MEMBER_FN(Heap, Free, "E8 ? ? ? ? EB 1E 41 8D 46 FF 48 8B D3 83 E0 01", 0, 1, 5);
+
+	RELOC_MEMBER_FN(GFxValue::ObjectInterface, SetMember, "25 ? ? ? ? 4C 8D 4D F0 4C 8D 05 ? ? ? ? 3C 0A 0F 94 C0", 0x19, 1, 5);
+	RELOC_MEMBER_FN(GFxValue::ObjectInterface, HasMember, "E8 ? ? ? ? 84 C0 74 0D 41 8B 47 08", 0, 1, 5);
+	RELOC_MEMBER_FN(GFxValue::ObjectInterface, GetMember, "E8 ? ? ? ? 8B 4D 90 81 E1 ? ? ? ?", 0, 1, 5);
+	RELOC_MEMBER_FN(GFxValue::ObjectInterface, Invoke, "E8 ? ? ? ? 49 8B CC E8 ? ? ? ? 49 8B 54 24 ?", 0, 1, 5);
+	RELOC_MEMBER_FN(GFxValue::ObjectInterface, PushBack, "40 53 48 83 EC 40 48 8B 41 08 4D 8B C8");
+	RELOC_MEMBER_FN(GFxValue::ObjectInterface, GetArraySize, "E8 ? ? ? ? 85 C0 0F 85 ? ? ? ? 48 8B 4B 40", 0, 1, 5);
+	RELOC_MEMBER_FN(GFxValue::ObjectInterface, AddManaged_Internal, "8B 42 08 25 ? ? ? ? 83 F8 06 74 2E");
+	RELOC_MEMBER_FN(GFxValue::ObjectInterface, ReleaseManaged_Internal, "E8 ? ? ? ? 48 8D 15 ? ? ? ? 45 33 C0 49 8B CE 41 C6 86 ? ? ? ? ?", 0, 1, 5);
+
+	RELOC_MEMBER_FN_EX(GFxValue::ObjectInterface, SetMember, "25 ? ? ? ? 4C 8D 4D F0 4C 8D 05 ? ? ? ? 3C 0A 0F 94 C0", 0x19, 1, 5);
+	RELOC_MEMBER_FN_EX(GFxValue::ObjectInterface, AddManaged_Internal, "8B 42 08 25 ? ? ? ? 83 F8 06 74 2E");
+	RELOC_MEMBER_FN_EX(GFxValue::ObjectInterface, ReleaseManaged_Internal, "E8 ? ? ? ? 48 8D 15 ? ? ? ? 45 33 C0 49 8B CE 41 C6 86 ? ? ? ? ?", 0, 1, 5);
+
+	RELOC_MEMBER_FN_EX(UI, IsMenuOpen, "E8 ? ? ? ? 84 C0 0F 85 ? ? ? ? 48 8B 3D ? ? ? ?", 0, 1, 5);
+
+	RELOC_MEMBER_FN_EX(ExtraDataList, GetExtraData, "E8 ? ? ? ? 48 8B D8 48 85 C0 75 42 8D 48 28", 0, 1, 5);
+	RELOC_MEMBER_FN_EX(ExtraDataList, GetExtraInstanceData, "E8 ? ? ? ? 48 8B D8 48 89 44 24 ? 48 85 C0 75 3D", 0, 1, 5);
+	RELOC_MEMBER_FN_EX(ExtraDataList, GetCurrentHealth, "48 89 5C 24 ? 57 48 83 EC 20 48 8B DA 48 8B F9 E8 ? ? ? ? 48 8B D0 48 8B CB");
+	RELOC_MEMBER_FN_EX(ExtraDataList, GetCharge, "48 83 EC 28 B2 25 E8 ? ? ? ? 48 85 C0");
+	RELOC_MEMBER_FN_EX(ExtraDataList, GetEffectiveMod, "48 83 EC 48 B2 35");
+	RELOC_MEMBER_FN_EX(ExtraDataList, GetExtraEnchantmentItem, "48 83 EC 28 B2 9B E8 ? ? ? ? 48 85 C0 74 09 48 8B 40 20");
+
+	RELOC_MEMBER_FN_EX(ExtraTextDisplayData, GetReferenceName, "48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC 30 48 8D 79 18 48 8B D9");
+
+	RELOC_MEMBER_FN(TESObjectREFR, GetReferenceName, "40 53 55 57 41 55 48 81 EC ? ? ? ?");
+	RELOC_MEMBER_FN_EX(TESObjectREFR, GetReferenceName, "40 53 55 57 41 55 48 81 EC ? ? ? ?");
+	RELOC_MEMBER_FN_EX(TESObjectREFR, GetCurrentLocation, "40 53 48 83 EC 20 83 79 14 14");
+	RELOC_MEMBER_FN_EX(TESObjectREFR, GetEncounterZone, "E8 ? ? ? ? 48 85 C0 75 56 49 8B 86 ? ? ? ?", 0, 1, 5);
+	RELOC_MEMBER_FN_EX(TESObjectREFR, GetWorldspace, "48 83 EC 28 48 8B 81 ? ? ? ? 48 85 C0 75 0E");
+
+	RELOC_MEMBER_FN_EX(TESObjectREFR, GetCarryWeight, "E8 ? ? ? ? 48 8B 45 7F F3 0F 11 05 ? ? ? ?", 0, 1, 5);
+	RELOC_MEMBER_FN_EX(TESObjectREFR, GetInventoryWeight, "E8 ? ? ? ? F3 0F 58 F0 40 84 F6", 0, 1, 5);
+
+	RELOC_MEMBER_FN_EX(SimpleLock, LockThis, "E8 ? ? ? ? 41 8B 16 48 8D 4C 24 ? 45 33 C0 33 F6", 0, 1, 5);
+	RELOC_MEMBER_FN_EX(SimpleLock, ReleaseThis, "E8 ? ? ? ? 8B 45 70 48 8D 8D ? ? ? ?", 0, 1, 5);
+
+	RELOC_MEMBER_FN_EX(BSReadWriteLock, LockForRead, "E8 ? ? ? ? 41 8B 16 48 8D 4C 24 ? 45 33 C0 33 F6", 0, 1, 5);
+	RELOC_MEMBER_FN_EX(BSReadWriteLock, UnlockRead, "E8 ? ? ? ? 8B 45 70 48 8D 8D ? ? ? ?", 0, 1, 5);
+
+	RELOC_MEMBER_FN_EX(ActorValueInfo, GetDisplayName, "E8 ? ? ? ? 4C 8B F0 48 85 C0 0F 84 ? ? ? ? 66 39 7E 18", 0, 1, 5);
+
+	RELOC_MEMBER_FN_EX(BGSInventoryItem, CollectDamageData, "48 8B C4 48 89 50 10 55 56 41 54");
+	RELOC_MEMBER_FN_EX(BGSInventoryItem, CollectResistData, "48 8B C4 F3 0F 11 58 ? 48 89 48 08 55 41 54");
+	RELOC_MEMBER_FN_EX(BGSInventoryItem::SimpleDataCollector, Release, "40 53 48 83 EC 20 48 8B 51 08 48 8B D9 48 85 D2 74 1A");
+
+	RELOC_MEMBER_FN_EX(TESDescription, Get, "E8 ? ? ? ? 48 8B 93 ? ? ? ? C6 44 24 ? ?", 0, 1, 5);
+
+	RELOC_MEMBER_FN_EX(TESObjectWEAP, GetShootSpeed, "E8 ? ? ? ? 0F 28 F8 48 85 FF 74 19", 0, 1, 5);
+	RELOC_MEMBER_FN_EX(TESObjectWEAP, GetAttackSpeed, "E8 ? ? ? ? 8B D8 48 85 FF 74 15", 0, 1, 5);
+
+	RELOC_MEMBER_FN_EX(TESObjectARMO, GetFullHealth, "48 89 5C 24 ? 57 48 83 EC 30 48 8B F9 48 85 D2 74 1A");
+
+	RELOC_MEMBER_FN_EX(TESAmmo, IsJunk, "48 85 C9 74 15 48 3B 0D ? ? ? ?");
+
+	RELOC_MEMBER_FN_EX(Actor, GetItemCount, "40 53 48 83 EC 20 48 8B DA 48 85 D2 74 44");
+	RELOC_MEMBER_FN_EX(Actor, HasPerk, "48 83 EC 28 48 8B 81 ? ? ? ? 48 85 C0 74 16 4C 8B C2");
+	RELOC_MEMBER_FN_EX(Actor, GetLevel, "E8 ? ? ? ? F3 0F 2C 15 ? ? ? ? 0F B7 C0", 0, 1, 5);
+
+	RELOC_MEMBER_FN_EX(TESForm, GetWeight, "40 53 48 83 EC 30 0F 29 74 24 ? 48 8B D9 48 85 D2 74 1B");
+	RELOC_MEMBER_FN_EX(TESForm, GetValue, "E8 ? ? ? ? 40 84 ED 74 04", 0, 1, 5);
+
+	RELOC_GLOBAL_VAL(CalculateCRC32_64, "48 89 5C 24 ? 48 89 7C 24 ? 41 8B C0");
+	RELOC_GLOBAL_VAL(CalculateCRC32_32, "48 89 5C 24 ? 44 8B CA 41 8B C0");
+	RELOC_GLOBAL_VAL(LookupREFRByHandle, "E8 ? ? ? ? 48 8B 5D 67 48 85 DB 0F 84 ? ? ? ?", 0, 1, 5);
+	RELOC_GLOBAL_VAL(LookupFormByID, "E8 ? ? ? ? 48 8B E8 48 85 C0 0F 84 ? ? ? ? 80 78 1A 90", 0, 1, 5);
+	RELOC_GLOBAL_VAL(EvaluationConditions, "4C 8B DC 48 81 EC ? ? ? ? 49 89 53 88");
+
+	RELOC_GLOBAL_VAL(CalcMagicEffect, "48 85 C9 0F 84 ? ? ? ? 48 89 5C 24 ? 55 56");
+	RELOC_GLOBAL_VAL(GetRestoredHPPercent, "48 8B C4 53 48 83 EC 40 0F 29 70 E8");
+	RELOC_GLOBAL_VAL(GetModifiedValueName, "48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC 20 48 8B F2 48 8B E9 48 8D 15 ? ? ? ?");
+	RELOC_GLOBAL_VAL(GetActorValueCollector, "E8 ? ? ? ? 4C 8B 46 58 48 8D 4E 58 48 8B 90 ? ? ? ? 41 FF 50 08 0F 57 C9", 0, 1, 5);
+	RELOC_GLOBAL_VAL(GetChargeKW, "E8 ? ? ? ? 33 FF 45 33 C9 45 33 C0", 0, 1, 5);
+	RELOC_GLOBAL_VAL(GeHealthtKW, "E8 ? ? ? ? 4C 8B C3 48 8B D0 48 8B CF FF 56 08 48 8B 74 24 ?", 0, 1, 5);
+	RELOC_GLOBAL_VAL(GetWeaponRange, "40 53 48 83 EC 20 48 83 39 00 0F 57 C9");
+	RELOC_GLOBAL_VAL(GetWeaponAccuracy, "40 53 48 83 EC 30 0F 29 74 24 ? 48 8B D9 E8 ? ? ? ? 48 8B 4B 08");
+	RELOC_GLOBAL_VAL(GetWeaponSpeedDesc, "E8 ? ? ? ? 48 8D 8D ? ? ? ? 48 8B D0 E8 ? ? ? ? 48 8D 15 ? ? ? ? 4D 8B CC", 0, 1, 5);
+	RELOC_GLOBAL_VAL(GetStringFromHash, "E8 ? ? ? ? 48 8B 0D ? ? ? ? 48 8B FB", 0, 1, 5);
+	RELOC_GLOBAL_VAL(VisitPerks, "E8 ? ? ? ? 48 8B 44 24 ? 48 85 C0 74 09 0F B6 40 08", 0, 1, 5);
+	RELOC_GLOBAL_VAL(CalcInstanceData, "48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC 20 48 89 11 49 8B F8");
+	RELOC_GLOBAL_VAL(RegisterMenuOpenCloseEvent, "E8 ? ? ? ? E9 ? ? ? ? 4D 85 E4 0F 84 ? ? ? ? 4C 8D 0D ? ? ? ?", 0, 1, 5);
+
+	RELOC_GLOBAL_VAL(g_consoleHandle, "8B 05 ? ? ? ? 4D 8D 4A 04", 0, 2, 6);
+	RELOC_GLOBAL_VAL(g_dataHandler, "48 8B 05 ? ? ? ? 8B 13", 0, 3, 7);
+	RELOC_GLOBAL_VAL(g_scaleformHeap, "48 8B 0D ? ? ? ? 48 8B 01 FF 50 60 48 83 EF 28 48 FF CE 75 BA 48 8B 55 58", 0, 3, 7);
+	RELOC_GLOBAL_VAL(g_scaleformManager, "48 8B 0D ? ? ? ? 48 8B 49 18 E8 ? ? ? ? 48 8B 44 24 ?", 0, 3, 7);
+	RELOC_GLOBAL_VAL(g_mainHeap, "48 8D 0D ? ? ? ? E8 ? ? ? ? 48 8B 55 AF", 0, 3, 7);
+	RELOC_GLOBAL_VAL(g_player, "48 8B 05 ? ? ? ? 48 85 C0 74 0C F0 FF 40 28", 0, 3, 7);
+	RELOC_GLOBAL_VAL(g_playerCamera, "48 8B 0D ? ? ? ? BA ? ? ? ? E8 ? ? ? ? 84 C0 75 05 48 83 C4 28", 0, 3, 7);
+	RELOC_GLOBAL_VAL(g_ui, "48 8B 3D ? ? ? ? E8 ? ? ? ? 48 8B CF 48 8B D0 E8 ? ? ? ? 84 C0 0F 85 ? ? ? ?", 0, 3, 7);
+
+	RELOC_GLOBAL_VAL(g_menuStackLock, "48 8D 0D ? ? ? ? 4C 89 74 24 ? 41 8B FC", 0, 3, 7);
+	RELOC_GLOBAL_VAL(g_menuTableLock, "48 8D 0D ? ? ? ? E8 ? ? ? ? 48 8B 96 ? ? ? ? 4C 8B 7C 24 ?", 0, 3, 7);
+
+	Console::InitHook();
+}
+
+void InitRuntimeData_NG()
+{
+	RELOC_GLOBAL_VAL(Runtime_RTTI_TESFullName, "4C 8D 0D ? ? ? ? 4C 8D 05 ? ? ? ? 89 7C 24 ? 33 D2 48 8B D9", 0, 3, 7); // 1.10.980
 	RELOC_GLOBAL_VAL(Runtime_RTTI_TESForm, "4C 8D 05 ? ? ? ? 89 7C 24 ? 33 D2 48 8B D9", 0, 3, 7); // 1.10.980
 	RELOC_GLOBAL_VAL(Runtime_DynamicCast_Internal, "E8 ? ? ? ? 48 8B F8 48 85 C0 0F 84 ? ? ? ? 48 8B 80 ? ? ? ?", 0, 1, 5);// 1.10.980
 
@@ -1877,7 +1993,6 @@ void InitRuntimeData()
 	RELOC_MEMBER_FN_EX(BSReadWriteLock, UnlockRead, "E8 ? ? ? ? 41 0F B6 C6 48 83 C4 ? 41 5E 5F C3", 0, 1, 5);
 	RELOC_MEMBER_FN_EX(BSReadWriteLock, LockForWrite, "E8 ? ? ? ? 48 8B 85 ? ? ? ? 48 8D 4D ? 48 83 C0 ?", 0, 1, 5);
 	RELOC_MEMBER_FN_EX(BSReadWriteLock, UnlockWrite, "E8 ? ? ? ? 48 8B 44 24 ? 48 8B 7C 24 ? 48 8B 5C 24 ?", 0, 1, 5);
-
 
 	RELOC_MEMBER_FN_EX(ActorValueInfo, GetDisplayName, "E8 ? ? ? ? 48 8B F0 48 85 C0 0F 84 ? ? ? ? 66 41 39 7E ?", 0, 1, 5);
 
@@ -1935,5 +2050,5 @@ void InitRuntimeData()
 	RELOC_GLOBAL_VAL(g_menuStackLock, "48 8D 0D ? ? ? ? 48 89 45 ? 44 8B 38", 0, 3, 7);
 	RELOC_GLOBAL_VAL(g_menuTableLock, "48 8D 0D ? ? ? ? E8 ? ? ? ? 4D 8B 85 ? ? ? ?", 0, 3, 7);
 
-	Console::InitHook();
+	Console::InitHook_NG();
 }
