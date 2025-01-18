@@ -296,7 +296,7 @@ extern "C"
 		g_pluginHandle = f4se->GetPluginHandle();
 		g_runtimeVersion = f4se->runtimeVersion;
 
-		plugin_info.plugin_name = "BetterConsole";
+		plugin_info.plugin_name = PLUGIN_NAME;
 		plugin_info.runtime_version = f4se->runtimeVersion;
 
 		if (f4se->isEditor)
@@ -345,7 +345,7 @@ extern "C"
 		catch (const no_result_exception & exception)
 		{
 			_MESSAGE(exception.what());
-			MessageBoxA(nullptr, "Signature scan failed, please deactive BetterConsole and download newer version from Nexus.", "BetterConsole", MB_OK);
+			MessageBoxA(nullptr, "Signature scan failed, please deactive " PLUGIN_NAME " and download newer version from Nexus.", PLUGIN_NAME, MB_OK);
 			return false;
 		}
 
