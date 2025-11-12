@@ -13,6 +13,7 @@
 #include <memory>
 #include <string>
 #include <sstream>
+// #include <format>
 
 #include "Scaleform.h"
 #include "GameData.h"
@@ -832,7 +833,7 @@ public:
 						}
 						//if (!actorValueName || !actorValueName[0]) {
 						//	static char formId[9] = { 0 }; 
-						//	sprintf_s(formId, "%08X", pForm->formID); // Ê¹ÓÃ sprintf_s ¸ñÊ½»¯×Ö·û´®²¢²¹Áã
+						//	sprintf_s(formId, "%08X", pForm->formID); // Ê¹ï¿½ï¿½ sprintf_s ï¿½ï¿½Ê½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 						//	actorValueName = formId;
 						//}
 						if (nullptr != actorValueName) {
@@ -1043,7 +1044,7 @@ public:
 									bool isJunk = pAmmo->IsJunk();
 									GFxValue itemAmmo;
 									root->CreateObject(&itemAmmo);
-									sprintf_s(sResult.get(), MAX_PATH, "%s: %s", Settings::EQUIPMENTINFO_AMMO.c_str(), GetStringFromHash(pAmmo->crcString));
+									sprintf_s(sResult.get(), MAX_PATH, "%s: %s", Settings::EQUIPMENTINFO_AMMO.c_str(), GetStringFromHash(pAmmo->shortDesc));
 									RegisterString(&itemAmmo, root, "text", sResult.get());
 									Register<UInt32>(&itemAmmo, "filterFlag", 2);
 									arrObj.PushBack(&itemAmmo);
@@ -1172,87 +1173,89 @@ public:
 		}
 	}
 
-	static void	CollectEquipmentData(GFxValue& object, GFxMovieRoot * root, Actor * actor, UInt32& count)
+	static void	CollectEquipmentData(GFxValue& object, GFxMovieRoot * root, Actor * actor, UInt32& dataListSize)
 	{
-		if (object.GetType() == GFxValue::kType_Object && actor->formType == kFormType_ACHR && root != nullptr)
+		if (object.GetType() != GFxValue::kType_Object || actor->formType != kFormType_ACHR || root == nullptr) {
+			return;
+		}
+		BipedAnim *bipedAnim = actor->biped.get();
+		bool isPCFirstPerson = actor->formID == 0x14 && *g_playerCamera && (*g_playerCamera)->cameraState == (*g_playerCamera)->cameraStates[PlayerCamera::kCameraState_FirstPerson];
+		if (isPCFirstPerson) {
+			bipedAnim = static_cast<PlayerCharacter*>(actor)->playerEquipData.get();
+		}
+		if (bipedAnim == nullptr) {
+			return;
+		}
+		auto *equipData = reinterpret_cast<ActorEquipData*>(bipedAnim);
+		std::unique_ptr<char[]>	sResult(new char[MAX_PATH]);
+		GFxValue pExtraInfo;
+		root->CreateArray(&pExtraInfo);
+		for (size_t slotIndex = 0; slotIndex < ActorEquipData::kMaxSlots; ++slotIndex)
 		{
-			ActorEquipData * equipData = actor->equipData;
-			if (actor->formID == 0x14 && *g_playerCamera && (*g_playerCamera)->cameraState == (*g_playerCamera)->cameraStates[PlayerCamera::kCameraState_FirstPerson])
-			{
-				equipData = static_cast<PlayerCharacter*>(actor)->playerEquipData;
+			auto * pForm = equipData->slots[slotIndex].item;
+			if (pForm == nullptr) {
+				continue;
 			}
-			if (equipData != nullptr)
+			++dataListSize;
+			GFxValue	equipmentData;
+			root->CreateObject(&equipmentData);
+			TESFullName* pFullName = (TESFullName *)Runtime_DynamicCast_Internal(pForm, 0, Runtime_RTTI_TESForm.GetPtr(), Runtime_RTTI_TESFullName.GetPtr(), 0);
+			sprintf_s(sResult.get(), MAX_PATH, "%s(%s)", (pFullName != nullptr) ? pFullName->name.c_str() : "", FormTypes[pForm->formType].c_str());
+			RegisterString(&equipmentData, root, "text", sResult.get());
+			Register<UInt32>(&equipmentData, "filterFlag", 2);
+
+			GFxValue extraInfo;
+			root->CreateArray(&extraInfo); //extraData
+
+			if (pForm->formType == FormType::kFormType_ARMA)
 			{
-				std::unique_ptr<char[]>	sResult(new char[MAX_PATH]);
-				GFxValue pExtraInfo;
-				root->CreateArray(&pExtraInfo);
-				for (size_t slotIndex = 0; slotIndex < ActorEquipData::kMaxSlots; ++slotIndex)
-				{
-					auto * pForm = equipData->slots[slotIndex].item;
-					if (pForm != nullptr)
-					{
-						++count;
-						GFxValue	equipmentData;
-						root->CreateObject(&equipmentData);
-						TESFullName* pFullName = (TESFullName *)Runtime_DynamicCast_Internal(pForm, 0, Runtime_RTTI_TESForm.GetPtr(), Runtime_RTTI_TESFullName.GetPtr(), 0);
-						sprintf_s(sResult.get(), MAX_PATH, "%s(%s)", (pFullName != nullptr) ? pFullName->name.c_str() : "", FormTypes[pForm->formType].c_str());
-						RegisterString(&equipmentData, root, "text", sResult.get());
-						Register<UInt32>(&equipmentData, "filterFlag", 2);
+				GFxValue equipmentName;
+				root->CreateObject(&equipmentName);
+				sprintf_s(sResult.get(), MAX_PATH, "%s: %s", Settings::EXTRAINFO_NAME.c_str(), (pFullName != nullptr && strlen(pFullName->name.c_str())) ? pFullName->GetFullName() : Settings::EXTRAINFO_NULL.c_str());
+				RegisterString(&equipmentName, root, "text", sResult.get());
+				Register<UInt32>(&equipmentName, "filterFlag", 2);
+				extraInfo.PushBack(&equipmentName);
 
-						GFxValue extraInfo;
-						root->CreateArray(&extraInfo); //extraData
+				GFxValue equipmentID;
+				root->CreateObject(&equipmentID);
+				sprintf_s(sResult.get(), MAX_PATH, "%s: %08X", Settings::EXTRAINFO_ID.c_str(), pForm->formID);
+				RegisterString(&equipmentID, root, "text", sResult.get());
+				Register<UInt32>(&equipmentID, "filterFlag", 2);
+				extraInfo.PushBack(&equipmentID);
 
-						if (pForm->formType == FormType::kFormType_ARMA)
-						{
-							GFxValue equipmentName;
-							root->CreateObject(&equipmentName);
-							sprintf_s(sResult.get(), MAX_PATH, "%s: %s", Settings::EXTRAINFO_NAME.c_str(), (pFullName != nullptr && strlen(pFullName->name.c_str())) ? pFullName->GetFullName() : Settings::EXTRAINFO_NULL.c_str());
-							RegisterString(&equipmentName, root, "text", sResult.get());
-							Register<UInt32>(&equipmentName, "filterFlag", 2);
-							extraInfo.PushBack(&equipmentName);
-
-							GFxValue equipmentID;
-							root->CreateObject(&equipmentID);
-							sprintf_s(sResult.get(), MAX_PATH, "%s: %08X", Settings::EXTRAINFO_ID.c_str(), pForm->formID);
-							RegisterString(&equipmentID, root, "text", sResult.get());
-							Register<UInt32>(&equipmentID, "filterFlag", 2);
-							extraInfo.PushBack(&equipmentID);
-
-							GFxValue equipmentType;
-							root->CreateObject(&equipmentType);
-							sprintf_s(sResult.get(), MAX_PATH, "%s: %s", Settings::EXTRAINFO_TYPE.c_str(), FormTypes[pForm->formType].c_str());
-							RegisterString(&equipmentType, root, "text", sResult.get());
-							Register<UInt32>(&equipmentType, "filterFlag", 2);
-							extraInfo.PushBack(&equipmentType);
-						}
-						else
-						{
-							ColllectInventoryData(extraInfo, root, actor, pForm);
-						}
-						GFxValue equipmentSlot;
-						root->CreateObject(&equipmentSlot);
-						sprintf_s(sResult.get(), MAX_PATH, "%s: %d", Settings::EQUIPMENTINFO_SLOTINDEX.c_str(), static_cast<int>(slotIndex));
-						RegisterString(&equipmentSlot, root, "text", sResult.get());
-						Register<UInt32>(&equipmentSlot, "filterFlag", 2);
-						extraInfo.PushBack(&equipmentSlot);
-
-						GFxValue equipmentMod;
-						root->CreateObject(&equipmentMod);
-						auto pModInfo = (*g_dataHandler)->GetLocatedModInfo(pForm);
-						sprintf_s(sResult.get(), MAX_PATH, "%s: %s", Settings::EXTRAINFO_MOD.c_str(), (pModInfo != nullptr) ? pModInfo->name : Settings::EXTRAINFO_NULL.c_str());
-						RegisterString(&equipmentMod, root, "text", sResult.get());
-						Register<UInt32>(&equipmentMod, "filterFlag", 2);
-						extraInfo.PushBack(&equipmentMod);
-
-						equipmentData.SetMember("extraInfo", &extraInfo);
-						pExtraInfo.PushBack(&equipmentData);
-					}
-				}
-				if (pExtraInfo.GetArraySize())
-				{
-					object.SetMember("extraInfo", &pExtraInfo);
-				}
+				GFxValue equipmentType;
+				root->CreateObject(&equipmentType);
+				sprintf_s(sResult.get(), MAX_PATH, "%s: %s", Settings::EXTRAINFO_TYPE.c_str(), FormTypes[pForm->formType].c_str());
+				RegisterString(&equipmentType, root, "text", sResult.get());
+				Register<UInt32>(&equipmentType, "filterFlag", 2);
+				extraInfo.PushBack(&equipmentType);
 			}
+			else
+			{
+				ColllectInventoryData(extraInfo, root, actor, pForm);
+			}
+			GFxValue equipmentSlot;
+			root->CreateObject(&equipmentSlot);
+			sprintf_s(sResult.get(), MAX_PATH, "%s: %d", Settings::EQUIPMENTINFO_SLOTINDEX.c_str(), static_cast<int>(slotIndex));
+			RegisterString(&equipmentSlot, root, "text", sResult.get());
+			Register<UInt32>(&equipmentSlot, "filterFlag", 2);
+			extraInfo.PushBack(&equipmentSlot);
+
+			GFxValue equipmentMod;
+			root->CreateObject(&equipmentMod);
+			auto pModInfo = (*g_dataHandler)->GetLocatedModInfo(pForm);
+			sprintf_s(sResult.get(), MAX_PATH, "%s: %s", Settings::EXTRAINFO_MOD.c_str(), (pModInfo != nullptr) ? pModInfo->name : Settings::EXTRAINFO_NULL.c_str());
+			RegisterString(&equipmentMod, root, "text", sResult.get());
+			Register<UInt32>(&equipmentMod, "filterFlag", 2);
+			extraInfo.PushBack(&equipmentMod);
+
+			equipmentData.SetMember("extraInfo", &extraInfo);
+			pExtraInfo.PushBack(&equipmentData);
+
+		}
+		if (pExtraInfo.GetArraySize())
+		{
+			object.SetMember("extraInfo", &pExtraInfo);
 		}
 	}
 

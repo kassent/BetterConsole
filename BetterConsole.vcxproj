@@ -172,20 +172,6 @@
     <ClCompile Include="Settings.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\common\common_vc11.vcxproj">
-      <Project>{d4c128a1-73dc-4941-a453-ce55af239ba8}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\f4se\f4se.vcxproj">
-      <Project>{a236f69d-8ff9-4491-ac5f-45bf49448bbe}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\f4se_common\f4se_common.vcxproj">
-      <Project>{20c6411c-596f-4b85-be4e-8bc91f59d8a6}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Relocation\Relocation.vcxproj">
-      <Project>{83d27534-600c-47b8-8c39-05ba34c3224e}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Console.h" />
     <ClInclude Include="GameData.h" />
     <ClInclude Include="HookUtil.h" />
@@ -203,6 +189,20 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\common\common_vc14.vcxproj">
+      <Project>{472e19ab-def0-42df-819b-18722e8dc822}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\f4se\f4se.vcxproj">
+      <Project>{a236f69d-8ff9-4491-ac5f-45bf49448bbe}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\f4se_common\f4se_common.vcxproj">
+      <Project>{20c6411c-596f-4b85-be4e-8bc91f59d8a6}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Relocation\Relocation.vcxproj">
+      <Project>{83d27534-600c-47b8-8c39-05ba34c3224e}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
