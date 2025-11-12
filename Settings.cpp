@@ -1,4 +1,5 @@
 #include <memory>
+#include <string_view>
 #include "Settings.h"
 
 string  Settings::BASEINFO_ID = "ID";
@@ -117,24 +118,24 @@ std::vector<string>	Settings::RESISTTYPES = {
 };
 
 #define LoadSetting(key)	\
-	GetPrivateProfileString(settingsSection, #key, Settings::##key##.c_str(), sResult.get(), MAX_PATH, configFile); \
+	GetPrivateProfileString(settingsSection.data(), #key, Settings::##key##.c_str(), sResult.get(), MAX_PATH, configFile.data()); \
 	Settings::##key## =  sResult.get();														 \
 	_MESSAGE("%s=%s", #key, sResult.get());													
 
 #define LoadDamageSetting(key, index)	\
-	GetPrivateProfileString(settingsSection, #key, "", sResult.get(), MAX_PATH, configFile); \
+	GetPrivateProfileString(settingsSection.data(), #key, "", sResult.get(), MAX_PATH, configFile.data()); \
 	Settings::DAMAGETYPES[##index##] =  sResult.get();										 \
 	_MESSAGE("%s=%s", #key, sResult.get());
 
 #define LoadResistSetting(key, index)	\
-	GetPrivateProfileString(settingsSection, #key, "", sResult.get(), MAX_PATH, configFile); \
+	GetPrivateProfileString(settingsSection.data(), #key, "", sResult.get(), MAX_PATH, configFile.data()); \
 	Settings::RESISTTYPES[##index##] =  sResult.get();										 \
 	_MESSAGE("%s=%s", #key, sResult.get());
 
 void Settings::LoadSettings()
 {
-	constexpr char* configFile = "Data\\F4se\\Plugins\\BetterConsole.translation";
-	constexpr char* settingsSection = "Translations";
+	constexpr std::string_view configFile = "Data\\F4se\\Plugins\\BetterConsole.translation";
+	constexpr std::string_view settingsSection = "Translations";
 
 	std::unique_ptr<char[]> sResult(new char[MAX_PATH]);
 
