@@ -11,3 +11,5 @@ void InitRuntimeData();
 
 void InitRuntimeData_NG();
 
+void InitRuntimeData_AE();
+

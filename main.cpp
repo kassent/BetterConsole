@@ -335,10 +335,17 @@ extern "C"
 		{
 			sig_scan_timer timer;
 
-			if (g_runtimeVersion >= RUNTIME_VERSION_1_10_980) {
+			if (g_runtimeVersion >= RUNTIME_VERSION_1_11_137) {
+				_MESSAGE("Initializing runtime data for Anniversary Edition");
+				InitRuntimeData_AE();
+			}
+			else if (g_runtimeVersion >= RUNTIME_VERSION_1_10_980) {
+				_MESSAGE("Initializing runtime data for Next Generation");
 				InitRuntimeData_NG();
 			}
-			else {
+			else
+			{
+				_MESSAGE("Initializing runtime data for Fallout 4");
 				InitRuntimeData();
 			}
 		}
