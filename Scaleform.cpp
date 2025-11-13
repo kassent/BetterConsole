@@ -10,6 +10,7 @@
 #include "f4se/GameHandle.h"
 #include "HookUtil.h"
 
+#include <functional>
 #include <memory>
 #include <string>
 #include <sstream>
@@ -415,7 +416,64 @@ public:
 	}
 };
 
+/*
+			GFxValue posX;
+			root->CreateObject(&posX);
+			RegisterString(&posX, root, "key", std::format("{}: ", Settings::POSITIONINFO_POSX));
+			RegisterString(&posX, root, "value", std::format("{:.2f}", pRef->pos.x));
+			Register<UInt32>(&posX, "filterFlag", 2);
+			value.PushBack(&posX);
+*/
+// 创建一个宏，来简化大量的上面的重复工作
+// #define CREATE_OBJECT_AND_REGISTER(object, root, key, value, filterFlag) \
+// 	GFxValue object; \
+// 	root->CreateObject(&object); \
+// 	RegisterString(&object, root, "key", std::format("{}: ", key)); \
+// 	RegisterString(&object, root, "value", std::format("{:.2f}", value)); \
+// 	Register<UInt32>(&object, "filterFlag", filterFlag); \
+// 	value.PushBack(&object);
 
+namespace {
+enum FilterFlag {
+	FILTER_FLAG_INACTIVE = 1,
+	FILTER_FLAG_ACTIVE = 2,
+};
+
+static void AppendInfoToArray(GFxValue& array, GFxMovieRoot * root, std::string_view key, std::string_view value, UInt32 filterFlag = FILTER_FLAG_ACTIVE)
+{
+	GFxValue object;
+	root->CreateObject(&object);
+	RegisterString(&object, root, "key", key);
+	RegisterString(&object, root, "value", value);
+	Register<UInt32>(&object, "filterFlag", filterFlag);
+	array.PushBack(&object);
+}
+
+static void AppendInfoToArray(GFxValue& array, GFxMovieRoot * root, std::string_view text, UInt32 filterFlag = FILTER_FLAG_ACTIVE, std::function<void(GFxValue&)> callback = {})
+{
+	GFxValue object;
+	root->CreateObject(&object);
+	RegisterString(&object, root, "text", text);
+	Register<UInt32>(&object, "filterFlag", filterFlag);
+	if (callback)
+	{
+		callback(object);
+	}
+	array.PushBack(&object);
+}
+
+/*
+TESFullName * pFullName = (TESFullName *)Runtime_DynamicCast_Internal(pEntry.perk, 0, Runtime_RTTI_TESForm.GetPtr(), Runtime_RTTI_TESFullName.GetPtr(), 0);
+					RegisterString(&perkData, root, "text", (pFullName != nullptr && strlen(pFullName->name.c_str())) ? pFullName->GetFullName() : Settings::EXTRAINFO_NULL.c_str());
+*/
+
+static std::string GetFormDisplayName(TESForm * form)
+{
+	TESFullName * pFullName = (TESFullName *)Runtime_DynamicCast_Internal(form, 0, Runtime_RTTI_TESForm.GetPtr(), Runtime_RTTI_TESFullName.GetPtr(), 0);
+	return (pFullName != nullptr && strlen(pFullName->name.c_str())) ? pFullName->GetFullName() : Settings::EXTRAINFO_NULL.c_str();
+}
+
+}
 
 class BetterConsole_GetExtraData : public GFxFunctionHandler
 {
@@ -425,65 +483,38 @@ public:
 	{
 		if (object.GetType() == GFxValue::kType_Object && root != nullptr)
 		{
-			GFxValue value;
-			root->CreateArray(&value); //extraData
-			std::unique_ptr<char[]>	sResult(new char[MAX_PATH]);
+			GFxValue posArray;
+			root->CreateArray(&posArray); //extraData
 
-			GFxValue posX;
-			root->CreateObject(&posX);
-			RegisterString(&posX, root, "key", std::format("{}: ", Settings::POSITIONINFO_POSX));
-			RegisterString(&posX, root, "value", std::format("{:.2f}", pRef->pos.x));
-			Register<UInt32>(&posX, "filterFlag", 2);
-			value.PushBack(&posX);
+			// posX
+			AppendInfoToArray(posArray, root, std::format("{}: ", Settings::POSITIONINFO_POSX), std::format("{:.2f}", pRef->pos.x));
 
-			GFxValue posY;
-			root->CreateObject(&posY);
-			RegisterString(&posY, root, "key", std::format("{}: ", Settings::POSITIONINFO_POSY));
-			RegisterString(&posY, root, "value", std::format("{:.2f}", pRef->pos.y));
-			Register<UInt32>(&posY, "filterFlag", 2);
-			value.PushBack(&posY);
+			// posY
+			AppendInfoToArray(posArray, root, std::format("{}: ", Settings::POSITIONINFO_POSY), std::format("{:.2f}", pRef->pos.y));
 
-			GFxValue posZ;
-			root->CreateObject(&posZ);
-			RegisterString(&posZ, root, "key", std::format("{}: ", Settings::POSITIONINFO_POSZ));
-			RegisterString(&posZ, root, "value", std::format("{:.2f}", pRef->pos.z));
-			Register<UInt32>(&posZ, "filterFlag", 2);
-			value.PushBack(&posZ);
+			// posZ
+			AppendInfoToArray(posArray, root, std::format("{}: ", Settings::POSITIONINFO_POSZ), std::format("{:.2f}", pRef->pos.z));
 
 			auto RadToDeg = [](float rad) -> float {
 				return rad * 180.0f / std::numbers::pi;
 			};
 
-			GFxValue rotX;
-			root->CreateObject(&rotX);
-			RegisterString(&rotX, root, "key", std::format("{}: ", Settings::POSITIONINFO_ROTX));
-			RegisterString(&rotX, root, "value", std::format("{:.2f}/{:.2f}", pRef->rot.x, RadToDeg(pRef->rot.x)));
-			// 将弧度转为角度
+			// rotX
+			AppendInfoToArray(posArray, root, std::format("{}: ", Settings::POSITIONINFO_ROTX), std::format("{:.2f}/{:.2f}", pRef->rot.x, RadToDeg(pRef->rot.x)));
 
-			Register<UInt32>(&rotX, "filterFlag", 2);
-			value.PushBack(&rotX);
+			// rotY
+			AppendInfoToArray(posArray, root, std::format("{}: ", Settings::POSITIONINFO_ROTY), std::format("{:.2f}/{:.2f}", pRef->rot.y, RadToDeg(pRef->rot.y)));
 
-			GFxValue rotY;
-			root->CreateObject(&rotY);
-			RegisterString(&rotY, root, "key", std::format("{}: ", Settings::POSITIONINFO_ROTY));
-			RegisterString(&rotY, root, "value", std::format("{:.2f}/{:.2f}", pRef->rot.y, RadToDeg(pRef->rot.y)));
-			Register<UInt32>(&rotY, "filterFlag", 2);
-			value.PushBack(&rotY);
+			// rotZ
+			AppendInfoToArray(posArray, root, std::format("{}: ", Settings::POSITIONINFO_ROTZ), std::format("{:.2f}/{:.2f}", pRef->rot.z, RadToDeg(pRef->rot.z)));
 
-			GFxValue rotZ;
-			root->CreateObject(&rotZ);
-			RegisterString(&rotZ, root, "key", std::format("{}: ", Settings::POSITIONINFO_ROTZ));
-			RegisterString(&rotZ, root, "value", std::format("{:.2f}/{:.2f}", pRef->rot.z, RadToDeg(pRef->rot.z)));
-			Register<UInt32>(&rotZ, "filterFlag", 2);
-			value.PushBack(&rotZ);
-
-			object.SetMember("extraInfo", &value);
+			object.SetMember("extraInfo", &posArray);
 		}
 	}
 
-	static void	CollectPerkData(GFxValue& object, GFxMovieRoot * root, Actor *  actor, UInt32&	dataListSize)
+	static void	CollectPerkData(GFxValue& parent, GFxMovieRoot * root, Actor *  actor, UInt32&	dataListSize)
 	{
-		if (object.GetType() == GFxValue::kType_Object && actor->formType == kFormType_ACHR && root != nullptr)
+		if (parent.GetType() == GFxValue::kType_Object && actor->formType == kFormType_ACHR && root != nullptr)
 		{
 			if (actor->middleProcess != nullptr)
 			{
@@ -491,61 +522,44 @@ public:
 				VisitPerks(actor, visitor);
 				dataListSize = visitor.result.size();
 				if (!dataListSize)	return;
-				GFxValue value;
-				root->CreateArray(&value); //extraData
+				GFxValue perkArray;
+				root->CreateArray(&perkArray); //extraData
 				for (auto& pEntry : visitor.result)
 				{
-					GFxValue perkData;
-					root->CreateObject(&perkData);
-					TESFullName * pFullName = (TESFullName *)Runtime_DynamicCast_Internal(pEntry.perk, 0, Runtime_RTTI_TESForm.GetPtr(), Runtime_RTTI_TESFullName.GetPtr(), 0);
-					RegisterString(&perkData, root, "text", (pFullName != nullptr && strlen(pFullName->name.c_str())) ? pFullName->GetFullName() : Settings::EXTRAINFO_NULL.c_str());
-					Register<UInt32>(&perkData, "filterFlag", 2);
+					auto displayName = GetFormDisplayName(pEntry.perk);
+
 
 					GFxValue extraInfo;
 					root->CreateArray(&extraInfo);
 
-					GFxValue perkName;
-					root->CreateObject(&perkName);
-					RegisterString(&perkName, root, "text", std::format("{}: {}", Settings::EXTRAINFO_NAME, (pFullName != nullptr && strlen(pFullName->name.c_str())) ? pFullName->name.c_str() : Settings::EXTRAINFO_NULL.c_str()));
-					Register<UInt32>(&perkName, "filterFlag", 2);
-					extraInfo.PushBack(&perkName);
+					// perk name
+					AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::EXTRAINFO_NAME, displayName));
 
-					GFxValue perkID;
-					root->CreateObject(&perkID);
-					RegisterString(&perkID, root, "text", std::format("{}: {:08X}", Settings::EXTRAINFO_ID, pEntry.perk->formID));
-					Register<UInt32>(&perkID, "filterFlag", 2);
-					extraInfo.PushBack(&perkID);
+					// perk ID
+					AppendInfoToArray(extraInfo, root, std::format("{}: {:08X}", Settings::EXTRAINFO_ID, pEntry.perk->formID));
 
-					GFxValue perkLevel;
-					root->CreateObject(&perkLevel);
-					RegisterString(&perkLevel, root, "text", std::format("{}: {}", Settings::PERKINFO_LEVEL, pEntry.perk->perkLevel));
-					Register<UInt32>(&perkLevel, "filterFlag", 2);
-					extraInfo.PushBack(&perkLevel);
+					// perk level
+					AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::PERKINFO_LEVEL, pEntry.perk->perkLevel));
 
-					GFxValue perkRank;
-					root->CreateObject(&perkRank);
-					RegisterString(&perkRank, root, "text", std::format("{}: {}", Settings::PERKINFO_RANK, pEntry.rank));
-					Register<UInt32>(&perkRank, "filterFlag", 2);
-					extraInfo.PushBack(&perkRank);
+					// perk rank
+					AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::PERKINFO_RANK, pEntry.rank));
 
-					GFxValue perkMod;
-					root->CreateObject(&perkMod);
-					auto pModInfo = (*g_dataHandler)->GetLocatedModInfo(pEntry.perk);
-					RegisterString(&perkMod, root, "text", std::format("{}: {}", Settings::EXTRAINFO_MOD, (pModInfo != nullptr) ? pModInfo->name : Settings::EXTRAINFO_NULL));
-					Register<UInt32>(&perkMod, "filterFlag", 2);
-					extraInfo.PushBack(&perkMod);
+					// perk mod
+					auto* pModInfo = (*g_dataHandler)->GetLocatedModInfo(pEntry.perk);
+					AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::EXTRAINFO_MOD, (pModInfo != nullptr) ? pModInfo->name : Settings::EXTRAINFO_NULL));
 
-					perkData.SetMember("extraInfo", &extraInfo);
-					value.PushBack(&perkData);
+					AppendInfoToArray(perkArray, root, displayName, FILTER_FLAG_ACTIVE, [&extraInfo](GFxValue& object) {
+						object.SetMember("extraInfo", &extraInfo);
+					});
 				}
-				object.SetMember("extraInfo", &value);
+				parent.SetMember("extraInfo", &perkArray);
 			}
 		}
 	}
 
-	static void	CollectFactionData(GFxValue& object, GFxMovieRoot * root, Actor *  actor, UInt32& dataListSize)
+	static void	CollectFactionData(GFxValue& parent, GFxMovieRoot * root, Actor *  actor, UInt32& dataListSize)
 	{
-		if (object.GetType() == GFxValue::kType_Object && actor->formType == kFormType_ACHR && root != nullptr)
+		if (parent.GetType() == GFxValue::kType_Object && actor->formType == kFormType_ACHR && root != nullptr)
 		{
 			std::map<TESFaction*, SInt8>	collector;
 			BSExtraData * pExtraData = actor->extraDataList->GetExtraData(kExtraData_FactionChanges);
@@ -567,71 +581,52 @@ public:
 
 			dataListSize = collector.size();
 			if (!dataListSize)	return;
-			GFxValue value;
-			root->CreateArray(&value); //extraData
+			GFxValue factionArray;
+			root->CreateArray(&factionArray); //extraData
 
 			for (const auto& info : collector)
 			{
-				GFxValue factionData;
-				root->CreateObject(&factionData);
-				TESFullName * pFullName = (TESFullName *)Runtime_DynamicCast_Internal(info.first, 0, Runtime_RTTI_TESForm.GetPtr(), Runtime_RTTI_TESFullName.GetPtr(), 0);
-				RegisterString(&factionData, root, "text", (pFullName != nullptr && strlen(pFullName->name.c_str())) ? pFullName->name.c_str() : Settings::EXTRAINFO_NULL.c_str());
-				Register<UInt32>(&factionData, "filterFlag", 2);
+				auto displayName = GetFormDisplayName(info.first);
+
 
 				GFxValue extraInfo;
 				root->CreateArray(&extraInfo); //extraData
 
-				GFxValue factionID;
-				root->CreateObject(&factionID);
-				RegisterString(&factionID, root, "text", std::format("{}: {:08X}", Settings::EXTRAINFO_ID, info.first->formID));
-				Register<UInt32>(&factionID, "filterFlag", 2);
-				extraInfo.PushBack(&factionID);
+				// faction ID
+				AppendInfoToArray(extraInfo, root, std::format("{}: {:08X}", Settings::EXTRAINFO_ID, info.first->formID));
 
-				GFxValue factionName;
-				root->CreateObject(&factionName);
-				RegisterString(&factionName, root, "text", std::format("{}: {}", Settings::EXTRAINFO_NAME, (pFullName != nullptr && strlen(pFullName->name.c_str())) ? pFullName->name.c_str() : Settings::EXTRAINFO_NULL.c_str()));
-				Register<UInt32>(&factionName, "filterFlag", 2);
-				extraInfo.PushBack(&factionName);
+				// faction name
+				AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::EXTRAINFO_NAME, displayName));
 
-				GFxValue factionRank;
-				root->CreateObject(&factionRank);
-				RegisterString(&factionRank, root, "text", std::format("{}: {}", Settings::FACTIONINFO_RANK, info.second));
-				Register<UInt32>(&factionRank, "filterFlag", 2);
-				extraInfo.PushBack(&factionRank);
+				// faction rank
+				AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::FACTIONINFO_RANK, info.second));
 
 				if (info.first->vendorValues.merchantContainer)
 				{
-					GFxValue factionVendor;
-					root->CreateObject(&factionVendor);
-					RegisterString(&factionVendor, root, "text", std::format("{}: {}", Settings::FACTIONINFO_MERCHANTFACTION, (info.first->factionFlags & TESFaction::kFlag_Vender) ? Settings::EXTRAINFO_TRUE : Settings::EXTRAINFO_FALSE));
-					Register<UInt32>(&factionVendor, "filterFlag", 2);
-					extraInfo.PushBack(&factionVendor);
+					// faction vendor
+					AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::FACTIONINFO_MERCHANTFACTION, (info.first->factionFlags & TESFaction::kFlag_Vender) ? Settings::EXTRAINFO_TRUE : Settings::EXTRAINFO_FALSE));
 
-					GFxValue factionVendorContainerID;
-					root->CreateObject(&factionVendorContainerID);
-					RegisterString(&factionVendorContainerID, root, "text", std::format("{}: {:08X}", Settings::FACTIONINFO_MERCHANTCONTAINERID, info.first->vendorValues.merchantContainer->formID));
-					Register<UInt32>(&factionVendorContainerID, "filterFlag", 2);
-					extraInfo.PushBack(&factionVendorContainerID);
+					// faction vendor container ID
+					AppendInfoToArray(extraInfo, root, std::format("{}: {:08X}", Settings::FACTIONINFO_MERCHANTCONTAINERID, info.first->vendorValues.merchantContainer->formID));
 				}
 
-				GFxValue factionMod;
-				root->CreateObject(&factionMod);
-				auto pModInfo = (*g_dataHandler)->GetLocatedModInfo(info.first);
-				RegisterString(&factionMod, root, "text", std::format("{}: {}", Settings::EXTRAINFO_MOD, (pModInfo != nullptr) ? pModInfo->name : Settings::EXTRAINFO_NULL));
-				Register<UInt32>(&factionMod, "filterFlag", 2);
-				extraInfo.PushBack(&factionMod);
+				// faction mod
+				auto* pModInfo = (*g_dataHandler)->GetLocatedModInfo(info.first);
+				AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::EXTRAINFO_MOD, (pModInfo != nullptr) ? pModInfo->name : Settings::EXTRAINFO_NULL));
 
-				factionData.SetMember("extraInfo", &extraInfo);
-				value.PushBack(&factionData);
+
+				AppendInfoToArray(factionArray, root, displayName, FILTER_FLAG_ACTIVE, [&extraInfo](GFxValue& object) {
+					object.SetMember("extraInfo", &extraInfo);
+				});
 			}
 
-			object.SetMember("extraInfo", &value);
+			parent.SetMember("extraInfo", &factionArray);
 		}
 	}
 
-	static void	CollectEffectData(GFxValue& object, GFxMovieRoot * root, Actor *  actor, UInt32& dataListSize)
+	static void	CollectEffectData(GFxValue& parent, GFxMovieRoot * root, Actor *  actor, UInt32& dataListSize)
 	{
-		if (object.GetType() == GFxValue::kType_Object && actor->formType == kFormType_ACHR && root != nullptr)
+		if (parent.GetType() == GFxValue::kType_Object && actor->formType == kFormType_ACHR && root != nullptr)
 		{
 			auto * pMaigicTarget = &actor->magicTarget;
 			BSSimpleList<ActiveEffect*>	* pEffectList = pMaigicTarget->GetEffectList();
@@ -639,8 +634,8 @@ public:
 			if (pEffectList != nullptr && pEffectList->count)
 			{
 				++pEffectList->refCount;
-				GFxValue value;
-				root->CreateArray(&value); //extraData
+				GFxValue effectArray;
+				root->CreateArray(&effectArray); //extraData
 				for (size_t i = 0; i < pEffectList->count; ++i)
 				{
 					auto pEffect = pEffectList->items[i];
@@ -650,66 +645,35 @@ public:
 						if (pEffectSetting != nullptr)
 						{
 							++dataListSize;
-							GFxValue effectData;
-							root->CreateObject(&effectData);
-							TESFullName * pFullName = (TESFullName *)Runtime_DynamicCast_Internal(pEffectSetting, 0, Runtime_RTTI_TESForm.GetPtr(), Runtime_RTTI_TESFullName.GetPtr(), 0);
-							RegisterString(&effectData, root, "text", (pFullName != nullptr && strlen(pFullName->name.c_str())) ? pFullName->GetFullName() : Settings::EXTRAINFO_NULL.c_str());
-							if (!(pEffect->flags & ActiveEffect::kFlag_Inactive))
-								Register<UInt32>(&effectData, "filterFlag", 2);
-							else
-								Register<UInt32>(&effectData, "filterFlag", 1);
+							auto displayName = GetFormDisplayName(pEffectSetting);
 
 							GFxValue extraInfo;
 							root->CreateArray(&extraInfo); //extraData
 
-							GFxValue effectName;
-							root->CreateObject(&effectName);
-							RegisterString(&effectName, root, "text", std::format("{}: {}", Settings::EXTRAINFO_NAME, (pFullName != nullptr && strlen(pFullName->name.c_str())) ? pFullName->GetFullName() : Settings::EXTRAINFO_NULL));
-							Register<UInt32>(&effectName, "filterFlag", 2);
-							extraInfo.PushBack(&effectName);
+							// effect name
+							AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::EXTRAINFO_NAME, displayName));
 
-							GFxValue effectID;
-							root->CreateObject(&effectID);
-							RegisterString(&effectID, root, "text", std::format("{}: {:08X}", Settings::EXTRAINFO_ID, pEffectSetting->formID));
-							Register<UInt32>(&effectID, "filterFlag", 2);
-							extraInfo.PushBack(&effectID);
+							// effect ID
+							AppendInfoToArray(extraInfo, root, std::format("{}: {:08X}", Settings::EXTRAINFO_ID, pEffectSetting->formID));
 
-							GFxValue effectMod;
-							root->CreateObject(&effectMod);
-							auto pModInfo = (*g_dataHandler)->GetLocatedModInfo(pEffectSetting);
-							RegisterString(&effectMod, root, "text", std::format("{}: {}", Settings::EXTRAINFO_MOD, (pModInfo != nullptr) ? pModInfo->name : Settings::EXTRAINFO_NULL));
-							Register<UInt32>(&effectMod, "filterFlag", 2);
-							extraInfo.PushBack(&effectMod);
+							// effect mod
+							auto* pModInfo = (*g_dataHandler)->GetLocatedModInfo(pEffectSetting);
+							AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::EXTRAINFO_MOD, (pModInfo != nullptr) ? pModInfo->name : Settings::EXTRAINFO_NULL));
 
-							GFxValue elapsed;
-							root->CreateObject(&elapsed);
-							RegisterString(&elapsed, root, "text", std::format("{}: {:.2f}", Settings::EFFECTINFO_ELAPSED, pEffect->elapsed));
-							Register<UInt32>(&elapsed, "filterFlag", 2);
-							extraInfo.PushBack(&elapsed);
+							// elapsed
+							AppendInfoToArray(extraInfo, root, std::format("{}: {:.2f}", Settings::EFFECTINFO_ELAPSED, pEffect->elapsed));
 
-							GFxValue duration;
-							root->CreateObject(&duration);
-							RegisterString(&duration, root, "text", std::format("{}: {:.2f}", Settings::EFFECTINFO_DURATION, pEffect->duration));
-							Register<UInt32>(&duration, "filterFlag", 2);
-							extraInfo.PushBack(&duration);
+							// duration
+							AppendInfoToArray(extraInfo, root, std::format("{}: {:.2f}", Settings::EFFECTINFO_DURATION, pEffect->duration));
 
-							GFxValue magnitude;
-							root->CreateObject(&magnitude);
-							RegisterString(&magnitude, root, "text", std::format("{}: {:.2f}", Settings::EFFECTINFO_MAGNITUDE, pEffect->magnitude));
-							Register<UInt32>(&magnitude, "filterFlag", 2);
-							extraInfo.PushBack(&magnitude);
+							// magnitude
+							AppendInfoToArray(extraInfo, root, std::format("{}: {:.2f}", Settings::EFFECTINFO_MAGNITUDE, pEffect->magnitude));
 
-							GFxValue inactive;
-							root->CreateObject(&inactive);
-							RegisterString(&inactive, root, "text", std::format("{}: {}", Settings::EFFECTINFO_INACTIVE, (pEffect->flags & ActiveEffect::kFlag_Inactive) ? Settings::EXTRAINFO_TRUE : Settings::EXTRAINFO_FALSE));
-							Register<UInt32>(&inactive, "filterFlag", 2);
-							extraInfo.PushBack(&inactive);
+							// inactive
+							AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::EFFECTINFO_INACTIVE, (pEffect->flags & ActiveEffect::kFlag_Inactive) ? Settings::EXTRAINFO_TRUE : Settings::EXTRAINFO_FALSE));
 
-							GFxValue detrimental;
-							root->CreateObject(&detrimental);
-							RegisterString(&detrimental, root, "text", std::format("{}: {}", Settings::EFFECTINFO_DETRIMENTAL, (pEffectSetting->effectType & EffectSetting::kEffectType_Detrimental) ? Settings::EXTRAINFO_TRUE : Settings::EXTRAINFO_FALSE));
-							Register<UInt32>(&detrimental, "filterFlag", 2);
-							extraInfo.PushBack(&detrimental);
+							// detrimental
+							AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::EFFECTINFO_DETRIMENTAL, (pEffectSetting->effectType & EffectSetting::kEffectType_Detrimental) ? Settings::EXTRAINFO_TRUE : Settings::EXTRAINFO_FALSE));
 
 							if (pEffectSetting->actorValInfoD8)
 							{
@@ -720,57 +684,46 @@ public:
 								}
 								if (pName && pName[0])
 								{
-									GFxValue modifiedActorValue;
-									root->CreateObject(&modifiedActorValue);
-									RegisterString(&modifiedActorValue, root, "text", std::format("{}: {}", Settings::EFFECTINFO_MODIFIEDAV, pName));
-									Register<UInt32>(&modifiedActorValue, "filterFlag", 2);
-									extraInfo.PushBack(&modifiedActorValue);
+									// modified actor value
+									AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::EFFECTINFO_MODIFIEDAV, pName));
 								}
 							}
 
 							if (pEffect->item)
 							{
-								GFxValue spellName;
-								root->CreateObject(&spellName);
-								pFullName = (TESFullName *)Runtime_DynamicCast_Internal(pEffect->item, 0, Runtime_RTTI_TESForm.GetPtr(), Runtime_RTTI_TESFullName.GetPtr(), 0);
-								RegisterString(&spellName, root, "text", std::format("{}: {}", Settings::EFFECTINFO_SPELLNAME, (pFullName != nullptr && strlen(pFullName->name.c_str())) ? pFullName->GetFullName() : Settings::EXTRAINFO_NULL));
-								Register<UInt32>(&spellName, "filterFlag", 2);
-								extraInfo.PushBack(&spellName);
+								auto spellName = GetFormDisplayName(pEffect->item);
+								// spell name
+								AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::EFFECTINFO_SPELLNAME, spellName));
 
-								GFxValue spellID;
-								root->CreateObject(&spellID);
-								RegisterString(&spellID, root, "text", std::format("{}: {:08X}", Settings::EFFECTINFO_SPELLID, pEffect->item->formID));
-								Register<UInt32>(&spellID, "filterFlag", 2);
-								extraInfo.PushBack(&spellID);
+								// spell ID
+								AppendInfoToArray(extraInfo, root, std::format("{}: {:08X}", Settings::EFFECTINFO_SPELLID, pEffect->item->formID));
 
-								GFxValue spellType;
-								root->CreateObject(&spellType);
-								RegisterString(&spellType, root, "text", std::format("{}: {}", Settings::EFFECTINFO_SPELLTYPE, FORM_TYPES[pEffect->item->formType]));
-								Register<UInt32>(&spellType, "filterFlag", 2);
-								extraInfo.PushBack(&spellType);
+								// spell type
+								AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::EFFECTINFO_SPELLTYPE, FORM_TYPES[pEffect->item->formType]));
 
-								GFxValue spellMod;
-								root->CreateObject(&spellMod);
-								pModInfo = (*g_dataHandler)->GetLocatedModInfo(pEffect->item);
-								RegisterString(&spellMod, root, "text", std::format("{}: {}", Settings::EFFECTINFO_SPELLMOD, (pModInfo != nullptr) ? pModInfo->name : Settings::EXTRAINFO_NULL));
-								Register<UInt32>(&spellMod, "filterFlag", 2);
-								extraInfo.PushBack(&spellMod);
+								// spell mod
+								auto* pModInfo = (*g_dataHandler)->GetLocatedModInfo(pEffect->item);
+								AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::EFFECTINFO_SPELLMOD, (pModInfo != nullptr) ? pModInfo->name : Settings::EXTRAINFO_NULL));
 							}
 
-							effectData.SetMember("extraInfo", &extraInfo);
-							value.PushBack(&effectData);
+
+							AppendInfoToArray(effectArray, root, displayName, 
+								(!(pEffect->flags & ActiveEffect::kFlag_Inactive)) ? FILTER_FLAG_ACTIVE : FILTER_FLAG_INACTIVE, 
+								[&extraInfo](GFxValue& object) {
+								object.SetMember("extraInfo", &extraInfo);
+							});
 						}
 					}
 				}
-				object.SetMember("extraInfo", &value);
+				parent.SetMember("extraInfo", &effectArray);
 				--pEffectList->refCount;
 			}
 		}
 	}
 
-	static void	CollectValueData(GFxValue& object, GFxMovieRoot * root, Actor *  actor, UInt32&	dataListSize)
+	static void	CollectValueData(GFxValue& parent, GFxMovieRoot * root, Actor *  actor, UInt32&	dataListSize)
 	{
-		if (object.GetType() == GFxValue::kType_Object && actor->formType == kFormType_ACHR && root != nullptr)
+		if (parent.GetType() == GFxValue::kType_Object && actor->formType == kFormType_ACHR && root != nullptr)
 		{
 
 			struct AVInfo
@@ -810,8 +763,8 @@ public:
 			if (!actorValueDict.size())
 				return;
 
-			GFxValue value;
-			root->CreateArray(&value); //extraData
+			GFxValue actorValueArray;
+			root->CreateArray(&actorValueArray); //extraData
 
 									   //sort by string.A-Z
 			for (const auto& map : actorValueDict)
@@ -819,61 +772,40 @@ public:
 				++dataListSize;
 				auto pAVI = map.second.pAVI;
 
-				GFxValue actorValueData;
-				root->CreateObject(&actorValueData);
-				RegisterString(&actorValueData, root, "text", map.first);
-				Register<UInt32>(&actorValueData, "filterFlag", 2);
-
 				GFxValue extraInfo;
 				root->CreateArray(&extraInfo); //extraData
 
-				GFxValue avName;
-				root->CreateObject(&avName);
-				RegisterString(&avName, root, "text", std::format("{}: {}", Settings::EXTRAINFO_NAME, map.first));
-				Register<UInt32>(&avName, "filterFlag", 2);
-				extraInfo.PushBack(&avName);
+				// actor value name
+				AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::EXTRAINFO_NAME, map.first));
 
-				GFxValue avType;
-				root->CreateObject(&avType);
+				// actor value type
 				auto isValidIndex = pAVI->type >= 0 && pAVI->type < ACTOR_VALUE_TYPES.size();
-				RegisterString(&avType, root, "text", std::format("{}: {}", Settings::AVINFO_TYPE, isValidIndex ? ACTOR_VALUE_TYPES[pAVI->type] : Settings::EXTRAINFO_NULL));
-				Register<UInt32>(&avType, "filterFlag", 2);
-				extraInfo.PushBack(&avType);
+				AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::AVINFO_TYPE, isValidIndex ? ACTOR_VALUE_TYPES[pAVI->type] : Settings::EXTRAINFO_NULL));
 
-				GFxValue avID;
-				root->CreateObject(&avID);
-				RegisterString(&avID, root, "text", std::format("{}: {:08X}", Settings::EXTRAINFO_ID, pAVI->formID));
-				Register<UInt32>(&avID, "filterFlag", 2);
-				extraInfo.PushBack(&avID);
+				// actor value ID
+				AppendInfoToArray(extraInfo, root, std::format("{}: {:08X}", Settings::EXTRAINFO_ID, pAVI->formID));
 
-				GFxValue avBase;
-				root->CreateObject(&avBase);
-				RegisterString(&avBase, root, "text", std::format("{}: {:.2f}", Settings::AVINFO_BASEVALUE, map.second.base));
-				Register<UInt32>(&avBase, "filterFlag", 2);
-				extraInfo.PushBack(&avBase);
+				// actor value base value
+				AppendInfoToArray(extraInfo, root, std::format("{}: {:.2f}", Settings::AVINFO_BASEVALUE, map.second.base));
 
-				GFxValue avCurrent;
-				root->CreateObject(&avCurrent);
-				RegisterString(&avCurrent, root, "text", std::format("{}: {:.2f}", Settings::AVINFO_CURRENTVALUE, map.second.current));
-				Register<UInt32>(&avCurrent, "filterFlag", 2);
-				extraInfo.PushBack(&avCurrent);
+				// actor value current value
+				AppendInfoToArray(extraInfo, root, std::format("{}: {:.2f}", Settings::AVINFO_CURRENTVALUE, map.second.current));
 
-				GFxValue avMod;
-				root->CreateObject(&avMod);
+				// actor value mod
 				auto pModInfo = (*g_dataHandler)->GetLocatedModInfo(pAVI);
-				RegisterString(&avMod, root, "text", std::format("{}: {}", Settings::EXTRAINFO_MOD, (pModInfo != nullptr) ? pModInfo->name : Settings::EXTRAINFO_NULL));
-				Register<UInt32>(&avMod, "filterFlag", 2);
-				extraInfo.PushBack(&avMod);
+				AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::EXTRAINFO_MOD, (pModInfo != nullptr) ? pModInfo->name : Settings::EXTRAINFO_NULL));
 
-				actorValueData.SetMember("extraInfo", &extraInfo);
-				value.PushBack(&actorValueData);
+				// actor value data
+				AppendInfoToArray(actorValueArray, root, map.first, FILTER_FLAG_ACTIVE, [&extraInfo](GFxValue& object) {
+					object.SetMember("extraInfo", &extraInfo);
+				});
 			}
 
-			object.SetMember("extraInfo", &value);
+			parent.SetMember("extraInfo", &actorValueArray);
 		}
 	}
 
-	static void	ColllectInventoryData(GFxValue& arrObj, GFxMovieRoot * root, Actor * actor, TESForm * pBaseForm)
+	static void	ColllectInventoryData(GFxValue& parentArray, GFxMovieRoot * root, Actor * actor, TESForm * pBaseForm)
 	{
 		auto pInvList = actor->inventoryList;
 		bool result = false;
@@ -908,23 +840,14 @@ public:
 							pName = (pFullName != nullptr) ? pFullName->GetFullName() : nullptr;
 						}
 
-						GFxValue itemName;
-						root->CreateObject(&itemName);
-						RegisterString(&itemName, root, "text", std::format("{}: {}", Settings::EXTRAINFO_NAME, pName));
-						Register<UInt32>(&itemName, "filterFlag", 2);
-						arrObj.PushBack(&itemName);
+						// item name
+						AppendInfoToArray(parentArray, root, std::format("{}: {}", Settings::EXTRAINFO_NAME, pName));
 
-						GFxValue itemID;
-						root->CreateObject(&itemID);
-						RegisterString(&itemID, root, "text", std::format("{}: {:08X}", Settings::EXTRAINFO_ID, pBaseForm->formID));
-						Register<UInt32>(&itemID, "filterFlag", 2);
-						arrObj.PushBack(&itemID);
+						// item ID
+						AppendInfoToArray(parentArray, root, std::format("{}: {:08X}", Settings::EXTRAINFO_ID, pBaseForm->formID));
 
-						GFxValue itemType;
-						root->CreateObject(&itemType);
-						RegisterString(&itemType, root, "text", std::format("{}: {}", Settings::EXTRAINFO_TYPE, FORM_TYPES[pBaseForm->formType]));
-						Register<UInt32>(&itemType, "filterFlag", 2);
-						arrObj.PushBack(&itemType);
+						// item type
+						AppendInfoToArray(parentArray, root, std::format("{}: {}", Settings::EXTRAINFO_TYPE, FORM_TYPES[pBaseForm->formType]));
 
 						ObjectInstanceData	objInst{ nullptr, nullptr };
 						CalcInstanceData(objInst, pBaseForm, pExtraInstanceData);
@@ -941,11 +864,8 @@ public:
 							{
 								if (resistInfo.data[i].value != 0.0f)
 								{
-									GFxValue itemResist;
-									root->CreateObject(&itemResist);
-									RegisterString(&itemResist, root, "text", std::format("{}: {:.2f}", Settings::RESISTTYPES[resistInfo.data[i].type], resistInfo.data[i].value));
-									Register<UInt32>(&itemResist, "filterFlag", 2);
-									arrObj.PushBack(&itemResist);
+									// item resist
+									AppendInfoToArray(parentArray, root, std::format("{}: {:.2f}", Settings::RESISTTYPES[resistInfo.data[i].type], resistInfo.data[i].value));
 								}
 							}
 							BGSKeyword * pKW = GeHealthtKW();
@@ -953,11 +873,8 @@ public:
 							{
 								UInt32 fullHealth = pArmor->GetFullHealth(pArmorInst);///V1.10.26
 								UInt32 currentHealth = (pExtraDataList != nullptr) ? static_cast<UInt32>(pExtraDataList->GetCurrentHealth(pArmor)) : fullHealth;	 ///V1.10.26		
-								GFxValue itemHealth;
-								root->CreateObject(&itemHealth);
-								RegisterString(&itemHealth, root, "text", std::format("{}: {}/{}", Settings::EQUIPMENTINFO_HEALTH, currentHealth, fullHealth));
-								Register<UInt32>(&itemHealth, "filterFlag", 2);
-								arrObj.PushBack(&itemHealth);
+								// item health
+								AppendInfoToArray(parentArray, root, std::format("{}: {}/{}", Settings::EQUIPMENTINFO_HEALTH, currentHealth, fullHealth));
 							}
 							break;
 						}
@@ -968,11 +885,8 @@ public:
 							if (pAmmo->keywordForm.keywordBase.HasKeyword(pKW))
 							{
 								UInt32 currentCharge = pExtraDataList->GetCharge();
-								GFxValue itemCharge;
-								root->CreateObject(&itemCharge);
-								RegisterString(&itemCharge, root, "text", std::format("{}: {}/{}", Settings::EQUIPMENTINFO_CHARGE, currentCharge, 100));
-								Register<UInt32>(&itemCharge, "filterFlag", 2);
-								arrObj.PushBack(&itemCharge);
+								// item charge
+								AppendInfoToArray(parentArray, root, std::format("{}: {}/{}", Settings::EQUIPMENTINFO_CHARGE, currentCharge, 100));
 							}
 							break;
 						}
@@ -982,57 +896,39 @@ public:
 							auto * pWeaponInst = (TESObjectWEAP::InstanceData*)((objInst.data != nullptr) ? objInst.data : pWeapon->GetInstanceData()); //V1.10.26
 
 							if (pWeaponInst != nullptr) {
-								GFxValue weaponType;
-								root->CreateObject(&weaponType);
-								RegisterString(&weaponType, root, "text", std::format("{}: {}", Settings::EQUIPMENTINFO_CLASS, (pWeaponInst->weaponType > TESObjectWEAP::InstanceData::kWeaponType_Mine) ? WEAPON_TYPES[WEAPON_TYPES.size() - 1] : WEAPON_TYPES[pWeaponInst->weaponType]));
-								Register<UInt32>(&weaponType, "filterFlag", 2);
-								arrObj.PushBack(&weaponType);
+								// weapon type
+								AppendInfoToArray(parentArray, root, std::format("{}: {}", Settings::EQUIPMENTINFO_CLASS, (pWeaponInst->weaponType > TESObjectWEAP::InstanceData::kWeaponType_Mine) ? WEAPON_TYPES[WEAPON_TYPES.size() - 1] : WEAPON_TYPES[pWeaponInst->weaponType]));
 
 								TESAmmo * pAmmo = (pWeaponInst != nullptr) ? pWeaponInst->ammo : pWeapon->weapData.ammo;
 								if (pAmmo != nullptr)
 								{
 									bool isJunk = pAmmo->IsJunk();
-									GFxValue itemAmmo;
-									root->CreateObject(&itemAmmo);
-									RegisterString(&itemAmmo, root, "text", std::format("{}: {}", Settings::EQUIPMENTINFO_AMMO, GetStringFromHash(pAmmo->shortDesc)));
-									Register<UInt32>(&itemAmmo, "filterFlag", 2);
-									arrObj.PushBack(&itemAmmo);
+									// item ammo
+									AppendInfoToArray(parentArray, root, std::format("{}: {}", Settings::EQUIPMENTINFO_AMMO, GetStringFromHash(pAmmo->shortDesc)));
 								}
 								///V1.10
 								if (pWeapon->weapData.weaponType > TESObjectWEAP::InstanceData::kWeaponType_TwoHandedAxe)
 								{
 									float shotSpeed = pWeapon->GetShootSpeed(pWeaponInst);///V1.10.26
 
-									GFxValue itemSpeed;
-									root->CreateObject(&itemSpeed);
-									RegisterString(&itemSpeed, root, "text", std::format("{}: {:.2f}", Settings::EQUIPMENTINFO_SPEED, shotSpeed));
-									Register<UInt32>(&itemSpeed, "filterFlag", 2);
-									arrObj.PushBack(&itemSpeed);
+									// item speed
+									AppendInfoToArray(parentArray, root, std::format("{}: {:.2f}", Settings::EQUIPMENTINFO_SPEED, shotSpeed));
 
 									float range = GetWeaponRange(objInst);
 
-									GFxValue itemRange;
-									root->CreateObject(&itemRange);
-									RegisterString(&itemRange, root, "text", std::format("{}: {:.2f}", Settings::EQUIPMENTINFO_RANGE, range));
-									Register<UInt32>(&itemRange, "filterFlag", 2);
-									arrObj.PushBack(&itemRange);
+									// item range
+									AppendInfoToArray(parentArray, root, std::format("{}: {:.2f}", Settings::EQUIPMENTINFO_RANGE, range));
 
 									float accuracy = GetWeaponAccuracy(objInst, actor);
 
-									GFxValue itemAccuracy;
-									root->CreateObject(&itemAccuracy);
-									RegisterString(&itemAccuracy, root, "text", std::format("{}: {:.2f}", Settings::EQUIPMENTINFO_ACCURACY, accuracy));
-									Register<UInt32>(&itemAccuracy, "filterFlag", 2);
-									arrObj.PushBack(&itemAccuracy);
+									// item accuracy
+									AppendInfoToArray(parentArray, root, std::format("{}: {:.2f}", Settings::EQUIPMENTINFO_ACCURACY, accuracy));
 								}
 								else
 								{
 									UInt32 attackSpeed = pWeapon->GetAttackSpeed();
-									GFxValue itemSpeed;
-									root->CreateObject(&itemSpeed);
-									RegisterString(&itemSpeed, root, "text", std::format("{}: {}", Settings::EQUIPMENTINFO_SPEED, attackSpeed));
-									Register<UInt32>(&itemSpeed, "filterFlag", 2);
-									arrObj.PushBack(&itemSpeed);
+									// item speed
+									AppendInfoToArray(parentArray, root, std::format("{}: {}", Settings::EQUIPMENTINFO_SPEED, attackSpeed));
 								}
 								BGSInventoryItem::SimpleDataCollector damageInfo;
 								item.CollectDamageData(stack, damageInfo);
@@ -1040,11 +936,8 @@ public:
 								{
 									if (damageInfo.data[i].value != 0.0f)
 									{
-										GFxValue itemDamage;
-										root->CreateObject(&itemDamage);
-										RegisterString(&itemDamage, root, "text", std::format("{}: {:.2f}", Settings::DAMAGETYPES[damageInfo.data[i].type], damageInfo.data[i].value));
-										Register<UInt32>(&itemDamage, "filterFlag", 2);
-										arrObj.PushBack(&itemDamage);
+										// item damage
+										AppendInfoToArray(parentArray, root, std::format("{}: {:.2f}", Settings::DAMAGETYPES[damageInfo.data[i].type], damageInfo.data[i].value));
 									}
 								}
 							}
@@ -1060,20 +953,14 @@ public:
 
 						UInt32 value = pBaseForm->GetValue(pExtraDataList);
 
-						GFxValue itemValue;
-						root->CreateObject(&itemValue);
-						RegisterString(&itemValue, root, "text", std::format("{}: {}.00", Settings::EQUIPMENTINFO_VALUE, value));
-						Register<UInt32>(&itemValue, "filterFlag", 2);
-						arrObj.PushBack(&itemValue);
+						// item value
+						AppendInfoToArray(parentArray, root, std::format("{}: {}.00", Settings::EQUIPMENTINFO_VALUE, value));
 
 						float weight = pBaseForm->GetWeight(objInst.data);
 						weight = actor->CalcFormWeight(pBaseForm, stack, weight, nullptr);
 
-						GFxValue itemWeight;
-						root->CreateObject(&itemWeight);
-						RegisterString(&itemWeight, root, "text", std::format("{}: {:.2f}", Settings::EQUIPMENTINFO_WEIGHT, weight));
-						Register<UInt32>(&itemWeight, "filterFlag", 2);
-						arrObj.PushBack(&itemWeight);
+						// item weight
+						AppendInfoToArray(parentArray, root, std::format("{}: {:.2f}", Settings::EQUIPMENTINFO_WEIGHT, weight));
 
 						return false;
 					});
@@ -1084,36 +971,24 @@ public:
 		{
 			TESFullName * pFullName = (TESFullName *)Runtime_DynamicCast_Internal(pBaseForm, 0, Runtime_RTTI_TESForm.GetPtr(), Runtime_RTTI_TESFullName.GetPtr(), 0);
 
-			GFxValue itemName;
-			root->CreateObject(&itemName);
-			RegisterString(&itemName, root, "text", std::format("{}: {}", Settings::EXTRAINFO_NAME, (pFullName != nullptr && strlen(pFullName->name.c_str())) ? pFullName->GetFullName() : Settings::EXTRAINFO_NULL));
-			Register<UInt32>(&itemName, "filterFlag", 2);
-			arrObj.PushBack(&itemName);
+			// item name
+			AppendInfoToArray(parentArray, root, std::format("{}: {}", Settings::EXTRAINFO_NAME, (pFullName != nullptr && strlen(pFullName->name.c_str())) ? pFullName->GetFullName() : Settings::EXTRAINFO_NULL));
 
-			GFxValue itemID;
-			root->CreateObject(&itemID);
-			RegisterString(&itemID, root, "text", std::format("{}: {:08X}", Settings::EXTRAINFO_ID, pBaseForm->formID));
-			Register<UInt32>(&itemID, "filterFlag", 2);
-			arrObj.PushBack(&itemID);
+			// item ID
+			AppendInfoToArray(parentArray, root, std::format("{}: {:08X}", Settings::EXTRAINFO_ID, pBaseForm->formID));
 
-			GFxValue itemType;
-			root->CreateObject(&itemType);
-			RegisterString(&itemType, root, "text", std::format("{}: {}", Settings::EXTRAINFO_TYPE, FORM_TYPES[pBaseForm->formType]));
-			Register<UInt32>(&itemType, "filterFlag", 2);
-			arrObj.PushBack(&itemType);
+			// item type
+			AppendInfoToArray(parentArray, root, std::format("{}: {}", Settings::EXTRAINFO_TYPE, FORM_TYPES[pBaseForm->formType]));
 
 			float weight = pBaseForm->GetWeight(nullptr);
-			GFxValue itemWeight;
-			root->CreateObject(&itemWeight);
-			RegisterString(&itemWeight, root, "text", std::format("{}: {:.2f}", Settings::EQUIPMENTINFO_WEIGHT, weight));
-			Register<UInt32>(&itemWeight, "filterFlag", 2);
-			arrObj.PushBack(&itemWeight);
+			// item weight
+			AppendInfoToArray(parentArray, root, std::format("{}: {:.2f}", Settings::EQUIPMENTINFO_WEIGHT, weight));
 		}
 	}
 
-	static void	CollectEquipmentData(GFxValue& object, GFxMovieRoot * root, Actor * actor, UInt32& dataListSize)
+	static void	CollectEquipmentData(GFxValue& parent, GFxMovieRoot * root, Actor * actor, UInt32& dataListSize)
 	{
-		if (object.GetType() != GFxValue::kType_Object || actor->formType != kFormType_ACHR || root == nullptr) {
+		if (parent.GetType() != GFxValue::kType_Object || actor->formType != kFormType_ACHR || root == nullptr) {
 			return;
 		}
 		BipedAnim *bipedAnim = actor->biped.get();
@@ -1125,8 +1000,8 @@ public:
 			return;
 		}
 		auto *equipData = reinterpret_cast<ActorEquipData*>(bipedAnim);
-		GFxValue pExtraInfo;
-		root->CreateArray(&pExtraInfo);
+		GFxValue equipmentArray;
+		root->CreateArray(&equipmentArray);
 		for (size_t slotIndex = 0; slotIndex < ActorEquipData::kMaxSlots; ++slotIndex)
 		{
 			auto * pForm = equipData->slots[slotIndex].item;
@@ -1134,59 +1009,43 @@ public:
 				continue;
 			}
 			++dataListSize;
-			GFxValue	equipmentData;
-			root->CreateObject(&equipmentData);
-			TESFullName* pFullName = (TESFullName *)Runtime_DynamicCast_Internal(pForm, 0, Runtime_RTTI_TESForm.GetPtr(), Runtime_RTTI_TESFullName.GetPtr(), 0);
-			RegisterString(&equipmentData, root, "text", std::format("{}({})", (pFullName != nullptr) ? pFullName->name.c_str() : "", FORM_TYPES[pForm->formType]));
-			Register<UInt32>(&equipmentData, "filterFlag", 2);
+			auto displayName = GetFormDisplayName(pForm);
+			
 
 			GFxValue extraInfo;
 			root->CreateArray(&extraInfo); //extraData
 
 			if (pForm->formType == FormType::kFormType_ARMA)
 			{
-				GFxValue equipmentName;
-				root->CreateObject(&equipmentName);
-				RegisterString(&equipmentName, root, "text", std::format("{}: {}", Settings::EXTRAINFO_NAME, (pFullName != nullptr && strlen(pFullName->name.c_str())) ? pFullName->GetFullName() : Settings::EXTRAINFO_NULL));
-				Register<UInt32>(&equipmentName, "filterFlag", 2);
-				extraInfo.PushBack(&equipmentName);
+				// equipment name
+				AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::EXTRAINFO_NAME, displayName));
 
-				GFxValue equipmentID;
-				root->CreateObject(&equipmentID);
-				RegisterString(&equipmentID, root, "text", std::format("{}: {:08X}", Settings::EXTRAINFO_ID, pForm->formID));
-				Register<UInt32>(&equipmentID, "filterFlag", 2);
-				extraInfo.PushBack(&equipmentID);
+				// equipment ID
+				AppendInfoToArray(extraInfo, root, std::format("{}: {:08X}", Settings::EXTRAINFO_ID, pForm->formID));
 
-				GFxValue equipmentType;
-				root->CreateObject(&equipmentType);
-				RegisterString(&equipmentType, root, "text", std::format("{}: {}", Settings::EXTRAINFO_TYPE, FORM_TYPES[pForm->formType]));
-				Register<UInt32>(&equipmentType, "filterFlag", 2);
-				extraInfo.PushBack(&equipmentType);
+				// equipment type
+				AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::EXTRAINFO_TYPE, FORM_TYPES[pForm->formType]));
 			}
 			else
 			{
 				ColllectInventoryData(extraInfo, root, actor, pForm);
 			}
-			GFxValue equipmentSlot;
-			root->CreateObject(&equipmentSlot);
-			RegisterString(&equipmentSlot, root, "text", std::format("{}: {}", Settings::EQUIPMENTINFO_SLOTINDEX, static_cast<int>(slotIndex)));
-			Register<UInt32>(&equipmentSlot, "filterFlag", 2);
-			extraInfo.PushBack(&equipmentSlot);
+			// equipment slot index
+			AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::EQUIPMENTINFO_SLOTINDEX, static_cast<int>(slotIndex)));
 
-			GFxValue equipmentMod;
-			root->CreateObject(&equipmentMod);
+			// equipment mod
 			auto pModInfo = (*g_dataHandler)->GetLocatedModInfo(pForm);
-			RegisterString(&equipmentMod, root, "text", std::format("{}: {}", Settings::EXTRAINFO_MOD, (pModInfo != nullptr) ? pModInfo->name : Settings::EXTRAINFO_NULL));
-			Register<UInt32>(&equipmentMod, "filterFlag", 2);
-			extraInfo.PushBack(&equipmentMod);
+			AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::EXTRAINFO_MOD, (pModInfo != nullptr) ? pModInfo->name : Settings::EXTRAINFO_NULL));
 
-			equipmentData.SetMember("extraInfo", &extraInfo);
-			pExtraInfo.PushBack(&equipmentData);
+
+			AppendInfoToArray(equipmentArray, root, std::format("{}({})", displayName, FORM_TYPES[pForm->formType]), FILTER_FLAG_ACTIVE, [&extraInfo](GFxValue& object) {
+				object.SetMember("extraInfo", &extraInfo);
+			});
 
 		}
-		if (pExtraInfo.GetArraySize())
+		if (equipmentArray.GetArraySize())
 		{
-			object.SetMember("extraInfo", &pExtraInfo);
+			parent.SetMember("extraInfo", &equipmentArray);
 		}
 	}
 
@@ -1196,20 +1055,18 @@ public:
 		LookupREFRByHandle(*g_consoleHandle, pRef);
 		if (pRef != nullptr)
 		{
-			args->movie->movieRoot->CreateArray(args->result);
+			
+			auto *root = args->movie->movieRoot;
+			root->CreateArray(args->result);
 
-			GFxValue name;
-			args->movie->movieRoot->CreateObject(&name);
+			auto &parent = *args->result;
+
+			// reference name
 			const char * pRefName = pRef->GetReferenceName();
-			RegisterString(&name, args->movie->movieRoot, "text", std::format("{}: {}", Settings::EXTRAINFO_NAME, (pRefName != nullptr && strlen(pRefName)) ? pRefName : Settings::EXTRAINFO_NULL));
-			Register<UInt32>(&name, "filterFlag", 2);
-			args->result->PushBack(&name);
+			AppendInfoToArray(parent, root, std::format("{}: {}", Settings::EXTRAINFO_NAME, (pRefName != nullptr && strlen(pRefName)) ? pRefName : Settings::EXTRAINFO_NULL));
 
-			GFxValue refID;
-			args->movie->movieRoot->CreateObject(&refID);
-			RegisterString(&refID, args->movie->movieRoot, "text", std::format("{}: {:08X}", Settings::EXTRAINFO_ID, pRef->formID));
-			Register<UInt32>(&refID, "filterFlag", 2);
-			args->result->PushBack(&refID);
+			// reference ID
+			AppendInfoToArray(parent, root, std::format("{}: {:08X}", Settings::EXTRAINFO_ID, pRef->formID));
 
 			TESForm* pBaseForm = pRef->baseForm;
 			BSExtraData* pExtraData = pRef->extraDataList->GetExtraData(kExtraData_LeveledCreature);
@@ -1219,391 +1076,261 @@ public:
 				pBaseForm = (leveledBaseForm != nullptr) ? leveledBaseForm : pRef->baseForm;
 			}
 
-			GFxValue baseID;
-			args->movie->movieRoot->CreateObject(&baseID);
-			RegisterString(&baseID, args->movie->movieRoot, "text", std::format("{}: {:08X}", Settings::EXTRAINFO_BASEID, pBaseForm->formID));
-			Register<UInt32>(&baseID, "filterFlag", 2);
-			args->result->PushBack(&baseID);
+			// base form ID
+			AppendInfoToArray(parent, root, std::format("{}: {:08X}", Settings::EXTRAINFO_BASEID, pBaseForm->formID));
 
 			auto pModInfo = (*g_dataHandler)->GetLocatedModInfo(pBaseForm);
 			if (pModInfo != nullptr)
 			{
-				GFxValue mod;
-				args->movie->movieRoot->CreateObject(&mod);
-				const char* modName = (pModInfo != nullptr) ? pModInfo->name : Settings::EXTRAINFO_NULL.c_str();
-				RegisterString(&mod, args->movie->movieRoot, "text", std::format("{}: {}", Settings::EXTRAINFO_MOD, modName));
-				Register<UInt32>(&mod, "filterFlag", 2);
-				args->result->PushBack(&mod);
+				// base form mod
+				AppendInfoToArray(parent, root, std::format("{}: {}", Settings::EXTRAINFO_MOD, (pModInfo != nullptr) ? pModInfo->name : Settings::EXTRAINFO_NULL));
 			}
 
 			if (pRef->formType == kFormType_ACHR)
 			{
 				Actor * actor = static_cast<Actor*>(pRef.get());
 				TESNPC * npc = static_cast<TESNPC*>(pBaseForm);
-				TESFullName * pFullName = (TESFullName *)Runtime_DynamicCast_Internal(actor->race, 0, Runtime_RTTI_TESForm.GetPtr(), Runtime_RTTI_TESFullName.GetPtr(), 0);
-				if (pFullName != nullptr && strlen(pFullName->name.c_str()))
-				{
-					GFxValue race;
-					args->movie->movieRoot->CreateObject(&race);
-					RegisterString(&race, args->movie->movieRoot, "text", std::format("{}: {}", Settings::EXTRAINFO_RACE, (pFullName != nullptr && strlen(pFullName->name.c_str())) ? pFullName->GetFullName() : Settings::EXTRAINFO_NULL));
-					Register<UInt32>(&race, "filterFlag", 2);
-					args->result->PushBack(&race);
-				}
+				auto raceName = GetFormDisplayName(actor->race);
+				// race name
+				AppendInfoToArray(parent, root, std::format("{}: {}", Settings::EXTRAINFO_RACE, raceName));
 
-				GFxValue raceID;
-				args->movie->movieRoot->CreateObject(&raceID);
-				RegisterString(&raceID, args->movie->movieRoot, "text", std::format("{}: {:08X}", Settings::EXTRAINFO_RACEID, actor->race->formID));
-				Register<UInt32>(&raceID, "filterFlag", 2);
-				args->result->PushBack(&raceID);
+				// race ID
+				AppendInfoToArray(parent, root, std::format("{}: {:08X}", Settings::EXTRAINFO_RACEID, actor->race->formID));
 
-				GFxValue sex;
-				args->movie->movieRoot->CreateObject(&sex);
-				RegisterString(&sex, args->movie->movieRoot, "text", std::format("{}: {}", Settings::EXTRAINFO_SEX, npc->actorData.flags.female ? Settings::EXTRAINFO_FEMALE : Settings::EXTRAINFO_MALE));
-				Register<UInt32>(&sex, "filterFlag", 2);
-				args->result->PushBack(&sex);
+				// sex
+				AppendInfoToArray(parent, root, std::format("{}: {}", Settings::EXTRAINFO_SEX, npc->actorData.flags.female ? Settings::EXTRAINFO_FEMALE : Settings::EXTRAINFO_MALE));
 
-				GFxValue level;
-				args->movie->movieRoot->CreateObject(&level);
-				RegisterString(&level, args->movie->movieRoot, "text", std::format("{}: {}", Settings::EXTRAINFO_LEVEL, actor->GetLevel()));///V1.10
-				Register<UInt32>(&level, "filterFlag", 2);
-				args->result->PushBack(&level);
+				// level
+				AppendInfoToArray(parent, root, std::format("{}: {}", Settings::EXTRAINFO_LEVEL, actor->GetLevel()));///V1.10
 
 
 				if (npc->actorData.flags.pcLevelMult)
 				{
-					GFxValue PCLevelMult;
-					args->movie->movieRoot->CreateObject(&PCLevelMult);
-					RegisterString(&PCLevelMult, args->movie->movieRoot, "text", std::format("{}: {:.2f}", Settings::EXTRAINFO_PCLVMULT, static_cast<float>(npc->actorData.level) / 1000));
-					Register<UInt32>(&PCLevelMult, "filterFlag", 2);
-					args->result->PushBack(&PCLevelMult);
+					// PC level mult
+					AppendInfoToArray(parent, root, std::format("{}: {:.2f}", Settings::EXTRAINFO_PCLVMULT, static_cast<float>(npc->actorData.level) / 1000));
 
-					GFxValue minLevel;
-					args->movie->movieRoot->CreateObject(&minLevel);
-					RegisterString(&minLevel, args->movie->movieRoot, "text", std::format("{}: {}", Settings::EXTRAINFO_MINLEVEL, npc->actorData.minLevel));
-					Register<UInt32>(&minLevel, "filterFlag", 2);
-					args->result->PushBack(&minLevel);
+					// min level
+					AppendInfoToArray(parent, root, std::format("{}: {}", Settings::EXTRAINFO_MINLEVEL, npc->actorData.minLevel));
 
-					GFxValue maxLevel;
-					args->movie->movieRoot->CreateObject(&maxLevel);
-					RegisterString(&maxLevel, args->movie->movieRoot, "text", std::format("{}: {}", Settings::EXTRAINFO_MAXLEVEL, npc->actorData.maxLevel));
-					Register<UInt32>(&maxLevel, "filterFlag", 2);
-					args->result->PushBack(&maxLevel);
+					// max level
+					AppendInfoToArray(parent, root, std::format("{}: {}", Settings::EXTRAINFO_MAXLEVEL, npc->actorData.maxLevel));
 				}
 
-				GFxValue health;
-				args->movie->movieRoot->CreateObject(&health);
 				auto * pAVs = GetActorValueCollector();
 				ActorValueInfo*	pHealth = *reinterpret_cast<ActorValueInfo**>(pAVs + 0x1B);
-				RegisterString(&health, args->movie->movieRoot, "text", std::format("HP: {}", static_cast<UInt32>(actor->actorValueOwner.GetValue(pHealth))));
-				Register<UInt32>(&health, "filterFlag", 2);
-				args->result->PushBack(&health);
+				AppendInfoToArray(parent, root, std::format("HP: {}", static_cast<UInt32>(actor->actorValueOwner.GetValue(pHealth))));
 
-				TESForm * pForm = LookupFormByID(0x2D5); //action points
-				if (pForm != nullptr && pForm->formType == kFormType_AVIF)
+				// action points
+				if (TESForm *pForm = LookupFormByID(0x2D5); pForm != nullptr && pForm->formType == kFormType_AVIF)
 				{
 					auto * pAV = static_cast<ActorValueInfo*>(pForm);
-					GFxValue AP;
-					args->movie->movieRoot->CreateObject(&AP);
-					RegisterString(&AP, args->movie->movieRoot, "text", std::format("AP: {}", static_cast<UInt32>(actor->actorValueOwner.GetValue(pAV))));
-					Register<UInt32>(&AP, "filterFlag", 2);
-					args->result->PushBack(&AP);
+					// action points
+					AppendInfoToArray(parent, root, std::format("AP: {}", static_cast<UInt32>(actor->actorValueOwner.GetValue(pAV))));
 				}
 
-				GFxValue carryWeight;
-				args->movie->movieRoot->CreateObject(&carryWeight);
-				float fCarryWeight = pRef->GetCarryWeight();
-				RegisterString(&carryWeight, args->movie->movieRoot, "text", std::format("{}: {:.2f}", Settings::EXTRAINFO_CARRYWEIGHT, fCarryWeight));
-				Register<UInt32>(&carryWeight, "filterFlag", 2);
-				args->result->PushBack(&carryWeight);
+				// carry weight
+				AppendInfoToArray(parent, root, std::format("{}: {:.2f}", Settings::EXTRAINFO_CARRYWEIGHT, pRef->GetCarryWeight()));
 			}
 
 			if (pRef->formType == kFormType_ACHR)
 			{
 				TESNPC * npc = static_cast<TESNPC*>(pBaseForm);
 
-				GFxValue flags;
-				args->movie->movieRoot->CreateObject(&flags);
-				RegisterString(&flags, args->movie->movieRoot, "text", std::format("{} >", Settings::FLAGINFO));
-				Register<UInt32>(&flags, "filterFlag", 2);
+
 
 				GFxValue extraInfo;
-				args->movie->movieRoot->CreateArray(&extraInfo);
+				root->CreateArray(&extraInfo);
 
-				GFxValue isUnique;
-				args->movie->movieRoot->CreateObject(&isUnique);
-				RegisterString(&isUnique, args->movie->movieRoot, "text", std::format("{}: {}", Settings::FLAGINFO_UNIQUE, npc->actorData.flags.unique ? Settings::EXTRAINFO_TRUE : Settings::EXTRAINFO_FALSE));
-				Register<UInt32>(&isUnique, "filterFlag", 2);
-				extraInfo.PushBack(&isUnique);
+				// is unique
+				AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::FLAGINFO_UNIQUE, npc->actorData.flags.unique ? Settings::EXTRAINFO_TRUE : Settings::EXTRAINFO_FALSE));
 
-				GFxValue isEssential;
-				args->movie->movieRoot->CreateObject(&isEssential);
-				RegisterString(&isEssential, args->movie->movieRoot, "text", std::format("{}: {}", Settings::FLAGINFO_ESSENTIAL, npc->actorData.flags.essential ? Settings::EXTRAINFO_TRUE : Settings::EXTRAINFO_FALSE));
-				Register<UInt32>(&isEssential, "filterFlag", 2);
-				extraInfo.PushBack(&isEssential);
+				// is essential
+				AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::FLAGINFO_ESSENTIAL, npc->actorData.flags.essential ? Settings::EXTRAINFO_TRUE : Settings::EXTRAINFO_FALSE));
 
-				GFxValue isProtected;
-				args->movie->movieRoot->CreateObject(&isProtected);
-				RegisterString(&isProtected, args->movie->movieRoot, "text", std::format("{}: {}", Settings::FLAGINFO_PROTECTED, npc->actorData.flags.protect ? Settings::EXTRAINFO_TRUE : Settings::EXTRAINFO_FALSE));
-				Register<UInt32>(&isProtected, "filterFlag", 2);
-				extraInfo.PushBack(&isProtected);
+				// is protected
+				AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::FLAGINFO_PROTECTED, npc->actorData.flags.protect ? Settings::EXTRAINFO_TRUE : Settings::EXTRAINFO_FALSE));
 
-				GFxValue isInvulnerable;
-				args->movie->movieRoot->CreateObject(&isInvulnerable);
-				RegisterString(&isInvulnerable, args->movie->movieRoot, "text", std::format("{}: {}", Settings::FLAGINFO_INVULNERABLE, npc->actorData.flags.invulnerable ? Settings::EXTRAINFO_TRUE : Settings::EXTRAINFO_FALSE));
-				Register<UInt32>(&isInvulnerable, "filterFlag", 2);
-				extraInfo.PushBack(&isInvulnerable);
+				// is invulnerable
+				AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::FLAGINFO_INVULNERABLE, npc->actorData.flags.invulnerable ? Settings::EXTRAINFO_TRUE : Settings::EXTRAINFO_FALSE));
 
-				flags.SetMember("extraInfo", &extraInfo);
-				args->result->PushBack(&flags);
+				// flags
+				AppendInfoToArray(parent, root, std::format("{} >", Settings::FLAGINFO), FILTER_FLAG_ACTIVE, [&extraInfo](GFxValue& object) {
+					object.SetMember("extraInfo", &extraInfo);
+				});
 			}
 
 
-			GFxValue position;
-			args->movie->movieRoot->CreateObject(&position);
-			RegisterString(&position, args->movie->movieRoot, "text", std::format("{} >", Settings::POSITIONINFO));
-			Register<UInt32>(&position, "filterFlag", 2);
-			CollectPositionData(position, args->movie->movieRoot, pRef);
-			args->result->PushBack(&position);
+			// position
+			AppendInfoToArray(parent, root, std::format("{} >", Settings::POSITIONINFO), FILTER_FLAG_ACTIVE, [root, pRef](GFxValue& object) {
+				CollectPositionData(object, root, pRef);
+			});
 
 			TESObjectCELL * pCell = pRef->parentCell;  //extra
 			if (pCell != nullptr)
 			{
-				GFxValue cell;
-				args->movie->movieRoot->CreateObject(&cell);
-				RegisterString(&cell, args->movie->movieRoot, "text", std::format("{} >", Settings::CELLINFO));
-				Register<UInt32>(&cell, "filterFlag", 2);
+
 
 				GFxValue extraInfo;
-				args->movie->movieRoot->CreateArray(&extraInfo);
+				root->CreateArray(&extraInfo);
 
-				GFxValue cellName;
-				args->movie->movieRoot->CreateObject(&cellName);
-				RegisterString(&cellName, args->movie->movieRoot, "text", std::format("{}: {}", Settings::EXTRAINFO_NAME, strlen(pCell->fullName.name.c_str()) ? pCell->GetFullName() : Settings::EXTRAINFO_NULL));
-				Register<UInt32>(&cellName, "filterFlag", 2);
-				extraInfo.PushBack(&cellName);
+				// cell name
+				AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::EXTRAINFO_NAME, strlen(pCell->fullName.name.c_str()) ? pCell->GetFullName() : Settings::EXTRAINFO_NULL));
 
-				GFxValue cellID;
-				args->movie->movieRoot->CreateObject(&cellID);
-				RegisterString(&cellID, args->movie->movieRoot, "text", std::format("{}: {:08X}", Settings::EXTRAINFO_ID, pCell->formID));
-				Register<UInt32>(&cellID, "filterFlag", 2);
-				extraInfo.PushBack(&cellID);
+				// cell ID
+				AppendInfoToArray(extraInfo, root, std::format("{}: {:08X}", Settings::EXTRAINFO_ID, pCell->formID));
 
-				GFxValue cellIsInterior;
-				args->movie->movieRoot->CreateObject(&cellIsInterior);
-				RegisterString(&cellIsInterior, args->movie->movieRoot, "text", std::format("{}: {}", Settings::CELLINFO_ISINTERIOR, (pCell->flags_2 & TESObjectCELL::kFlag_IsInterior) ? Settings::EXTRAINFO_TRUE : Settings::EXTRAINFO_FALSE));
-				Register<UInt32>(&cellIsInterior, "filterFlag", 2);
-				extraInfo.PushBack(&cellIsInterior);
+				// cell is interior
+				AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::CELLINFO_ISINTERIOR, (pCell->flags_2 & TESObjectCELL::kFlag_IsInterior) ? Settings::EXTRAINFO_TRUE : Settings::EXTRAINFO_FALSE));
 
-				GFxValue cellMod;
-				args->movie->movieRoot->CreateObject(&cellMod);
+				// cell mod
 				auto pModInfo = (*g_dataHandler)->GetLocatedModInfo(pCell);
-				RegisterString(&cellMod, args->movie->movieRoot, "text", std::format("{}: {}", Settings::EXTRAINFO_MOD, (pModInfo != nullptr) ? pModInfo->name : Settings::EXTRAINFO_NULL));
-				Register<UInt32>(&cellMod, "filterFlag", 2);
-				extraInfo.PushBack(&cellMod);
+				AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::EXTRAINFO_MOD, (pModInfo != nullptr) ? pModInfo->name : Settings::EXTRAINFO_NULL));
 
-				cell.SetMember("extraInfo", &extraInfo);
-				args->result->PushBack(&cell);
+				// cell
+				AppendInfoToArray(parent, root, std::format("{} >", Settings::CELLINFO), FILTER_FLAG_ACTIVE, [&extraInfo](GFxValue& object) {
+					object.SetMember("extraInfo", &extraInfo);
+				});
 			}
 
 			auto * pLocation = pRef->GetCurrentLocation(); //extra V1.10.20
 			if (pLocation != nullptr)
 			{
-				GFxValue location;
-				args->movie->movieRoot->CreateObject(&location);
-				RegisterString(&location, args->movie->movieRoot, "text", std::format("{} >", Settings::LOCATIONINFO));
-				Register<UInt32>(&location, "filterFlag", 2);
-
 				GFxValue extraInfo;
-				args->movie->movieRoot->CreateArray(&extraInfo);
+				root->CreateArray(&extraInfo);
 
-				GFxValue locationName;
-				args->movie->movieRoot->CreateObject(&locationName);
-				RegisterString(&locationName, args->movie->movieRoot, "text", std::format("{}: {}", Settings::EXTRAINFO_NAME, strlen(pLocation->fullName.name.c_str()) ? pLocation->GetFullName() : Settings::EXTRAINFO_NULL));
-				Register<UInt32>(&locationName, "filterFlag", 2);
-				extraInfo.PushBack(&locationName);
+				// location name
+				AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::EXTRAINFO_NAME, strlen(pLocation->fullName.name.c_str()) ? pLocation->GetFullName() : Settings::EXTRAINFO_NULL));
 
-				GFxValue locationID;
-				args->movie->movieRoot->CreateObject(&locationID);
-				RegisterString(&locationID, args->movie->movieRoot, "text", std::format("{}: {:08X}", Settings::EXTRAINFO_ID, pLocation->formID));
-				Register<UInt32>(&locationID, "filterFlag", 2);
-				extraInfo.PushBack(&locationID);
+				// location ID
+				AppendInfoToArray(extraInfo, root, std::format("{}: {:08X}", Settings::EXTRAINFO_ID, pLocation->formID));
 
-				GFxValue locationMod;
-				args->movie->movieRoot->CreateObject(&locationMod);
+				// location mod
 				auto pModInfo = (*g_dataHandler)->GetLocatedModInfo(pLocation);
-				RegisterString(&locationMod, args->movie->movieRoot, "text", std::format("{}: {}", Settings::EXTRAINFO_MOD, (pModInfo != nullptr) ? pModInfo->name : Settings::EXTRAINFO_NULL));
-				Register<UInt32>(&locationMod, "filterFlag", 2);
-				extraInfo.PushBack(&locationMod);
+				AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::EXTRAINFO_MOD, (pModInfo != nullptr) ? pModInfo->name : Settings::EXTRAINFO_NULL));
 
-				location.SetMember("extraInfo", &extraInfo);
-				args->result->PushBack(&location);
+				// location
+				AppendInfoToArray(parent, root, std::format("{} >", Settings::LOCATIONINFO), FILTER_FLAG_ACTIVE, [&extraInfo](GFxValue& object) {
+					object.SetMember("extraInfo", &extraInfo);
+				});
 			}
 
 			auto * pWorld = pRef->GetWorldspace();  //extra
 			if (pWorld != nullptr)
 			{
-				TESFullName* pFullName = (TESFullName *)Runtime_DynamicCast_Internal(pWorld, 0, Runtime_RTTI_TESForm.GetPtr(), Runtime_RTTI_TESFullName.GetPtr(), 0);
-
-				GFxValue worldSpace;
-				args->movie->movieRoot->CreateObject(&worldSpace);
-				RegisterString(&worldSpace, args->movie->movieRoot, "text", std::format("{} >", Settings::WORLDSPACEINFO));
-				Register<UInt32>(&worldSpace, "filterFlag", 2);
+				auto worldName = GetFormDisplayName(pWorld);
 
 				GFxValue extraInfo;
-				args->movie->movieRoot->CreateArray(&extraInfo);
+				root->CreateArray(&extraInfo);
 
-				GFxValue worldName;
-				args->movie->movieRoot->CreateObject(&worldName);
-				RegisterString(&worldName, args->movie->movieRoot, "text", std::format("{}: {}", Settings::EXTRAINFO_NAME, strlen(pFullName->name.c_str()) ? pFullName->GetFullName() : Settings::EXTRAINFO_NULL));
-				Register<UInt32>(&worldName, "filterFlag", 2);
-				extraInfo.PushBack(&worldName);
+				// world name
+				AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::EXTRAINFO_NAME, worldName));
 
-				GFxValue worldID;
-				args->movie->movieRoot->CreateObject(&worldID);
-				RegisterString(&worldID, args->movie->movieRoot, "text", std::format("{}: {:08X}", Settings::EXTRAINFO_ID, pWorld->formID));
-				Register<UInt32>(&worldID, "filterFlag", 2);
-				extraInfo.PushBack(&worldID);
+				// world ID
+				AppendInfoToArray(extraInfo, root, std::format("{}: {:08X}", Settings::EXTRAINFO_ID, pWorld->formID));
 
-				GFxValue worldMod;
-				args->movie->movieRoot->CreateObject(&worldMod);
+				// world mod
 				auto pModInfo = (*g_dataHandler)->GetLocatedModInfo(pWorld);
-				RegisterString(&worldMod, args->movie->movieRoot, "text", std::format("{}: {}", Settings::EXTRAINFO_MOD, (pModInfo != nullptr) ? pModInfo->name : Settings::EXTRAINFO_NULL));
-				Register<UInt32>(&worldMod, "filterFlag", 2);
-				extraInfo.PushBack(&worldMod);
+				AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::EXTRAINFO_MOD, (pModInfo != nullptr) ? pModInfo->name : Settings::EXTRAINFO_NULL));
 
-				worldSpace.SetMember("extraInfo", &extraInfo);
-				args->result->PushBack(&worldSpace);
+				// world
+				AppendInfoToArray(parent, root, std::format("{} >", Settings::WORLDSPACEINFO), FILTER_FLAG_ACTIVE, [&extraInfo](GFxValue& object) {
+					object.SetMember("extraInfo", &extraInfo);
+				});
 			}
 
 			auto * pZone = pRef->GetEncounterZone();
 			if (pZone != nullptr)
 			{
-				GFxValue zone;
-				args->movie->movieRoot->CreateObject(&zone);
-				RegisterString(&zone, args->movie->movieRoot, "text", std::format("{} >", Settings::ENCOUNTERZONEINFO));
-				Register<UInt32>(&zone, "filterFlag", 2);
-
 				GFxValue extraInfo;
 				args->movie->movieRoot->CreateArray(&extraInfo);
 
-				GFxValue zoneID;
-				args->movie->movieRoot->CreateObject(&zoneID);
-				RegisterString(&zoneID, args->movie->movieRoot, "text", std::format("{}: {:08X}", Settings::EXTRAINFO_ID, pZone->formID));
-				Register<UInt32>(&zoneID, "filterFlag", 2);
-				extraInfo.PushBack(&zoneID);
+				// zone ID
+				AppendInfoToArray(extraInfo, root, std::format("{}: {:08X}", Settings::EXTRAINFO_ID, pZone->formID));
 
-				GFxValue zoneMinlevel;
-				args->movie->movieRoot->CreateObject(&zoneMinlevel);
-				RegisterString(&zoneMinlevel, args->movie->movieRoot, "text", std::format("{}: {}", Settings::ENCOUNTERZONEINFO_MINLEVEL, pZone->minLevel));
-				Register<UInt32>(&zoneMinlevel, "filterFlag", 2);
-				extraInfo.PushBack(&zoneMinlevel);
+				// zone min level
+				AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::ENCOUNTERZONEINFO_MINLEVEL, pZone->minLevel));
 
-				GFxValue zoneMaxlevel;
-				args->movie->movieRoot->CreateObject(&zoneMaxlevel);
-				RegisterString(&zoneMaxlevel, args->movie->movieRoot, "text", std::format("{}: {}", Settings::ENCOUNTERZONEINFO_MAXLEVEL, pZone->maxLevel));
-				Register<UInt32>(&zoneMaxlevel, "filterFlag", 2);
-				extraInfo.PushBack(&zoneMaxlevel);
+				// zone max level
+				AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::ENCOUNTERZONEINFO_MAXLEVEL, pZone->maxLevel));
 
-				GFxValue zoneCurlevel;
-				args->movie->movieRoot->CreateObject(&zoneCurlevel);
-				RegisterString(&zoneCurlevel, args->movie->movieRoot, "text", std::format("{}: {}", Settings::ENCOUNTERZONEINFO_CURRENTLEVEL, pZone->curLevel));
-				Register<UInt32>(&zoneCurlevel, "filterFlag", 2);
-				extraInfo.PushBack(&zoneCurlevel);
+				// zone current level
+				AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::ENCOUNTERZONEINFO_CURRENTLEVEL, pZone->curLevel));
 
-				GFxValue zoneNeverReset;
-				args->movie->movieRoot->CreateObject(&zoneNeverReset);
-				RegisterString(&zoneNeverReset, args->movie->movieRoot, "text", std::format("{}: {}", Settings::ENCOUNTERZONEINFO_NEVERRESET, (pZone->flags_2 & BGSEncounterZone::kFlag_NeverResets) ? Settings::EXTRAINFO_TRUE : Settings::EXTRAINFO_FALSE));
-				Register<UInt32>(&zoneNeverReset, "filterFlag", 2);
-				extraInfo.PushBack(&zoneNeverReset);
+				// zone never reset
+				AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::ENCOUNTERZONEINFO_NEVERRESET, (pZone->flags_2 & BGSEncounterZone::kFlag_NeverResets) ? Settings::EXTRAINFO_TRUE : Settings::EXTRAINFO_FALSE));
 
-				GFxValue zoneDisableBoundary;
-				args->movie->movieRoot->CreateObject(&zoneDisableBoundary);
-				RegisterString(&zoneDisableBoundary, args->movie->movieRoot, "text", std::format("{}: {}", Settings::ENCOUNTERZONEINFO_DISABLEBOUNDARY, (pZone->flags_2 & BGSEncounterZone::kFlag_DisableCombatBoundary) ? Settings::EXTRAINFO_TRUE : Settings::EXTRAINFO_FALSE));
-				Register<UInt32>(&zoneDisableBoundary, "filterFlag", 2);
-				extraInfo.PushBack(&zoneDisableBoundary);
+				// zone disable boundary
+				AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::ENCOUNTERZONEINFO_DISABLEBOUNDARY, (pZone->flags_2 & BGSEncounterZone::kFlag_DisableCombatBoundary) ? Settings::EXTRAINFO_TRUE : Settings::EXTRAINFO_FALSE));
 
-				GFxValue zoneMatchPCLevel;
-				args->movie->movieRoot->CreateObject(&zoneMatchPCLevel);
-				RegisterString(&zoneMatchPCLevel, args->movie->movieRoot, "text", std::format("{}: {}", Settings::ENCOUNTERZONEINFO_MATCHPCLEVEL, (pZone->flags_2 & BGSEncounterZone::kFlag_MatchPCBelowMinimumLevel) ? Settings::EXTRAINFO_TRUE : Settings::EXTRAINFO_FALSE));
-				Register<UInt32>(&zoneMatchPCLevel, "filterFlag", 2);
-				extraInfo.PushBack(&zoneMatchPCLevel);
+				// zone match PC level
+				AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::ENCOUNTERZONEINFO_MATCHPCLEVEL, (pZone->flags_2 & BGSEncounterZone::kFlag_MatchPCBelowMinimumLevel) ? Settings::EXTRAINFO_TRUE : Settings::EXTRAINFO_FALSE));
 
-				GFxValue zoneWorkshop;
-				args->movie->movieRoot->CreateObject(&zoneWorkshop);
-				RegisterString(&zoneWorkshop, args->movie->movieRoot, "text", std::format("{}: {}", Settings::ENCOUNTERZONEINFO_ISWORKSHOP, (pZone->flags_2 & BGSEncounterZone::kFlag_Workshop) ? Settings::EXTRAINFO_TRUE : Settings::EXTRAINFO_FALSE));
-				Register<UInt32>(&zoneWorkshop, "filterFlag", 2);
-				extraInfo.PushBack(&zoneWorkshop);
+				// zone workshop
+				AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::ENCOUNTERZONEINFO_ISWORKSHOP, (pZone->flags_2 & BGSEncounterZone::kFlag_Workshop) ? Settings::EXTRAINFO_TRUE : Settings::EXTRAINFO_FALSE));
 
 				if (pZone->location != nullptr)
 				{
-					GFxValue zoneLocationID;
-					args->movie->movieRoot->CreateObject(&zoneLocationID);
-					RegisterString(&zoneLocationID, args->movie->movieRoot, "text", std::format("{}: {:08X}", Settings::ENCOUNTERZONEINFO_LOCATIONID, pZone->location->formID));
-					Register<UInt32>(&zoneLocationID, "filterFlag", 2);
-					extraInfo.PushBack(&zoneLocationID);
+					// zone location ID
+					AppendInfoToArray(extraInfo, root, std::format("{}: {:08X}", Settings::ENCOUNTERZONEINFO_LOCATIONID, pZone->location->formID));
 				}
 
-				GFxValue zoneMod;
-				args->movie->movieRoot->CreateObject(&zoneMod);
-				auto pModInfo = (*g_dataHandler)->GetLocatedModInfo(pZone);
-				RegisterString(&zoneMod, args->movie->movieRoot, "text", std::format("{}: {}", Settings::EXTRAINFO_MOD, (pModInfo != nullptr) ? pModInfo->name : Settings::EXTRAINFO_NULL));
-				Register<UInt32>(&zoneMod, "filterFlag", 2);
-				extraInfo.PushBack(&zoneMod);
+				// zone mod
+				auto* pModInfo = (*g_dataHandler)->GetLocatedModInfo(pZone);
+				AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::EXTRAINFO_MOD, (pModInfo != nullptr) ? pModInfo->name : Settings::EXTRAINFO_NULL));
 
-				zone.SetMember("extraInfo", &extraInfo);
-				args->result->PushBack(&zone);
+				// zone
+				AppendInfoToArray(parent, root, std::format("{} >", Settings::ENCOUNTERZONEINFO), FILTER_FLAG_ACTIVE, [&extraInfo](GFxValue& object) {
+					object.SetMember("extraInfo", &extraInfo);
+				});
 			}
 
 			if (pRef->formType == kFormType_ACHR)
 			{
 				Actor * actor = static_cast<Actor*>(pRef.get());
 				GFxValue perks;
-				args->movie->movieRoot->CreateObject(&perks);
+				root->CreateArray(&perks);
 				UInt32 perkCount = 0;
-				CollectPerkData(perks, args->movie->movieRoot, actor, perkCount);
-				RegisterString(&perks, args->movie->movieRoot, "text", std::format("{}({}) >", Settings::PERKINFO, perkCount));
+				CollectPerkData(perks, root, actor, perkCount);
+				RegisterString(&perks, root, "text", std::format("{}({}) >", Settings::PERKINFO, perkCount));
 				Register<UInt32>(&perks, "filterFlag", 2);
 				args->result->PushBack(&perks);
 
 				GFxValue factions;
-				args->movie->movieRoot->CreateObject(&factions);
+				root->CreateArray(&factions);
 				UInt32 factionCount = 0;
-				CollectFactionData(factions, args->movie->movieRoot, actor, factionCount);
-				RegisterString(&factions, args->movie->movieRoot, "text", std::format("{}({}) >", Settings::FACTIONINFO, factionCount));
+				CollectFactionData(factions, root, actor, factionCount);
+				RegisterString(&factions, root, "text", std::format("{}({}) >", Settings::FACTIONINFO, factionCount));
 				Register<UInt32>(&factions, "filterFlag", 2);
 				args->result->PushBack(&factions);
 
 				GFxValue effects;
-				args->movie->movieRoot->CreateObject(&effects);
+				root->CreateArray(&effects);
 				UInt32 effectCount = 0;
-				CollectEffectData(effects, args->movie->movieRoot, actor, effectCount);
-				RegisterString(&effects, args->movie->movieRoot, "text", std::format("{}({}) >", Settings::EFFECTINFO, effectCount));
+				CollectEffectData(effects, root, actor, effectCount);
+				RegisterString(&effects, root, "text", std::format("{}({}) >", Settings::EFFECTINFO, effectCount));
 				Register<UInt32>(&effects, "filterFlag", 2);
 				args->result->PushBack(&effects);
 
 				GFxValue actorValues;
 				UInt32 valueCount = 0;
-				args->movie->movieRoot->CreateObject(&actorValues);
-				CollectValueData(actorValues, args->movie->movieRoot, actor, valueCount);
-				RegisterString(&actorValues, args->movie->movieRoot, "text", std::format("{}({}) >", Settings::AVINFO, valueCount));
+				root->CreateArray(&actorValues);
+				CollectValueData(actorValues, root, actor, valueCount);
+				RegisterString(&actorValues, root, "text", std::format("{}({}) >", Settings::AVINFO, valueCount));
 				Register<UInt32>(&actorValues, "filterFlag", 2);
 				args->result->PushBack(&actorValues);
 
 				GFxValue equipments;
 				UInt32 equipmentCount = 0;
-				args->movie->movieRoot->CreateObject(&equipments);
-				CollectEquipmentData(equipments, args->movie->movieRoot, actor, equipmentCount);
-				RegisterString(&equipments, args->movie->movieRoot, "text", std::format("{}({}) >", Settings::EQUIPMENTINFO, equipmentCount));
+				root->CreateArray(&equipments);
+				CollectEquipmentData(equipments, root, actor, equipmentCount);
+				RegisterString(&equipments, root, "text", std::format("{}({}) >", Settings::EQUIPMENTINFO, equipmentCount));
 				Register<UInt32>(&equipments, "filterFlag", 2);
 				args->result->PushBack(&equipments);
 
 			}
 
-			GFxValue memory;
-			args->movie->movieRoot->CreateObject(&memory);
-			RegisterString(&memory, args->movie->movieRoot, "text", std::format("{}: 0x{:X}", Settings::EXTRAINFO_MEMORY, (uintptr_t)pRef.get()));
-			Register<UInt32>(&memory, "filterFlag", 2);
-			args->result->PushBack(&memory);
+			// memory
+			AppendInfoToArray(parent, root, std::format("{}: 0x{:X}", Settings::EXTRAINFO_MEMORY, (uintptr_t)pRef.get()), FILTER_FLAG_ACTIVE);
 		}
 	}
 };
