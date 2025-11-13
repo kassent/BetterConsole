@@ -289,16 +289,6 @@ struct Runtime_RTTILocator
 #pragma warning (pop)
 
 
-template<UInt64 VTBL>
-const void * VTBL_TO_RTTI()
-{
-	Runtime_RTTILocator	** vtbl = reinterpret_cast<Runtime_RTTILocator**>(VTBL);
-	Runtime_RTTILocator	* rtti = vtbl[-1];
-	UInt64 typeDesc = rtti->typeDesc;
-	RelocPtr<Runtime_RTTIType> type(typeDesc);
-	return type.GetPtr();
-}
-
 #define DEFINE_CLASS_VTABLE(className, offset)		\
 	RelocAddr<uintptr_t> className##_vtbl(offset);
 
@@ -357,6 +347,57 @@ RelocAddr <_RegisterMenuOpenCloseEvent>	RegisterMenuOpenCloseEvent(0x0612530);//
 //
 //RelocPtr <BGSKeyword *>	pSyringerAmmoKW(0x591B350);///V1.10.26 ObjectTypeSyringerAmmo [KYWD:0018506F] 48 8B 15 ? ? ? ? 49 8D 8D ? ? ? ? 4C 89 6C 24 ?
 
+
+namespace {
+
+	enum FilterFlag {
+		FILTER_FLAG_INACTIVE = 1,
+		FILTER_FLAG_ACTIVE = 2,
+	};
+
+	void AppendInfoToArray(GFxValue& array, GFxMovieRoot* root, std::string_view key, std::string_view value, UInt32 filterFlag = FILTER_FLAG_ACTIVE)
+	{
+		GFxValue object;
+		root->CreateObject(&object);
+		RegisterString(&object, root, "key", key);
+		RegisterString(&object, root, "value", value);
+		Register<UInt32>(&object, "filterFlag", filterFlag);
+		array.PushBack(&object);
+	}
+
+	void AppendInfoToArray(GFxValue& array, GFxMovieRoot* root, std::string_view text, UInt32 filterFlag = FILTER_FLAG_ACTIVE, std::function<void(GFxValue&)> callback = {})
+	{
+		GFxValue object;
+		root->CreateObject(&object);
+		RegisterString(&object, root, "text", text);
+		Register<UInt32>(&object, "filterFlag", filterFlag);
+		if (callback)
+		{
+			callback(object);
+		}
+		array.PushBack(&object);
+	}
+
+	[[nodiscard]] inline std::string_view GetModName(TESForm* form) {
+		if (!form) return std::string_view(Settings::EXTRAINFO_NULL);
+		auto* pModInfo = (*g_dataHandler)->GetLocatedModInfo(form);
+		return (pModInfo != nullptr && pModInfo->name) ? std::string_view(pModInfo->name) : std::string_view(Settings::EXTRAINFO_NULL);
+	}
+
+	[[nodiscard]] inline std::string_view GetStringOrDefault(const char* str, std::string_view defaultValue = std::string_view(Settings::EXTRAINFO_NULL)) {
+		return (str != nullptr && str[0] != '\0') ? std::string_view(str) : defaultValue;
+	}
+
+
+	[[nodiscard]] std::string GetFormDisplayName(TESForm* form)
+	{
+		TESFullName* pFullName = (TESFullName*)Runtime_DynamicCast_Internal(form, 0, Runtime_RTTI_TESForm.GetPtr(), Runtime_RTTI_TESFullName.GetPtr(), 0);
+		return (pFullName != nullptr && strlen(pFullName->name.c_str())) ? pFullName->GetFullName() : Settings::EXTRAINFO_NULL.c_str();
+	}
+
+}
+
+
 class BetterConsole_GetBaseData : public GFxFunctionHandler
 {
 public:
@@ -368,7 +409,6 @@ public:
 		if (pRef != nullptr)
 		{
 			args->movie->movieRoot->CreateObject(args->result);
-			std::unique_ptr<char[]>	sResult(new char[MAX_PATH]);
 			TESForm * pBaseForm = pRef->baseForm;
 			BSExtraData * pExtraData = pRef->extraDataList->GetExtraData(kExtraData_LeveledCreature);
 			if (pExtraData != nullptr)
@@ -416,64 +456,6 @@ public:
 	}
 };
 
-/*
-			GFxValue posX;
-			root->CreateObject(&posX);
-			RegisterString(&posX, root, "key", std::format("{}: ", Settings::POSITIONINFO_POSX));
-			RegisterString(&posX, root, "value", std::format("{:.2f}", pRef->pos.x));
-			Register<UInt32>(&posX, "filterFlag", 2);
-			value.PushBack(&posX);
-*/
-// 创建一个宏，来简化大量的上面的重复工作
-// #define CREATE_OBJECT_AND_REGISTER(object, root, key, value, filterFlag) \
-// 	GFxValue object; \
-// 	root->CreateObject(&object); \
-// 	RegisterString(&object, root, "key", std::format("{}: ", key)); \
-// 	RegisterString(&object, root, "value", std::format("{:.2f}", value)); \
-// 	Register<UInt32>(&object, "filterFlag", filterFlag); \
-// 	value.PushBack(&object);
-
-namespace {
-enum FilterFlag {
-	FILTER_FLAG_INACTIVE = 1,
-	FILTER_FLAG_ACTIVE = 2,
-};
-
-static void AppendInfoToArray(GFxValue& array, GFxMovieRoot * root, std::string_view key, std::string_view value, UInt32 filterFlag = FILTER_FLAG_ACTIVE)
-{
-	GFxValue object;
-	root->CreateObject(&object);
-	RegisterString(&object, root, "key", key);
-	RegisterString(&object, root, "value", value);
-	Register<UInt32>(&object, "filterFlag", filterFlag);
-	array.PushBack(&object);
-}
-
-static void AppendInfoToArray(GFxValue& array, GFxMovieRoot * root, std::string_view text, UInt32 filterFlag = FILTER_FLAG_ACTIVE, std::function<void(GFxValue&)> callback = {})
-{
-	GFxValue object;
-	root->CreateObject(&object);
-	RegisterString(&object, root, "text", text);
-	Register<UInt32>(&object, "filterFlag", filterFlag);
-	if (callback)
-	{
-		callback(object);
-	}
-	array.PushBack(&object);
-}
-
-/*
-TESFullName * pFullName = (TESFullName *)Runtime_DynamicCast_Internal(pEntry.perk, 0, Runtime_RTTI_TESForm.GetPtr(), Runtime_RTTI_TESFullName.GetPtr(), 0);
-					RegisterString(&perkData, root, "text", (pFullName != nullptr && strlen(pFullName->name.c_str())) ? pFullName->GetFullName() : Settings::EXTRAINFO_NULL.c_str());
-*/
-
-static std::string GetFormDisplayName(TESForm * form)
-{
-	TESFullName * pFullName = (TESFullName *)Runtime_DynamicCast_Internal(form, 0, Runtime_RTTI_TESForm.GetPtr(), Runtime_RTTI_TESFullName.GetPtr(), 0);
-	return (pFullName != nullptr && strlen(pFullName->name.c_str())) ? pFullName->GetFullName() : Settings::EXTRAINFO_NULL.c_str();
-}
-
-}
 
 class BetterConsole_GetExtraData : public GFxFunctionHandler
 {
@@ -512,7 +494,7 @@ public:
 		}
 	}
 
-	static void	CollectPerkData(GFxValue& parent, GFxMovieRoot * root, Actor *  actor, UInt32&	dataListSize)
+	static void	ResolvePerkData(GFxValue& parent, GFxMovieRoot * root, Actor *  actor, UInt32&	dataListSize)
 	{
 		if (parent.GetType() == GFxValue::kType_Object && actor->formType == kFormType_ACHR && root != nullptr)
 		{
@@ -557,7 +539,7 @@ public:
 		}
 	}
 
-	static void	CollectFactionData(GFxValue& parent, GFxMovieRoot * root, Actor *  actor, UInt32& dataListSize)
+	static void	ResolveFactionData(GFxValue& parent, GFxMovieRoot * root, Actor *  actor, UInt32& dataListSize)
 	{
 		if (parent.GetType() == GFxValue::kType_Object && actor->formType == kFormType_ACHR && root != nullptr)
 		{
@@ -624,7 +606,7 @@ public:
 		}
 	}
 
-	static void	CollectEffectData(GFxValue& parent, GFxMovieRoot * root, Actor *  actor, UInt32& dataListSize)
+	static void	ResolveEffectData(GFxValue& parent, GFxMovieRoot * root, Actor *  actor, UInt32& dataListSize)
 	{
 		if (parent.GetType() == GFxValue::kType_Object && actor->formType == kFormType_ACHR && root != nullptr)
 		{
@@ -721,7 +703,7 @@ public:
 		}
 	}
 
-	static void	CollectValueData(GFxValue& parent, GFxMovieRoot * root, Actor *  actor, UInt32&	dataListSize)
+	static void	ResolveActorValueData(GFxValue& parent, GFxMovieRoot * root, Actor *  actor, UInt32&	dataListSize)
 	{
 		if (parent.GetType() == GFxValue::kType_Object && actor->formType == kFormType_ACHR && root != nullptr)
 		{
@@ -767,16 +749,16 @@ public:
 			root->CreateArray(&actorValueArray); //extraData
 
 									   //sort by string.A-Z
-			for (const auto& map : actorValueDict)
+			for (const auto& actorValuePair : actorValueDict)
 			{
 				++dataListSize;
-				auto pAVI = map.second.pAVI;
+				auto pAVI = actorValuePair.second.pAVI;
 
 				GFxValue extraInfo;
 				root->CreateArray(&extraInfo); //extraData
 
 				// actor value name
-				AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::EXTRAINFO_NAME, map.first));
+				AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::EXTRAINFO_NAME, actorValuePair.first));
 
 				// actor value type
 				auto isValidIndex = pAVI->type >= 0 && pAVI->type < ACTOR_VALUE_TYPES.size();
@@ -786,17 +768,17 @@ public:
 				AppendInfoToArray(extraInfo, root, std::format("{}: {:08X}", Settings::EXTRAINFO_ID, pAVI->formID));
 
 				// actor value base value
-				AppendInfoToArray(extraInfo, root, std::format("{}: {:.2f}", Settings::AVINFO_BASEVALUE, map.second.base));
+				AppendInfoToArray(extraInfo, root, std::format("{}: {:.2f}", Settings::AVINFO_BASEVALUE, actorValuePair.second.base));
 
 				// actor value current value
-				AppendInfoToArray(extraInfo, root, std::format("{}: {:.2f}", Settings::AVINFO_CURRENTVALUE, map.second.current));
+				AppendInfoToArray(extraInfo, root, std::format("{}: {:.2f}", Settings::AVINFO_CURRENTVALUE, actorValuePair.second.current));
 
 				// actor value mod
 				auto pModInfo = (*g_dataHandler)->GetLocatedModInfo(pAVI);
 				AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::EXTRAINFO_MOD, (pModInfo != nullptr) ? pModInfo->name : Settings::EXTRAINFO_NULL));
 
 				// actor value data
-				AppendInfoToArray(actorValueArray, root, map.first, FILTER_FLAG_ACTIVE, [&extraInfo](GFxValue& object) {
+				AppendInfoToArray(actorValueArray, root, actorValuePair.first, FILTER_FLAG_ACTIVE, [&extraInfo](GFxValue& object) {
 					object.SetMember("extraInfo", &extraInfo);
 				});
 			}
@@ -805,7 +787,7 @@ public:
 		}
 	}
 
-	static void	ColllectInventoryData(GFxValue& parentArray, GFxMovieRoot * root, Actor * actor, TESForm * pBaseForm)
+	static void	ResolveInventoryData(GFxValue& parentArray, GFxMovieRoot * root, Actor * actor, TESForm * pBaseForm)
 	{
 		auto pInvList = actor->inventoryList;
 		bool result = false;
@@ -986,7 +968,7 @@ public:
 		}
 	}
 
-	static void	CollectEquipmentData(GFxValue& parent, GFxMovieRoot * root, Actor * actor, UInt32& dataListSize)
+	static void	ResolveEquipmentData(GFxValue& parent, GFxMovieRoot * root, Actor * actor, UInt32& dataListSize)
 	{
 		if (parent.GetType() != GFxValue::kType_Object || actor->formType != kFormType_ACHR || root == nullptr) {
 			return;
@@ -1028,7 +1010,7 @@ public:
 			}
 			else
 			{
-				ColllectInventoryData(extraInfo, root, actor, pForm);
+				ResolveInventoryData(extraInfo, root, actor, pForm);
 			}
 			// equipment slot index
 			AppendInfoToArray(extraInfo, root, std::format("{}: {}", Settings::EQUIPMENTINFO_SLOTINDEX, static_cast<int>(slotIndex)));
@@ -1118,7 +1100,7 @@ public:
 
 				auto * pAVs = GetActorValueCollector();
 				ActorValueInfo*	pHealth = *reinterpret_cast<ActorValueInfo**>(pAVs + 0x1B);
-				AppendInfoToArray(parent, root, std::format("HP: {}", static_cast<UInt32>(actor->actorValueOwner.GetValue(pHealth))));
+				AppendInfoToArray(parent, root, std::format("HP: {}", static_cast<SInt32>(actor->actorValueOwner.GetValue(pHealth))));
 
 				// action points
 				if (TESForm *pForm = LookupFormByID(0x2D5); pForm != nullptr && pForm->formType == kFormType_AVIF)
@@ -1135,8 +1117,6 @@ public:
 			if (pRef->formType == kFormType_ACHR)
 			{
 				TESNPC * npc = static_cast<TESNPC*>(pBaseForm);
-
-
 
 				GFxValue extraInfo;
 				root->CreateArray(&extraInfo);
@@ -1159,7 +1139,6 @@ public:
 				});
 			}
 
-
 			// position
 			AppendInfoToArray(parent, root, std::format("{} >", Settings::POSITIONINFO), FILTER_FLAG_ACTIVE, [root, pRef](GFxValue& object) {
 				CollectPositionData(object, root, pRef);
@@ -1168,8 +1147,6 @@ public:
 			TESObjectCELL * pCell = pRef->parentCell;  //extra
 			if (pCell != nullptr)
 			{
-
-
 				GFxValue extraInfo;
 				root->CreateArray(&extraInfo);
 
@@ -1288,45 +1265,44 @@ public:
 			{
 				Actor * actor = static_cast<Actor*>(pRef.get());
 				GFxValue perks;
-				root->CreateArray(&perks);
+				root->CreateObject(&perks);
 				UInt32 perkCount = 0;
-				CollectPerkData(perks, root, actor, perkCount);
+				ResolvePerkData(perks, root, actor, perkCount);
 				RegisterString(&perks, root, "text", std::format("{}({}) >", Settings::PERKINFO, perkCount));
 				Register<UInt32>(&perks, "filterFlag", 2);
 				args->result->PushBack(&perks);
 
 				GFxValue factions;
-				root->CreateArray(&factions);
+				root->CreateObject(&factions);
 				UInt32 factionCount = 0;
-				CollectFactionData(factions, root, actor, factionCount);
+				ResolveFactionData(factions, root, actor, factionCount);
 				RegisterString(&factions, root, "text", std::format("{}({}) >", Settings::FACTIONINFO, factionCount));
 				Register<UInt32>(&factions, "filterFlag", 2);
 				args->result->PushBack(&factions);
 
 				GFxValue effects;
-				root->CreateArray(&effects);
+				root->CreateObject(&effects);
 				UInt32 effectCount = 0;
-				CollectEffectData(effects, root, actor, effectCount);
+				ResolveEffectData(effects, root, actor, effectCount);
 				RegisterString(&effects, root, "text", std::format("{}({}) >", Settings::EFFECTINFO, effectCount));
 				Register<UInt32>(&effects, "filterFlag", 2);
 				args->result->PushBack(&effects);
 
 				GFxValue actorValues;
 				UInt32 valueCount = 0;
-				root->CreateArray(&actorValues);
-				CollectValueData(actorValues, root, actor, valueCount);
+				root->CreateObject(&actorValues);
+				ResolveActorValueData(actorValues, root, actor, valueCount);
 				RegisterString(&actorValues, root, "text", std::format("{}({}) >", Settings::AVINFO, valueCount));
 				Register<UInt32>(&actorValues, "filterFlag", 2);
 				args->result->PushBack(&actorValues);
 
 				GFxValue equipments;
 				UInt32 equipmentCount = 0;
-				root->CreateArray(&equipments);
-				CollectEquipmentData(equipments, root, actor, equipmentCount);
+				root->CreateObject(&equipments);
+				ResolveEquipmentData(equipments, root, actor, equipmentCount);
 				RegisterString(&equipments, root, "text", std::format("{}({}) >", Settings::EQUIPMENTINFO, equipmentCount));
 				Register<UInt32>(&equipments, "filterFlag", 2);
 				args->result->PushBack(&equipments);
-
 			}
 
 			// memory

@@ -18,7 +18,7 @@
 
 #include "xbyak/xbyak.h"
 
-#define PLUGIN_VERSION	MAKE_EXE_VERSION(1, 5, 1)
+#define PLUGIN_VERSION	MAKE_EXE_VERSION(1, 6, 0)
 #define PLUGIN_NAME		"BetterConsole"
 
 IDebugLog						gLog;
@@ -112,7 +112,7 @@ F4SEMessagingInterface			* g_messaging = nullptr;
 //	}
 //};
 
-#ifdef DEBUG
+
 
 
 #include "f4se/PapyrusVM.h"
@@ -126,7 +126,7 @@ public:
 	void RegisterFunction_Hook(IFunction * fn)
 	{
 		uintptr_t callback = *(uintptr_t*)((uintptr_t)fn + 0x50);
-		_MESSAGE("<%s> %s (%016I64X) callback=%08X", fn->GetClassName()->c_str(), fn->GetName()->c_str(), (uintptr_t)fn, callback - (uintptr_t)GetModuleHandle(NULL));
+		_MESSAGE("%s_%s (%016I64X) callback=%016I64X", fn->GetClassName()->c_str(), fn->GetName()->c_str(), (uintptr_t)fn, 0x140000000ll + callback - (uintptr_t)GetModuleHandle(NULL));
 		_MESSAGE("");
 		(this->*fnRegisterFunction)(fn);
 	}
@@ -134,14 +134,14 @@ public:
 	static void InitHook()
 	{
 		//Dump all papyrus functions.
-		fnRegisterFunction = HookUtil::SafeWrite64(RelocAddr<uintptr_t>(0x030A8608).GetUIntPtr() + 8 * 0x1B, &RegisterFunction_Hook);//V1.10 .?AVVirtualMachine@Internal@BSScript@@
+		fnRegisterFunction = HookUtil::SafeWrite64(RelocAddr<uintptr_t>(0x28E1A80).GetUIntPtr() + 8 * 0x1B, &RegisterFunction_Hook);//V1.10 .?AVVirtualMachine@Internal@BSScript@@
 	}
 };
 
 
 VirtualMachineEx::FnRegisterFunction VirtualMachineEx::fnRegisterFunction = nullptr;
 
-#endif
+
 
 
 //// 18 
@@ -363,6 +363,8 @@ extern "C"
 
 		if (g_scaleform)
 			g_scaleform->Register("BetterConsole", ScaleformCallback);
+
+		// VirtualMachineEx::InitHook();
 #ifdef DEBUG
 
 		for (uintptr_t i = data_begin.GetUIntPtr(); i < data_end.GetUIntPtr(); i += sizeof(uintptr_t))
